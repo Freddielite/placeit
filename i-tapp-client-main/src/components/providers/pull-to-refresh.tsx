@@ -111,7 +111,7 @@ export function PullToRefresh({ children }: { children: ReactNode }) {
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/brand-icon.svg"
+          src="/placeit-icon.png"
           alt=""
           width={32}
           height={32}

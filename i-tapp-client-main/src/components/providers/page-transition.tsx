@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, type ReactNode } from "react";
+import { useRef, type ReactNode } from "react";
 
 // WhatsApp/iOS-style directional navigation:
 // - Going deeper (forward): the new page slides in from the right, fully
@@ -10,31 +10,33 @@ import { useEffect, useRef, type ReactNode } from "react";
 //   shifting slightly left and dimming (parallax) rather than fully
 //   leaving - this is the detail that makes it read as "app" instead of
 //   "web page swap."
-// - Going back: it's the exact reverse - the current page slides fully
-//   off to the right, revealing the previous page sliding back in from
-//   its dimmed, shifted-left position to normal.
+// - Going back: the exact reverse - the current page slides fully off to
+//   the right, revealing the previous page sliding back in from its
+//   dimmed, shifted-left position to normal.
 //
-// Direction is inferred by watching for the browser's popstate event
-// (fired on back/forward navigation, i.e. router.back() or a hardware/
-// gesture back) vs a normal push (Link click, router.push) which doesn't
-// fire popstate before the pathname changes.
+// Direction is determined from our OWN tracked navigation stack, not the
+// browser's popstate event. popstate timing can race with React's render
+// cycle and misfire (this was the cause of "back" occasionally animating
+// wrong or not at all) - comparing against a stack we maintain ourselves,
+// synchronously, during render, is deterministic and has no such race.
 export function PageTransition({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const stackRef = useRef<string[]>([pathname]);
   const prevPathnameRef = useRef(pathname);
-  const isPopRef = useRef(false);
   const directionRef = useRef<"forward" | "back">("forward");
 
-  useEffect(() => {
-    const onPopState = () => {
-      isPopRef.current = true;
-    };
-    window.addEventListener("popstate", onPopState);
-    return () => window.removeEventListener("popstate", onPopState);
-  }, []);
-
   if (pathname !== prevPathnameRef.current) {
-    directionRef.current = isPopRef.current ? "back" : "forward";
-    isPopRef.current = false;
+    const stack = stackRef.current;
+    const isBackToPrevious =
+      stack.length >= 2 && stack[stack.length - 2] === pathname;
+
+    if (isBackToPrevious) {
+      directionRef.current = "back";
+      stack.pop();
+    } else {
+      directionRef.current = "forward";
+      stack.push(pathname);
+    }
     prevPathnameRef.current = pathname;
   }
 
@@ -68,7 +70,7 @@ export function PageTransition({ children }: { children: ReactNode }) {
           initial="initial"
           animate="animate"
           exit="exit"
-          transition={{ duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
+          transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
           style={{ width: "100%" }}
         >
           {children}
