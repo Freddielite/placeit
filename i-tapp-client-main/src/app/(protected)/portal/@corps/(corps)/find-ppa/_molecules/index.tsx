@@ -2,12 +2,34 @@
 
 import { useState } from "react";
 import { useFetchCorpsPPA } from "@/queries/corps";
-import { Spinner } from "@/components/spinner";
 import { SitePagination } from "@/components/ui/site-pagination";
 import PPACard from "./ppa-card";
 import PPADetailPanel from "./ppa-detail-panel";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import { NIGERIAN_STATES } from "@/constants";
+import { Skeleton } from "@/components/ui/skeleton";
+
+function PPACardSkeleton() {
+  return (
+    <div className="border border-gray-200 rounded-lg p-3 bg-white">
+      <div className="flex items-start gap-3">
+        <Skeleton className="w-10 h-10 rounded-full shrink-0" />
+        <div className="flex-1 space-y-2">
+          <Skeleton className="h-4 w-3/4" />
+          <Skeleton className="h-3 w-1/2" />
+        </div>
+      </div>
+      <div className="flex gap-2 mt-3">
+        <Skeleton className="h-4 w-14 rounded-full" />
+        <Skeleton className="h-4 w-16 rounded-full" />
+      </div>
+      <div className="flex justify-between mt-3 pt-3 border-t border-gray-100">
+        <Skeleton className="h-3 w-16" />
+        <Skeleton className="h-3 w-16" />
+      </div>
+    </div>
+  );
+}
 
 export default function FindPPA() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -83,7 +105,11 @@ export default function FindPPA() {
         {/* Grid */}
         <div className="flex-1 overflow-y-auto px-4 py-4">
           {isLoading ? (
-            <div className="flex justify-center py-20"><Spinner /></div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <PPACardSkeleton key={i} />
+              ))}
+            </div>
           ) : listings.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-24 text-gray-400">
               <p className="text-lg font-medium">No PPA listings found</p>

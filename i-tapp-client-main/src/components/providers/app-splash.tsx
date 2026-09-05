@@ -53,11 +53,12 @@ export function AppSplash() {
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/logo.svg"
+        src="/brand-icon.svg"
         alt=""
-        width={220}
-        height={56}
+        width={120}
+        height={120}
         style={{
+          borderRadius: 28,
           animation:
             "app-splash-in 550ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards",
         }}

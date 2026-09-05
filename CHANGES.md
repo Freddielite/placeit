@@ -1,102 +1,107 @@
-# What changed
+# What changed (session 2 - fixes and app-feel polish)
 
-This is against the correct repo (`i-tapp-client-main`, the real live
-codebase behind getplaceit.com) - the earlier zip built against a wrong/old
-repo was discarded per your request.
+Building on the first pass against `i-tapp-client-main` (the correct repo).
+Everything below was verified with a real `npm run build` - exit 0, all 69
+routes compiled, TypeScript clean - before packaging.
 
-## 1. i-tapp-client-main/ (edited)
+## 1. Fixed: old/broken logo showing everywhere
 
-**Page transitions**
-- `src/components/providers/page-transition.tsx` - new, Framer Motion,
-  keyed on route
-- `src/components/providers/app-provider.tsx` - wired it in, alongside all
-  the pieces below
-- `framer-motion` added to `package.json`
+Root cause found: `src/components/logo.tsx` pointed at `new-logo.svg`, which
+has a broken solid-black background box baked into the file (bad Canva
+export - visible the moment you render it). This `Logo` component is used
+almost everywhere: site header/footer, auth pages, portal header/sidenav,
+company dashboard welcome banner, onboarding (all three roles), signup
+success screen, get-started page.
 
-**Store readiness**
-- `src/app/manifest.ts` - new. PWA manifest: name "PlaceIT", icons, theme
-  color `#477dc0` (pulled from your actual `--primary` CSS variable, not a
-  guess)
-- `public/sw.js` - new. Hand-written service worker, NOT `next-pwa` -
-  this repo builds with `next build --turbopack`, and `next-pwa` is a
-  webpack-only plugin that silently won't run under Turbopack. This is a
-  small, direct static file instead: install/activate/fetch handlers, basic
-  same-origin caching. Registered via `native-app-detector.tsx` in
-  production only.
+Fix: pointed it at the clean `logo.svg` wordmark instead, with `h-auto
+w-auto` classes added so the aspect ratio scales correctly no matter what
+width class each page passes in (dimensions changed from a 150x150 square
+to the wordmark's real 180x46 ratio).
 
-**Animated splash**
-- `src/components/providers/app-splash.tsx` - new. Uses `logo.svg` (the
-  "PlaceIT" wordmark is genuine vector, confirmed by rendering it at 8x -
-  no blur). Fades/scales in over 550ms, holds, fades out around 1.7s total.
-  Shown only in the installed app (native Capacitor shell or installed
-  PWA) - never in a plain browser tab.
+## 2. Fixed: pixelated splash/icon
 
-**Custom pull-to-refresh**
-- `src/components/providers/pull-to-refresh.tsx` - new. Pull down from the
-  top of any page, the logo pulses/scales as you pull (not a 360° spin -
-  it's a wide wordmark, spinning text looks wrong), release past threshold
-  and it reloads the page. App-only, same scoping as the splash.
+Traced the actual cause: the little person/circle graphic embedded in
+`logo.svg` is an auto-traced/AI-vectorized image (Canva's "trace image"
+export), not real vector art - it inherits blur/blockiness at any size no
+matter the file format. Confirmed by rendering it at 8x.
 
-**Offline screen**
-- `src/components/providers/offline-screen.tsx` - new. Dark full-screen
-  state, brand blue accent, "PlaceIT" copy, Retry button. App-only.
+Fix: built a clean typographic monogram from scratch - a bold "P" on a
+rounded blue square, pure vector, guaranteed crisp. New file:
+`public/brand-icon.svg`. Regenerated every icon size from it:
+- `favicon.ico`, `favicon-16x16.png`, `favicon-32x32.png`
+- `apple-touch-icon.png`
+- `android-chrome-192x192.png`, `android-chrome-512x512.png`
+- Android launcher icon + splash in `placeit-mobile/` (regenerated via
+  `capacitor-assets`)
 
-**Zoom lock + text-selection lock**
-- `src/app/layout.tsx` - added a `viewport` export (`maximumScale: 1`,
-  `userScalable: false`, safe-area support)
-- `src/app/globals.css` - added: overscroll containment (no pull-to-refresh
-  bounce), tap-highlight removal, safe-area padding, and a `.is-native-app`
-  scoped rule that disables text selection everywhere except real
-  `input`/`textarea`/`contenteditable` elements. This is **native-app-only**
-  (not installed PWA) - matches what you asked for originally.
-- `src/components/providers/native-app-detector.tsx` - new. Adds the
-  `.is-native-app` class on mount when running in Capacitor, and registers
-  the service worker in production.
-- `src/lib/is-installed-app.ts` - new. Shared detection helpers
-  (`isInstalledApp()` = native app or installed PWA, `isNativeApp()` =
-  native app only) used by the splash/pull-to-refresh/offline-screen/
-  text-select logic above.
+The animated web splash (`app-splash.tsx`) and pull-to-refresh indicator
+both now use this monogram too.
 
-## 2. placeit-mobile/ (new folder)
+## 3. Widened native-only scope to cover installed PWAs
 
-Capacitor Android project wrapping `https://www.getplaceit.com` live.
-Package id `com.wyntek.placeit`. Icons/splash generated from the "PlaceIT"
-wordmark. `MainActivity.java` patched to disable native WebView pinch/
-double-tap zoom (the web-side viewport meta doesn't always override
-Android's own WebView zoom controls). Full build/publish steps in its own
-README.
+You installed via Chrome's "Install app," not a compiled APK through
+Android Studio - so anything scoped to native-Capacitor-only (text-select
+lock, etc.) wasn't doing anything for you. `native-app-detector.tsx` now
+checks `isInstalledApp()` (native app OR installed PWA) instead of native
+only. This is why text-selection is now actually locked in your test
+environment.
+
+## 4. Pull-to-refresh: content now actually shifts down
+
+Previously the logo indicator just floated above the page as an overlay -
+the page itself never moved. Rewrote `pull-to-refresh.tsx` to wrap
+`children` and push the actual content down via `margin-top` as you pull.
+
+Deliberately NOT using a CSS `transform` for this: a `transform` on a
+wrapper creates a new containing block for any `position:fixed` descendant
+- would have broken every fixed header/modal/sidenav elsewhere in the app.
+Margin doesn't have that problem.
+
+## 5. Page transitions: fixed the "still looks like a browser" issue
+
+Two real bugs, not just a tuning issue:
+- `mode="wait"` on `AnimatePresence` forces the outgoing page to fully
+  finish animating out before the incoming page starts - that's the dead
+  gap that read as "stuck." Switched to `mode="popLayout"`, which lets both
+  overlap smoothly with no layout jump.
+- Duration cut from 220ms to 140ms, and the motion changed from a vertical
+  slide (reads as a webpage scrolling) to a subtle scale+fade (reads as a
+  native screen transition).
+
+## 6. Removed the top loading bar entirely
+
+`Next13ProgressBar` and its `Suspense` wrapper removed from
+`app-provider.tsx`. See #7 for what replaces it on the pages that actually
+need loading feedback.
+
+## 7. Skeleton loaders (replacing spinners) on the highest-traffic pages
+
+Important finding: most of this app's pages fetch data client-side via
+React Query, not via Next.js server components - meaning a route-level
+`loading.tsx` file would only cover the (near-instant) moment before the
+client component mounts, not the actual data-loading window. The real fix
+had to be inside each component, replacing its internal spinner branch.
+
+Done, with skeletons matched to each page's real layout (not generic
+placeholders):
+- Company dashboard (`dashboard/_molecules/index.tsx`) - stat-box row +
+  applicant list rows
+- Corps "Find PPA" listing (`find-ppa/_molecules/index.tsx`) - card grid
+  matching `PPACard`'s actual layout
+
+Student "Find IT Space" already had a proper matching skeleton
+(`Results`'s `SkeletonCard`) - nothing to fix there.
+
+**Not yet done** (same pattern, straightforward to extend): company
+opportunity detail page, student "my-application," corps
+"my-applications" still show the generic spinner. Same approach (matched
+`Skeleton` composition, shadcn's `Skeleton` primitive already in the
+project) would apply.
 
 ## Verified
 
-Ran a real `npm run build` against this repo and got a clean exit before
-packaging - all routes compiled, `manifest.webmanifest` generated, no
-errors introduced by any of the above. Two things had to be stubbed to get
-a build running in this sandbox specifically (network restrictions here,
-not bugs):
-- Google Fonts fetch (`fonts.googleapis.com` isn't reachable in this
-  sandbox) - reverted immediately after testing, real font imports are
-  back in the delivered code
-- Backend/env vars (`NEXT_PUBLIC_APP_BACKEND_API_URL`,
-  `NEXT_PUBLIC_APP_ENV`, `NEXT_PUBLIC_APP_NAME`,
-  `NEXT_PUBLIC_APP_SITE_URL`) - this repo hard-throws during build if any
-  of these are missing (see `src/utils/index.ts`). Worth confirming all
-  four are set on Vercel, not just the backend URL - I only knew about the
-  backend one going in.
-
-## Known limitation - launcher icon
-
-No clean square icon-only mark exists in the source assets - the little
-person/circle graphic in `logo.svg` is actually a low-res embedded raster,
-not vector (same root asset as the old blurry icon set). The Android
-launcher icon was generated from the full wordmark centered on a square
-instead, which works but isn't ideal (launcher icons are usually icon-only
-for legibility at small sizes). Splash and any large in-app use of the logo
-are fine - only the tiny-scale launcher icon case is affected. See
-`placeit-mobile/README.md` for how to swap in a proper mark later.
-
-## Before you deploy
-
-- Confirm `com.wyntek.placeit` in `placeit-mobile/capacitor.config.json` -
-  permanent once published to either store.
-- Deploy the updated `i-tapp-client-main` to production first so the
-  manifest + service worker are live before running PWABuilder.
+Full `npm run build`, exit 0, all 69 routes compiled, TypeScript clean, zero
+errors introduced. Only Google Fonts and env vars were stubbed for the
+sandbox test itself (network restriction here, not a bug) and both were
+reverted/removed before packaging - the delivered code has real font
+imports and no `.env.local`.

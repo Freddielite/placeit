@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { isInstalledApp } from "@/lib/is-installed-app";
 
 const PULL_THRESHOLD = 70;
@@ -10,9 +10,14 @@ const RESISTANCE = 0.5;
 // Custom pull-to-refresh for the installed app only. Native browser
 // pull-to-refresh/rubber-banding is disabled globally (see globals.css),
 // this replaces it with a branded gesture: pull down from the top of any
-// page, the logo scales/rotates in as you pull, release past the
-// threshold and it spins and reloads the page.
-export function PullToRefresh() {
+// page, the page content itself shifts down revealing the icon above it,
+// release past the threshold and it pulses and reloads the page.
+//
+// Uses margin-top (not a CSS transform) to push content down - a
+// transform on this wrapper would create a new containing block for any
+// position:fixed element inside the app (headers, modals, sidenavs),
+// breaking their positioning app-wide. Margin doesn't have that problem.
+export function PullToRefresh({ children }: { children: ReactNode }) {
   const [enabled, setEnabled] = useState(false);
   const [pullDistance, setPullDistance] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
@@ -78,40 +83,40 @@ export function PullToRefresh() {
     };
   }, [enabled, refreshing]);
 
-  if (!enabled) return null;
+  if (!enabled) return <>{children}</>;
 
-  const visible = pullDistance > 0 || refreshing;
+  const shift = Math.max(pullDistance, refreshing ? PULL_THRESHOLD : 0);
   const progress = Math.min(pullDistance / PULL_THRESHOLD, 1);
+  const transitionStyle = pullingRef.current
+    ? "none"
+    : "margin-top 200ms ease, height 200ms ease, opacity 200ms ease";
 
   return (
-    <div
-      aria-hidden="true"
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "flex-start",
-        height: Math.max(pullDistance, refreshing ? PULL_THRESHOLD : 0),
-        overflow: "hidden",
-        pointerEvents: "none",
-        zIndex: 9998,
-        opacity: visible ? 1 : 0,
-        transition: pullingRef.current
-          ? "none"
-          : "height 200ms ease, opacity 200ms ease",
-      }}
-    >
-      <div style={{ padding: "14px 0" }}>
+    <div style={{ position: "relative" }}>
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: shift,
+          overflow: "hidden",
+          opacity: shift > 0 ? 1 : 0,
+          transition: transitionStyle,
+        }}
+      >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/logo.svg"
+          src="/brand-icon.svg"
           alt=""
-          width={72}
-          height={18}
+          width={32}
+          height={32}
           style={{
+            borderRadius: 8,
             transform: `scale(${0.7 + progress * 0.3}) rotate(${
               progress * 10
             }deg)`,
@@ -122,6 +127,16 @@ export function PullToRefresh() {
           }}
         />
       </div>
+
+      <div
+        style={{
+          marginTop: shift,
+          transition: transitionStyle,
+        }}
+      >
+        {children}
+      </div>
+
       <style>{`
         @keyframes pull-refresh-pulse {
           0%, 100% { transform: scale(1); }

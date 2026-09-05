@@ -274,7 +274,8 @@ button {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Native-app-only: no text selection outside of actual inputs. Scoped to
+/* Installed-app-only (native Capacitor app or installed PWA): no text
+   selection outside of actual inputs. Scoped to
    .is-native-app so the website (and installed PWA) is unaffected - only
    the wrapped native app gets this. */
 .is-native-app * {

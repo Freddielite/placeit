@@ -1,11 +1,16 @@
 "use client";
 
 import { useEffect } from "react";
-import { isNativeApp } from "@/lib/is-installed-app";
+import { isInstalledApp } from "@/lib/is-installed-app";
 
 export function NativeAppDetector() {
   useEffect(() => {
-    if (isNativeApp()) {
+    // Covers both the native Capacitor app AND an installed PWA (Chrome's
+    // "Install app"). App-only features (text-select lock, etc.) key off
+    // this class rather than native-only, since installing via Chrome is
+    // the common path most people actually use to test/use this as "the
+    // app" day-to-day.
+    if (isInstalledApp()) {
       document.documentElement.classList.add("is-native-app");
     }
 
