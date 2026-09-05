@@ -53,10 +53,10 @@ export function AppSplash() {
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/new-logo.svg"
+        src="/placeit-logo.png"
         alt=""
-        width={130}
-        height={130}
+        width={200}
+        height={51}
         style={{
           animation:
             "app-splash-in 550ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards",

@@ -1,14 +1,15 @@
 import Image from "next/image";
+import { cn } from "@/utils/tailwind";
 
 export function Logo({ className }: { className?: string }) {
   return (
     <Image
-      src="/new-logo.svg"
-      height={150}
-      width={150}
+      src="/placeit-logo.png"
+      height={117}
+      width={456}
       priority={true}
       alt="PlaceIT"
-      className={className}
+      className={cn("h-auto w-auto", className)}
     />
   );
 }
