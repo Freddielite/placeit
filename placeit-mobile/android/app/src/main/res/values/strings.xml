@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">PlaceIT</string>
+    <string name="title_activity_main">PlaceIT</string>
+    <string name="package_name">com.wyntek.placeit</string>
+    <string name="custom_url_scheme">com.wyntek.placeit</string>
+</resources>

@@ -1,0 +1,290 @@
+/* src/styles/globals.css */
+@import "tailwindcss";
+@import "tw-animate-css";
+
+:root {
+  /* Fonts */
+  --font-opensans: "Open_Sans", sans-serif;
+  --font-montserrat: "Montserrat", sans-serif;
+
+  /* ShadCN Base Tokens (LIGHT MODE ONLY) */
+  --background: #ffffff;
+  --foreground: #0f0f0f;
+
+  --card: #ffffff;
+  --card-foreground: #0f0f0f;
+
+  --popover: #ffffff;
+  --popover-foreground: #0f0f0f;
+
+  --primary: #477dc0;
+  --primary-foreground: #ffffff;
+
+  --secondary: #cedcee;
+  --secondary-foreground: #282828;
+
+  --muted: #f3f3f3;
+  --muted-foreground: #4f4f4f;
+
+  --accent: #f3f3f3;
+  --accent-foreground: #282828;
+
+  --destructive: #dc2626;
+  --destructive-foreground: #fef2f2;
+
+  --border: #e5e5e5;
+  --input: #e5e5e5;
+  --ring: #c9c9c9;
+
+  /* Semantic Colors */
+  --info: #2f80ed;
+  --warning: #27ae60;
+  --success: #e2b93b;
+  --danger: #eb5757;
+
+  /* Grey Scale */
+  --black: #282828;
+  --white: #ffffff;
+  --grey-1: #333333;
+  --grey-2: #4f4f4f;
+  --grey-3: #828282;
+  --grey-4: #bdbdbd;
+  --grey-5: #e0e0e0;
+
+  /* Tertiary */
+  --tertiary-1: #80a4d3;
+  --tertiary-2: #a6bfe0;
+
+  /* Sidebar */
+  --sidebar: #f7f9fc;
+  --sidebar-foreground: #282828;
+  --sidebar-primary: #477dc0;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #eaf0f9;
+  --sidebar-accent-foreground: #282828;
+  --sidebar-border: #d9e0ea;
+  --sidebar-ring: #c0d3f0;
+
+  /* Border radius */
+  --radius: 0.625rem;
+}
+
+/* Font defaults */
+* {
+  font-family: var(--font-opensans);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-montserrat);
+}
+
+@theme inline {
+  /* Fonts */
+  --font-sans: var(--font-opensans);
+  --font-montserrat: var(--font-montserrat);
+
+  /* Base colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Semantics */
+  --color-info: var(--info);
+  --color-warning: var(--warning);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+
+  /* Gray Scale */
+  --color-black: var(--black);
+  --color-white: var(--white);
+  --color-grey-1: var(--grey-1);
+  --color-grey-2: var(--grey-2);
+  --color-grey-3: var(--grey-3);
+  --color-grey-4: var(--grey-4);
+  --color-grey-5: var(--grey-5);
+
+  /* Tertiary */
+  --color-tertiary-1: var(--tertiary-1);
+  --color-tertiary-2: var(--tertiary-2);
+
+  /* Sidebar */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Typography scale */
+  --font-size-h1: 3.5rem;
+  --font-size-h1-line-height: 3.85rem;
+  --font-size-h1-weight: 700;
+
+  --font-size-h2: 3rem;
+  --font-size-h2-line-height: 3.3rem;
+  --font-size-h2-weight: 700;
+
+  --font-size-h3: 2.5rem;
+  --font-size-h3-line-height: 2.75rem;
+  --font-size-h3-weight: 700;
+
+  --font-size-h4: 2rem;
+  --font-size-h4-line-height: 2.2rem;
+  --font-size-h4-weight: 700;
+
+  --font-size-h5: 1.5rem;
+  --font-size-h5-line-height: 1.65rem;
+  --font-size-h5-weight: 700;
+
+  --font-size-h6: 1.25rem;
+  --font-size-h6-line-height: 1.375rem;
+  --font-size-h6-weight: 700;
+
+  /* Animation tokens */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+}
+
+@layer base {
+  .text-h1 {
+    font-size: var(--font-size-h1);
+    /* line-height: var(--font-size-h1-line-height); */
+    font-weight: var(--font-size-h1-weight);
+  }
+
+  .text-h2 {
+    font-size: var(--font-size-h2);
+    /* line-height: var(--font-size-h2-line-height); */
+    font-weight: var(--font-size-h2-weight);
+  }
+
+  .text-h3 {
+    font-size: var(--font-size-h3);
+    /* line-height: var(--font-size-h3-line-height); */
+    font-weight: var(--font-size-h3-weight);
+  }
+
+  .text-h4 {
+    font-size: var(--font-size-h4);
+    /* line-height: var(--font-size-h4-line-height); */
+    font-weight: var(--font-size-h4-weight);
+  }
+
+  .text-h5 {
+    font-size: var(--font-size-h5);
+    /* line-height: var(--font-size-h5-line-height); */
+    font-weight: var(--font-size-h5-weight);
+  }
+
+  .text-h6 {
+    font-size: var(--font-size-h6);
+    /* line-height: var(--font-size-h6-line-height); */
+    font-weight: var(--font-size-h6-weight);
+  }
+
+  /* Auto apply border + ring just like shadcn */
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+	width: 0;
+	height: 0;
+}
+body {
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+/* App-shell feel: makes it stop feeling like a browser tab once wrapped
+   in Capacitor/PWABuilder. Safe to keep even in a normal browser tab -
+   these are no-ops there. */
+html,
+body {
+  overscroll-behavior-y: contain; /* no pull-to-refresh / rubber-band bounce */
+  -webkit-tap-highlight-color: transparent; /* no gray flash on tap */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Native-app-only: no text selection outside of actual inputs. Scoped to
+   .is-native-app so the website (and installed PWA) is unaffected - only
+   the wrapped native app gets this. */
+.is-native-app * {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.is-native-app input,
+.is-native-app textarea,
+.is-native-app [contenteditable="true"] {
+  -webkit-user-select: text;
+  user-select: text;
+}
