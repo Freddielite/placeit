@@ -269,6 +269,14 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
+/* Paired with the beforeInteractive boot script in layout.tsx - hides real
+   page content the instant the browser parses <body>, before React even
+   loads, so there's no flash of the homepage before the splash covers it.
+   AppSplash removes this class itself once its overlay has mounted. */
+html.app-boot body {
+  visibility: hidden;
+}
+
 a,
 button {
   -webkit-tap-highlight-color: transparent;

@@ -155,6 +155,28 @@ export default function RootLayout({
             }),
           }}
         />
+        <Script
+          id="app-boot-detect"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function () {
+                try {
+                  var isNativeApp = window.Capacitor && typeof window.Capacitor.isNativePlatform === "function" && window.Capacitor.isNativePlatform();
+                  var isInstalledPwa = window.matchMedia && window.matchMedia("(display-mode: standalone)").matches;
+                  if (isNativeApp || isInstalledPwa) {
+                    document.documentElement.classList.add("app-boot");
+                    // Failsafe: if React never mounts for any reason (JS error,
+                    // slow network), don't leave the page permanently blank.
+                    setTimeout(function () {
+                      document.documentElement.classList.remove("app-boot");
+                    }, 4000);
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
       </head>
       <body
         className={`${opensans.variable} ${montserrat.variable} antialiased`} suppressHydrationWarning={true}
