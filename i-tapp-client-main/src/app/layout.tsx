@@ -84,6 +84,12 @@ export const metadata: Metadata = {
     apple: [{ url: "/apple-touch-icon.png" }],
   },
 
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: app.name,
+  },
+
   openGraph: {
     siteName: app.name,
     title: app.title,
