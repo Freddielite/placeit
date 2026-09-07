@@ -4,13 +4,13 @@ import { usePersona } from "@/app/(site)/_context/persona";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/utils/tailwind";
-import { Zap, ArrowRight, FileText, Mail, CheckCircle2, Star } from "lucide-react";
+import { UserPlus, ArrowRight, FileText, Send, CheckCircle2 } from "lucide-react";
 
 const steps = [
-  { icon: <FileText className="w-4 h-4" />, label: "Upload your resume" },
-  { icon: <Zap className="w-4 h-4" />, label: "Set your skills & state" },
-  { icon: <Mail className="w-4 h-4" />, label: "We cold-email matching companies" },
-  { icon: <CheckCircle2 className="w-4 h-4" />, label: "Companies respond to you" },
+  { icon: <UserPlus className="w-4 h-4" />, label: "Signup" },
+  { icon: <FileText className="w-4 h-4" />, label: "Upload your document" },
+  { icon: <Send className="w-4 h-4" />, label: "Apply to opportunities" },
+  { icon: <CheckCircle2 className="w-4 h-4" />, label: "Secure PPA" },
 ];
 
 export function BulkApply() {
@@ -29,24 +29,13 @@ export function BulkApply() {
           <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center gap-12 lg:gap-20">
             {/* Left */}
             <div className="flex-1 flex flex-col gap-6 max-w-lg">
-              <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest bg-primary/20 text-primary border border-primary/30 px-3 py-1.5 rounded-full">
-                  <Star className="w-3 h-3 fill-current" />
-                  Pro Feature
-                </span>
-                <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest bg-amber-400/10 text-amber-400 border border-amber-400/20 px-3 py-1.5 rounded-full">
-                  Corps Members Only
-                </span>
-              </div>
-
               <div>
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight">
-                  BulkApply —{" "}
-                  <span className="text-primary">We reach out</span>{" "}
-                  for you
+                  Secure Your PPA in{" "}
+                  <span className="text-primary">4 Simple Steps</span>
                 </h2>
                 <p className="mt-4 text-gray-400 text-base sm:text-lg leading-relaxed">
-                  Upload your resume, set your skills and location. We cold-email matching companies and PPA hosts on your behalf — so you stand the best chance of landing a placement, even from camp.
+                  Sign up, upload your document, and apply to state-matched PPA opportunities from verified companies — all from one place.
                 </p>
               </div>
 
@@ -58,15 +47,10 @@ export function BulkApply() {
                     "gap-2 font-bold rounded-xl shadow-lg shadow-primary/30"
                   )}
                 >
-                  <Zap className="w-4 h-4" />
-                  Activate BulkApply
+                  Get Started
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
-
-              <p className="text-gray-600 text-xs">
-                Available as a premium add-on. Pricing details available after signup.
-              </p>
             </div>
 
             {/* Right — visual flow */}
@@ -93,18 +77,6 @@ export function BulkApply() {
                     )}
                   </div>
                 ))}
-              </div>
-
-              {/* Floating result badge */}
-              <div className="mt-4 bg-white/5 border border-white/10 rounded-2xl px-5 py-4 flex items-center gap-4">
-                <div className="w-10 h-10 rounded-xl bg-emerald-400/10 border border-emerald-400/20 flex items-center justify-center shrink-0">
-                  <Mail className="w-4 h-4 text-emerald-400" />
-                </div>
-                <div>
-                  <p className="text-white text-sm font-semibold">Sent to 24 companies</p>
-                  <p className="text-gray-500 text-[12px]">3 responses received · 1 acceptance pending</p>
-                </div>
-                <span className="ml-auto w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
               </div>
             </div>
           </div>

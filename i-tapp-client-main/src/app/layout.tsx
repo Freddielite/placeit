@@ -161,9 +161,8 @@ export default function RootLayout({
             }),
           }}
         />
-        <Script
+        <script
           id="app-boot-detect"
-          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               (function () {
@@ -172,8 +171,6 @@ export default function RootLayout({
                   var isInstalledPwa = window.matchMedia && window.matchMedia("(display-mode: standalone)").matches;
                   if (isNativeApp || isInstalledPwa) {
                     document.documentElement.classList.add("app-boot");
-                    // Failsafe: if React never mounts for any reason (JS error,
-                    // slow network), don't leave the page permanently blank.
                     setTimeout(function () {
                       document.documentElement.classList.remove("app-boot");
                     }, 4000);

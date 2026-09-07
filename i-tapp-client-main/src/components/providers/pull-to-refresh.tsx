@@ -1,17 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { isInstalledApp } from "@/lib/is-installed-app";
 
 const PULL_THRESHOLD = 70;
 const MAX_PULL = 110;
 const RESISTANCE = 0.5;
 
-// Custom pull-to-refresh for the installed app only. Native browser
-// pull-to-refresh/rubber-banding is disabled globally (see globals.css),
-// this replaces it with a branded gesture: pull down from the top of any
-// page, the page content itself shifts down revealing the icon above it,
-// release past the threshold and it pulses and reloads the page.
+// Custom pull-to-refresh, works everywhere (browser tab, installed PWA,
+// native app). Native browser pull-to-refresh/rubber-banding is disabled
+// globally (see overscroll-behavior-y in globals.css), so this is the
+// only pull-to-refresh available anywhere - it can't be app-only, or
+// browser users get neither the native one nor this one.
 //
 // Uses margin-top (not a CSS transform) to push content down - a
 // transform on this wrapper would create a new containing block for any
@@ -25,7 +24,6 @@ export function PullToRefresh({ children }: { children: ReactNode }) {
   const pullingRef = useRef(false);
 
   useEffect(() => {
-    if (!isInstalledApp()) return;
     setEnabled(true);
   }, []);
 
