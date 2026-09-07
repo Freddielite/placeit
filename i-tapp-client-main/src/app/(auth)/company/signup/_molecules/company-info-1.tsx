@@ -81,7 +81,7 @@ export function CompanyInfo1() {
               <FormItem>
                 <FormLabel>Company Name <span className="text-red-500">*</span></FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="Company name" />
+                  <Input {...field} placeholder="Company name" className="placeholder:text-muted-foreground/50" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -97,7 +97,8 @@ export function CompanyInfo1() {
                   <Input
                     {...field}
                     type="email"
-                    placeholder="name@company.com"
+                    placeholder="e.g. name@company.com"
+                    className="placeholder:text-muted-foreground/50"
                   />
                 </FormControl>
                 <FormMessage />

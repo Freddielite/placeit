@@ -223,7 +223,7 @@ export default function CorpsProfilePage() {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Phone</FormLabel>
-                              <FormControl><Input {...field} placeholder="+234..." /></FormControl>
+                              <FormControl><Input {...field} placeholder="e.g. +234 801 234 5678" className="placeholder:text-muted-foreground/50" /></FormControl>
                               <FormMessage />
                             </FormItem>
                           )}

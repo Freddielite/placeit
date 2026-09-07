@@ -128,7 +128,11 @@ export default function CompanyOnboarding() {
                       Company Name
                     </FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="e.g PlaceIT" />
+                      <Input
+                        {...field}
+                        placeholder="e.g. PlaceIT"
+                        className="placeholder:text-muted-foreground/50"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -146,7 +150,8 @@ export default function CompanyOnboarding() {
                     <FormControl>
                       <Input
                         {...field}
-                        placeholder="e.g 123 Main St, City, State"
+                        placeholder="e.g. 123 Main St, City, State"
+                        className="placeholder:text-muted-foreground/50"
                       />
                     </FormControl>
                     <FormMessage />
@@ -269,7 +274,8 @@ export default function CompanyOnboarding() {
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="e.g Frontend Developer Intern"
+                      placeholder="e.g. Frontend Developer Intern"
+                      className="placeholder:text-muted-foreground/50"
                     />
                   </FormControl>
                   <FormMessage />
@@ -287,7 +293,11 @@ export default function CompanyOnboarding() {
                       Location
                     </FormLabel>
                     <FormControl>
-                      <Input placeholder="Lagos" {...field} />
+                      <Input
+                        placeholder="e.g. Lagos"
+                        className="placeholder:text-muted-foreground/50"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -437,7 +447,11 @@ export default function CompanyOnboarding() {
                       Name
                     </FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="Full name" />
+                      <Input
+                        {...field}
+                        placeholder="Full name"
+                        className="placeholder:text-muted-foreground/50"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -453,7 +467,11 @@ export default function CompanyOnboarding() {
                       Position / Role
                     </FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="HR Manager" />
+                      <Input
+                        {...field}
+                        placeholder="e.g. HR Manager"
+                        className="placeholder:text-muted-foreground/50"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -469,7 +487,11 @@ export default function CompanyOnboarding() {
                       Phone Number
                     </FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="+234..." />
+                      <Input
+                        {...field}
+                        placeholder="e.g. +234 801 234 5678"
+                        className="placeholder:text-muted-foreground/50"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -485,7 +507,11 @@ export default function CompanyOnboarding() {
                       Email Address
                     </FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="email@company.com" />
+                      <Input
+                        {...field}
+                        placeholder="e.g. email@company.com"
+                        className="placeholder:text-muted-foreground/50"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

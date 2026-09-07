@@ -72,7 +72,7 @@ export default function CorpsSignup() {
                 <FormItem>
                   <FormLabel>First name</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Chukwuemeka" />
+                    <Input {...field} placeholder="e.g. Chukwuemeka" className="placeholder:text-muted-foreground/50" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -85,7 +85,7 @@ export default function CorpsSignup() {
                 <FormItem>
                   <FormLabel>Last name</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Obi" />
+                    <Input {...field} placeholder="e.g. Obi" className="placeholder:text-muted-foreground/50" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -100,7 +100,7 @@ export default function CorpsSignup() {
               <FormItem>
                 <FormLabel>Email address</FormLabel>
                 <FormControl>
-                  <Input {...field} type="email" placeholder="you@email.com" />
+                  <Input {...field} type="email" placeholder="e.g. you@email.com" className="placeholder:text-muted-foreground/50" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -114,7 +114,7 @@ export default function CorpsSignup() {
               <FormItem>
                 <FormLabel>Phone number</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="+234 801 234 5678" />
+                  <Input {...field} placeholder="e.g. +234 801 234 5678" className="placeholder:text-muted-foreground/50" />
                 </FormControl>
                 <FormMessage />
               </FormItem>

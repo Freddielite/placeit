@@ -94,7 +94,8 @@ export default function AddStudent() {
                       <Input
                         {...field}
                         type="email"
-                        placeholder="samueladebayo@email.com"
+                        placeholder="e.g. samueladebayo@email.com"
+                        className="placeholder:text-muted-foreground/50"
                       />
                     </FormControl>
                     <FormMessage />
@@ -110,7 +111,7 @@ export default function AddStudent() {
                     <FormItem>
                       <FormLabel>First name</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="Samuel" />
+                        <Input {...field} placeholder="e.g. Samuel" className="placeholder:text-muted-foreground/50" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -124,7 +125,7 @@ export default function AddStudent() {
                     <FormItem>
                       <FormLabel>Last name</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="Adebayo" />
+                        <Input {...field} placeholder="e.g. Adebayo" className="placeholder:text-muted-foreground/50" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -142,7 +143,8 @@ export default function AddStudent() {
                       <FormControl>
                         <Input
                           {...field}
-                          placeholder="Kaduna State University"
+                          placeholder="e.g. Kaduna State University"
+                          className="placeholder:text-muted-foreground/50"
                         />
                       </FormControl>
                       <FormMessage />
@@ -157,7 +159,7 @@ export default function AddStudent() {
                     <FormItem>
                       <FormLabel>Matric number</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="KASU/CSC/21/0456" />
+                        <Input {...field} placeholder="e.g. KASU/CSC/21/0456" className="placeholder:text-muted-foreground/50" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -172,7 +174,7 @@ export default function AddStudent() {
                   <FormItem>
                     <FormLabel>Course of study</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="Computer Science" />
+                      <Input {...field} placeholder="e.g. Computer Science" className="placeholder:text-muted-foreground/50" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

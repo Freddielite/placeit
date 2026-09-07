@@ -16,13 +16,13 @@ export default function SettingsContent({ section }: Props) {
           <h1 className="text-2xl font-semibold mb-4">General Settings</h1>
           <div className="flex flex-col gap-3">
             <label>Platform Name</label>
-            <Input placeholder="i-tapp" />
+            <Input placeholder="e.g. i-tapp" className="placeholder:text-muted-foreground/50" />
 
             <label>Contact Email</label>
-            <Input placeholder="support@itapp.com" />
+            <Input placeholder="e.g. support@itapp.com" className="placeholder:text-muted-foreground/50" />
 
             <label>Default Placement Duration (weeks)</label>
-            <Input type="number" placeholder="12" />
+            <Input type="number" placeholder="e.g. 12" className="placeholder:text-muted-foreground/50" />
           </div>
 
           <Button className="mt-4 w-max">Save Changes</Button>
@@ -38,13 +38,13 @@ export default function SettingsContent({ section }: Props) {
 
           <div className="flex flex-col gap-3">
             <label>Admin Name</label>
-            <Input placeholder="John Doe" />
+            <Input placeholder="e.g. John Doe" className="placeholder:text-muted-foreground/50" />
 
             <label>Email</label>
-            <Input placeholder="admin@itapp.com" />
+            <Input placeholder="e.g. admin@itapp.com" className="placeholder:text-muted-foreground/50" />
 
             <label>Role</label>
-            <Input placeholder="Full Admin" />
+            <Input placeholder="e.g. Full Admin" className="placeholder:text-muted-foreground/50" />
           </div>
 
           <div className="flex gap-2 mt-4">
@@ -84,13 +84,13 @@ export default function SettingsContent({ section }: Props) {
           <h1 className="text-2xl font-semibold mb-4">Placement Rules</h1>
 
           <label>Max Students per Company</label>
-          <Input type="number" placeholder="5" />
+          <Input type="number" placeholder="e.g. 5" className="placeholder:text-muted-foreground/50" />
 
           <label>Application Limit per Student</label>
-          <Input type="number" placeholder="3" />
+          <Input type="number" placeholder="e.g. 3" className="placeholder:text-muted-foreground/50" />
 
           <label>Company Response Deadline (days)</label>
-          <Input type="number" placeholder="7" />
+          <Input type="number" placeholder="e.g. 7" className="placeholder:text-muted-foreground/50" />
 
           <Button className="mt-4 w-max">Save Changes</Button>
         </div>

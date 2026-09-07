@@ -262,7 +262,7 @@ export default function AddCompany() {
                   <FormItem>
                     <FormLabel>Company name</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="Acme Technologies Ltd" />
+                      <Input {...field} placeholder="e.g. Acme Technologies Ltd" className="placeholder:text-muted-foreground/50" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -279,7 +279,8 @@ export default function AddCompany() {
                       <Input
                         {...field}
                         type="email"
-                        placeholder="hr@acme.com"
+                        placeholder="e.g. hr@acme.com"
+                        className="placeholder:text-muted-foreground/50"
                       />
                     </FormControl>
                     <FormMessage />
@@ -297,7 +298,8 @@ export default function AddCompany() {
                       <FormControl>
                         <Input
                           {...field}
-                          placeholder="Fintech / Software / FMCG"
+                          placeholder="e.g. Fintech / Software / FMCG"
+                          className="placeholder:text-muted-foreground/50"
                         />
                       </FormControl>
                       <FormMessage />
@@ -312,7 +314,7 @@ export default function AddCompany() {
                     <FormItem>
                       <FormLabel>Phone (optional)</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="+234 801 234 5678" />
+                        <Input {...field} placeholder="e.g. +234 801 234 5678" className="placeholder:text-muted-foreground/50" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -327,7 +329,7 @@ export default function AddCompany() {
                   <FormItem>
                     <FormLabel>Website (optional)</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="https://acme.com" />
+                      <Input {...field} placeholder="e.g. https://acme.com" className="placeholder:text-muted-foreground/50" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

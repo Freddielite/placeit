@@ -104,7 +104,8 @@ export default function ProfileForm({
                   <FormLabel className={labelClass}>Phone Number</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="+234 800 000 0000"
+                      placeholder="e.g. +234 800 000 0000"
+                      className="placeholder:text-muted-foreground/50"
                       {...field}
                       wrapperClassName={fieldWrapperClass}
                     />
@@ -140,7 +141,8 @@ export default function ProfileForm({
                   <FormLabel className={labelClass}>Address</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="123 Main St, City, State"
+                      placeholder="e.g. 123 Main St, City, State"
+                      className="placeholder:text-muted-foreground/50"
                       {...field}
                       wrapperClassName={fieldWrapperClass}
                     />

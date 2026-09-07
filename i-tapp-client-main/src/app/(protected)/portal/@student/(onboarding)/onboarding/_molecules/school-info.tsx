@@ -174,7 +174,12 @@ export default function SchoolInfoStep({
               <FormItem className="max-w-sm">
                 <FormLabel className={label}>Phone Number</FormLabel>
                 <FormControl>
-                  <Input type="tel" placeholder="+234 801 234 5678" {...field} />
+                  <Input
+                    type="tel"
+                    placeholder="e.g. +234 801 234 5678"
+                    className="placeholder:text-muted-foreground/50"
+                    {...field}
+                  />
                 </FormControl>
                 <p className="text-xs text-gray-400 mt-1">
                   A number companies can reach you on directly.

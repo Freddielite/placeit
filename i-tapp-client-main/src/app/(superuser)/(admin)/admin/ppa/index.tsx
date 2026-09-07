@@ -303,7 +303,8 @@ function PPACreateModal({ onClose }: { onClose: () => void }) {
                       <FormControl>
                         <Input
                           type="email"
-                          placeholder="hr@company.com"
+                          placeholder="e.g. hr@company.com"
+                          className="placeholder:text-muted-foreground/50"
                           {...field}
                           value={field.value ?? ""}
                         />
@@ -326,7 +327,8 @@ function PPACreateModal({ onClose }: { onClose: () => void }) {
                       </FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="+234 801 234 5678"
+                          placeholder="e.g. +234 801 234 5678"
+                          className="placeholder:text-muted-foreground/50"
                           {...field}
                           value={field.value ?? ""}
                         />

@@ -142,11 +142,11 @@ export function ContactBody() {
                         id="name"
                         name="name"
                         type="text"
-                        placeholder="Adaeze Okonkwo"
+                        placeholder="e.g. Adaeze Okonkwo"
                         value={form.name}
                         onChange={handleChange}
                         required
-                        className="rounded-xl border-gray-200 focus:border-primary/40 focus:ring-primary/20"
+                        className="rounded-xl border-gray-200 focus:border-primary/40 focus:ring-primary/20 placeholder:text-muted-foreground/50"
                       />
                     </div>
                     <div className="flex flex-col gap-1.5">
@@ -155,11 +155,11 @@ export function ContactBody() {
                         id="email"
                         name="email"
                         type="email"
-                        placeholder="you@email.com"
+                        placeholder="e.g. you@email.com"
                         value={form.email}
                         onChange={handleChange}
                         required
-                        className="rounded-xl border-gray-200 focus:border-primary/40 focus:ring-primary/20"
+                        className="rounded-xl border-gray-200 focus:border-primary/40 focus:ring-primary/20 placeholder:text-muted-foreground/50"
                       />
                     </div>
                   </div>
