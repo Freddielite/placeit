@@ -129,7 +129,11 @@ export default function OpportunityForm({
                   <FormItem className="">
                     <FormLabel className="w-32">Title</FormLabel>
                     <FormControl>
-                      <Input placeholder="Job title" {...field} />
+                      <Input
+                        placeholder="e.g. Frontend Developer"
+                        className="placeholder:text-muted-foreground/50"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -203,7 +207,11 @@ export default function OpportunityForm({
                   <FormItem className="">
                     <FormLabel className="w-32">Location</FormLabel>
                     <FormControl>
-                      <Input placeholder="Lagos" {...field} />
+                      <Input
+                        placeholder="e.g. Lagos, Remote"
+                        className="placeholder:text-muted-foreground/50"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
