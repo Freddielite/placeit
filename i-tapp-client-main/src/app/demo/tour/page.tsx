@@ -14,15 +14,15 @@ type Role = "student" | "corps" | "company";
 const welcomeCopy: Record<Role, { name: string; blurb: string }> = {
   student: {
     name: "Welcome back, Samuel",
-    blurb: "This is a preview dashboard used to demo the in-app tutorial — no live data here.",
+    blurb: "This is a preview dashboard used to demo the in-app tutorial. No live data here.",
   },
   corps: {
     name: "Welcome back, Chiamaka",
-    blurb: "This is a preview dashboard used to demo the in-app tutorial — no live data here.",
+    blurb: "This is a preview dashboard used to demo the in-app tutorial. No live data here.",
   },
   company: {
     name: "Welcome back, Acme Technologies",
-    blurb: "This is a preview dashboard used to demo the in-app tutorial — no live data here.",
+    blurb: "This is a preview dashboard used to demo the in-app tutorial. No live data here.",
   },
 };
 
