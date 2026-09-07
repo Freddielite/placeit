@@ -54,10 +54,10 @@ export function Footer() {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-8 lg:px-16 ">
         <div className="py-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
           <div className="sm:col-span-2 lg:col-span-2 flex flex-col gap-6  pl-5">
-            <div className="z-999 mt-[-80px] lg:mt-[-120px] ">
+            <div>
               <Logo className="w-45 lg:w-80 lg:ml-[-80px]" />
             </div>
-            <div className="lg:mt-[-100px] mt-[-70px]">
+            <div>
               <p className="text-sm text-white/45 leading-relaxed max-w-65">
                 Nigeria&apos;s placement marketplace connecting SIWES students
                 and NYSC corps members with verified companies.
