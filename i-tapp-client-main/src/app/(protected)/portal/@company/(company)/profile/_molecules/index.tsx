@@ -16,6 +16,7 @@ import {
   Edit3,
   LogOut,
   X,
+  HelpCircle,
 } from "lucide-react";
 import Link from "next/link";
 import InfoCard from "@/components/info-card";
@@ -23,6 +24,7 @@ import ProfileHeaderBanner from "@/components/profile-header-banner";
 import { useFetchCompanyProfile } from "@/hooks/query";
 import { Spinner } from "@/components/spinner";
 import { useLogout } from "@/hooks/use-logout";
+import { replayOnboardingTour } from "@/components/onboarding-tour";
 
 export default function CompanyProfilePage() {
   const [editing, setEditing] = useState(false);
@@ -132,6 +134,13 @@ export default function CompanyProfilePage() {
 
             {/* Edit / Logout buttons */}
             <div className="pt-6 px-4 md:px-8 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => replayOnboardingTour("company")}
+                className="flex gap-2 items-center px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg transition-colors font-medium text-sm"
+              >
+                <HelpCircle size={14} /> Replay Tutorial
+              </button>
               <button
                 type="button"
                 onClick={() => setEditing(true)}

@@ -20,7 +20,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { User, GraduationCap, Shield, MapPin, BadgeCheck } from "lucide-react";
+import { User, GraduationCap, Shield, MapPin, BadgeCheck, HelpCircle } from "lucide-react";
+import { replayOnboardingTour } from "@/components/onboarding-tour";
 
 const profileSchema = z.object({
   firstName: z.string().min(1, "Required"),
@@ -113,11 +114,21 @@ export default function CorpsProfilePage() {
     <div className="min-h-screen pt-10 lg:pt-0">
       <Wrapper className="py-10 max-w-6xl">
         {/* Page header */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">My Profile</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
-            Manage your personal and NYSC information
-          </p>
+        <div className="mb-6 flex items-center justify-between gap-3 flex-wrap">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">My Profile</h1>
+            <p className="text-sm text-gray-500 mt-0.5">
+              Manage your personal and NYSC information
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => replayOnboardingTour("corps")}
+            className="flex gap-2 items-center px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg transition-colors font-medium text-sm"
+          >
+            <HelpCircle size={14} />
+            Replay Tutorial
+          </button>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8 items-start">

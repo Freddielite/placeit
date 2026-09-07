@@ -32,7 +32,7 @@ export function Header({ link }: { link: { text: string; href: string }[] }) {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white">
       <div className="flex items-center justify-between px-6 h-[55px] border-b border-grey-5">
-        <Link href="/portal ">
+        <Link href="/portal " data-tour="logo">
           <Logo />
         </Link>
         <nav className="gap-16 hidden md:flex h-full ">
@@ -40,6 +40,7 @@ export function Header({ link }: { link: { text: string; href: string }[] }) {
             <Link
               key={index}
               href={link.href}
+              data-tour={`nav-${link.href.split("/").filter(Boolean).pop()}`}
               className={cn(
                 "flex items-center h-[55px] text-sm text-primary transition-colors",
                 // "border-b-2 border-transparent -mb-px",
@@ -54,7 +55,7 @@ export function Header({ link }: { link: { text: string; href: string }[] }) {
         <div className="hidden md:flex gap-2">
           <Popover>
             <PopoverTrigger asChild>
-              <button type="button" className="relative cursor-pointer">
+              <button type="button" className="relative cursor-pointer" data-tour="notifications">
                 <Notification
                   size={35}
                   className="border border-[#C9C9DA] rounded-full p-2"
@@ -93,7 +94,7 @@ export function Header({ link }: { link: { text: string; href: string }[] }) {
 
           <Popover>
             <PopoverTrigger asChild>
-              <button type="button" className="rounded-full h-10 w-10 cursor-pointer">
+              <button type="button" className="rounded-full h-10 w-10 cursor-pointer" data-tour="avatar-menu">
                 <Image
                   src={company?.avatarUrl || student?.profileImage || "/applicant.png"}
                   alt=""

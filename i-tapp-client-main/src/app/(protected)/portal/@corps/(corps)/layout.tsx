@@ -1,5 +1,6 @@
 import { Header } from "@/components/layouts/protected/header";
 import { corpsNavLinks } from "@/constants";
+import { OnboardingTour } from "@/components/onboarding-tour";
 import React, { ReactNode } from "react";
 
 export default function CorpsLayout({ children }: { children: ReactNode }) {
@@ -7,6 +8,7 @@ export default function CorpsLayout({ children }: { children: ReactNode }) {
     <>
       <Header link={corpsNavLinks} />
       <main className="h-screen bg-[#F0F0F5]">{children}</main>
+      <OnboardingTour role="corps" />
     </>
   );
 }

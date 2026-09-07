@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -26,6 +26,21 @@ function isActiveLink(pathname: string, href: string) {
 export function MobileNav({ links }: MobileNavProps) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+
+  useEffect(() => {
+    function onOpen() {
+      setOpen(true);
+    }
+    function onClose() {
+      setOpen(false);
+    }
+    window.addEventListener("placeit:mobilenav:open", onOpen);
+    window.addEventListener("placeit:mobilenav:close", onClose);
+    return () => {
+      window.removeEventListener("placeit:mobilenav:open", onOpen);
+      window.removeEventListener("placeit:mobilenav:close", onClose);
+    };
+  }, []);
 
   const company = useCompanyStore((s) => s.company);
   const student = useStudentStore((s) => s.student);
@@ -77,6 +92,7 @@ export function MobileNav({ links }: MobileNavProps) {
           variant="ghost"
           size="icon"
           className="md:hidden"
+          data-tour="hamburger-trigger"
           aria-label={open ? "Close navigation menu" : "Open navigation menu"}
         >
           {open ? <X size={22} /> : <Menu size={22} />}
@@ -101,7 +117,7 @@ export function MobileNav({ links }: MobileNavProps) {
 
         <div className="flex h-full flex-col px-4 py-5 gap-6">
           {/* Profile block */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3" data-tour="mnav-profile">
             <div className="relative h-11 w-11 overflow-hidden rounded-full border bg-gray-50">
               <Image
                 src={user.avatar}
@@ -138,6 +154,7 @@ export function MobileNav({ links }: MobileNavProps) {
                 <Link
                   key={link.text}
                   href={link.href}
+                  data-tour={`mnav-${link.href.split("/").filter(Boolean).pop()}`}
                   aria-current={active ? "page" : undefined}
                   className={cn(
                     "rounded-lg px-3 py-2 text-sm transition-colors",

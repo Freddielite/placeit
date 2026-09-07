@@ -24,6 +24,8 @@ import { useFetchProfile } from "@/hooks/query";
 import { Spinner } from "@/components/spinner";
 import ProfileForm from "./profile-form";
 import { useLogout } from "@/hooks/use-logout";
+import { replayOnboardingTour } from "@/components/onboarding-tour";
+import { HelpCircle } from "lucide-react";
 
 // Mock student data
 const mockStudent = {
@@ -164,6 +166,14 @@ const StudentProfilePage = ({ student = mockStudent, onEdit = () => {} }) => {
 
             <div className="pt-8 px-4 md:px-8 pb-6 border-b border-gray-200">
               <div className="flex items-center justify-end gap-2 mb-3">
+                <button
+                  type="button"
+                  onClick={() => replayOnboardingTour("student")}
+                  className="flex gap-2 items-center px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg transition-colors font-medium text-sm"
+                >
+                  <HelpCircle size={14} />
+                  Replay Tutorial
+                </button>
                 <button
                   type="button"
                   onClick={() => setEditing(true)}

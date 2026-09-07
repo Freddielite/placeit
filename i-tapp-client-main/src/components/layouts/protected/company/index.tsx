@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { OnboardingTour } from "@/components/onboarding-tour";
 import { usePathname } from "next/navigation";
 import { Briefcase, Element } from "iconsax-reactjs";
@@ -48,6 +48,21 @@ export function CompanyLayout({ children }: { children: React.ReactNode }) {
     return pathname.startsWith(href);
   };
 
+  useEffect(() => {
+    function onOpen() {
+      setCollapsed(false);
+    }
+    function onClose() {
+      setCollapsed(true);
+    }
+    window.addEventListener("placeit:sidenav:open", onOpen);
+    window.addEventListener("placeit:sidenav:close", onClose);
+    return () => {
+      window.removeEventListener("placeit:sidenav:open", onOpen);
+      window.removeEventListener("placeit:sidenav:close", onClose);
+    };
+  }, [setCollapsed]);
+
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
       {/* Sidebar (always open on lg+, hidden on smaller) */}
@@ -72,7 +87,7 @@ export function CompanyLayout({ children }: { children: React.ReactNode }) {
             )}
             <h2 className="text-lg font-semibold text-gray-800">Dashboard</h2>
           </div>
-          <Link href={"/portal/profile"}>
+          <Link href={"/portal/profile"} data-tour="avatar-menu">
             <div className="rounded-full h-10 w-10">
               <Image
                 src={companyProfile?.logo || "/applicant.png"}

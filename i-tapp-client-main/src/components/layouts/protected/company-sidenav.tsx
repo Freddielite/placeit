@@ -45,7 +45,7 @@ export default function SideNav({
       >
         {/* Header */}
         <div className="h-16 flex items-center justify-between px-4 border-b border-gray-100">
-          <Link href="/portal" className="flex items-center gap-2">
+          <Link href="/portal" className="flex items-center gap-2" data-tour="logo">
             <Logo />
           </Link>
 
@@ -79,6 +79,7 @@ export default function SideNav({
             <Link
               href={item.href}
               key={index}
+              data-tour={`nav-${item.href.split("/").filter(Boolean).pop()}`}
               className={cn(
                 "relative group flex items-center rounded-md my-1 px-3 py-3 text-sm text-black/70 hover:bg-gray-100 hover:text-primary",
                 isActive(item.href) &&
