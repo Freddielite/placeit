@@ -225,6 +225,7 @@ export function OnboardingTour({ role }: { role: TourRole }) {
   const [step, setStep] = useState(0);
   const [rect, setRect] = useState<Rect | null>(null);
   const stepsRef = useRef<Step[]>([]);
+  const portalRef = useRef<HTMLDivElement | null>(null);
   const storageKey = STORAGE_PREFIX + role;
 
   useEffect(() => setMounted(true), []);
@@ -300,6 +301,33 @@ export function OnboardingTour({ role }: { role: TourRole }) {
     };
   }, [visible, measure]);
 
+  // A mobile-drawer step opens a Radix Sheet, which (as a modal dialog) marks every
+  // OTHER top-level element on the page — including this tour's own portal, since it's
+  // a separate root appended to document.body — as aria-hidden/inert while it's open.
+  // That makes our Next/Back/Skip buttons invisible to accessibility tooling and, in
+  // some browsers, unclickable. Actively strip that back off for as long as the tour
+  // itself is visible, since the tour should always stay interactive regardless of
+  // what else on the page is (or isn't) currently modal.
+  useEffect(() => {
+    if (!visible) return;
+    const node = portalRef.current;
+    if (!node) return;
+
+    const clean = () => {
+      if (node.hasAttribute("aria-hidden")) node.removeAttribute("aria-hidden");
+      if (node.hasAttribute("data-aria-hidden")) node.removeAttribute("data-aria-hidden");
+      if (node.style.pointerEvents !== "auto") node.style.pointerEvents = "auto";
+    };
+    clean();
+
+    const observer = new MutationObserver(clean);
+    observer.observe(node, {
+      attributes: true,
+      attributeFilter: ["aria-hidden", "data-aria-hidden", "style"],
+    });
+    return () => observer.disconnect();
+  }, [visible]);
+
   const finish = useCallback(() => {
     stepsRef.current[step]?.afterHide?.();
     closeMobileNav();
@@ -364,7 +392,7 @@ export function OnboardingTour({ role }: { role: TourRole }) {
   }
 
   return createPortal(
-    <div className="fixed inset-0 z-[999]">
+    <div ref={portalRef} className="fixed inset-0 z-[999]" style={{ pointerEvents: "auto" }}>
       {/* Dimmed backdrop with a spotlight cutout over the target */}
       <div
         className="absolute inset-0 transition-all duration-200"
