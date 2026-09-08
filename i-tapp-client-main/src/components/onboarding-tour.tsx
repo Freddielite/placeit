@@ -273,12 +273,20 @@ export function OnboardingTour({ role }: { role: TourRole }) {
     return () => window.removeEventListener(REPLAY_EVENT, onReplay);
   }, [role, start]);
 
-  // Run beforeShow, then measure (with a tick for DOM/layout to catch up).
+  // Run beforeShow, then measure. Drawer/sidenav opens animate over ~500ms,
+  // so we wait for that to finish before measuring, then re-check shortly
+  // after as a safety net against any late layout shift.
   useEffect(() => {
     if (!visible) return;
     stepsRef.current[step]?.beforeShow?.();
-    const t = setTimeout(measure, 120);
-    return () => clearTimeout(t);
+    const hasDrawerTransition = Boolean(stepsRef.current[step]?.beforeShow);
+    const delay = hasDrawerTransition ? 560 : 60;
+    const t1 = setTimeout(measure, delay);
+    const t2 = setTimeout(measure, delay + 200);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
   }, [visible, step, measure]);
 
   // Keep spotlight glued to the target on resize/scroll.
