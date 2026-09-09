@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/select";
 import { useAction } from "next-safe-action/hooks";
 import { ButtonWithLoader } from "@/components/button-with-loader";
+import { FormErrorSummary } from "@/components/form-error-summary";
 import { toast } from "react-toastify";
 import { db } from "../../../../../../db";
 import {
@@ -46,7 +47,7 @@ export function SchoolInfo({
   const {
     handleSubmit,
     control,
-    formState: { isDirty, isValid, errors },
+    formState: { isDirty, isValid, errors, isSubmitted },
     getValues,
   } = form;
 
@@ -76,6 +77,12 @@ export function SchoolInfo({
         onSubmit={handleSubmit(onSubmit)}
         className="w-full flex flex-col gap-6"
       >
+        <FormErrorSummary
+          errors={errors}
+          submitted={isSubmitted}
+          labels={{ school: "Name of school", matNo: "Matriculation Number" }}
+        />
+
         {hasErrored && (
           <span className="text-danger font-semibold">
             {result?.serverError}
@@ -130,7 +137,7 @@ export function SchoolInfo({
           <ButtonWithLoader
             type="submit"
             isPending={isExecuting}
-            disabled={!isValid || !isDirty || isExecuting}
+            disabled={isExecuting}
             className="w-full"
           >
             Continue...

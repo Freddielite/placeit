@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAction } from "next-safe-action/hooks";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import { corpsSignup } from "@/actions";
@@ -18,9 +18,19 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import Input from "@/components/input";
+import { SignupSuccessModal } from "@/components/signup-success-modal";
+import { FormErrorSummary } from "@/components/form-error-summary";
+
+const LABELS = {
+  firstName: "First Name",
+  lastName: "Last Name",
+  email: "Email",
+  phone: "Phone Number",
+  password: "Password",
+};
 
 export default function CorpsSignup() {
-  const router = useRouter();
+  const [showSuccess, setShowSuccess] = useState(false);
   const form = useForm<CorpsSignupInput>({
     resolver: zodResolver(corpsSignupSchema),
     mode: "all",
@@ -35,8 +45,8 @@ export default function CorpsSignup() {
 
   const { execute, isExecuting, hasErrored, result } = useAction(corpsSignup, {
     onSuccess: () => {
-      toast.success("Account created! Please check your email to verify.");
-      router.replace("/signin");
+      // The modal carries this message and does the redirect itself.
+      setShowSuccess(true);
     },
     onError: (error) => {
       toast.error(
@@ -47,6 +57,13 @@ export default function CorpsSignup() {
 
   return (
     <div className="w-full max-w-xl bg-white p-8 border-gray-100">
+      {showSuccess && (
+        <SignupSuccessModal
+          message="Your corps member account has been created. Check your email to verify it, then log in to continue."
+          redirectTo="/signin"
+        />
+      )}
+
       {/* Header */}
       <div className="flex flex-col items-center gap-3 mb-8">
         <div className="text-center">
@@ -58,6 +75,12 @@ export default function CorpsSignup() {
           </p>
         </div>
       </div>
+
+      <FormErrorSummary
+        errors={form.formState.errors}
+        submitted={form.formState.isSubmitted}
+        labels={LABELS}
+      />
 
       <Form {...form}>
         <form
@@ -145,7 +168,7 @@ export default function CorpsSignup() {
 
           <Button
             type="submit"
-            disabled={!form.formState.isValid || isExecuting}
+            disabled={isExecuting}
             className="w-full mt-2 cursor-pointer"
           >
             {isExecuting ? "Creating account…" : "Create account"}

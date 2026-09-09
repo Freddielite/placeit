@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -16,15 +16,25 @@ import Input from "@/components/input";
 import { ButtonWithLoader } from "@/components/button-with-loader";
 import { useAction } from "next-safe-action/hooks";
 import { toast } from "react-toastify";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { companySignup } from "@/actions";
 import { companySignupSchema } from "@/schemas";
+import { SignupSuccessModal } from "@/components/signup-success-modal";
+import { FormErrorSummary } from "@/components/form-error-summary";
+
+// Field name -> the label the person actually sees, for the error summary.
+const LABELS = {
+  name: "Company Name",
+  email: "Email",
+  cacNumber: "CAC Number",
+  password: "Password",
+};
 
 type CompanySignupSchema = z.infer<typeof companySignupSchema>;
 
 export function CompanyInfo1() {
-  const router = useRouter();
   const searchParams = useSearchParams();
+  const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
     const claim = searchParams.get("claim");
@@ -47,8 +57,9 @@ export function CompanyInfo1() {
     {
       onSuccess() {
         sessionStorage.removeItem("listingClaimToken");
-        toast.success("Company signup successful!");
-        router.push("/company/signin");
+        // No toast and no redirect here - SignupSuccessModal owns both now.
+        // Redirecting here would unmount the modal before it could be read.
+        setShowSuccess(true);
       },
       onError(error) {
         toast.error(error?.error?.serverError ?? "Sign up failed. Please try again.");
@@ -63,6 +74,19 @@ export function CompanyInfo1() {
 
   return (
     <div className="w-full">
+      {showSuccess && (
+        <SignupSuccessModal
+          message="Your company account has been created. Kindly log in to continue."
+          redirectTo="/company/signin"
+        />
+      )}
+
+      <FormErrorSummary
+        errors={form.formState.errors}
+        submitted={form.formState.isSubmitted}
+        labels={LABELS}
+      />
+
       {hasErrored && (
         <p className="text-red-500 text-sm font-medium mb-2 ">
           {result?.serverError ?? "Something went wrong. Please try again."}
@@ -159,7 +183,7 @@ export function CompanyInfo1() {
             type="submit"
             className="w-full my-3"
             isPending={isExecuting}
-            disabled={!form.formState.isValid || isExecuting}
+            disabled={isExecuting}
           >
             Sign up
           </ButtonWithLoader>

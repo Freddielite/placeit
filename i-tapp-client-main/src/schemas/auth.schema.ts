@@ -59,19 +59,32 @@ export const acceptSchema = z.object({
   id: z.string(),
 });
 
+/* Empty required fields all say the same thing, so the message reads the same
+   wherever it appears. A value that IS present but malformed keeps its own
+   specific message - `.min(1)` fires first on "", the format rule fires after. */
+const REQUIRED = "This is a required field";
+
 export const verifyStudentIdentitySchema = z.object({
-  matNo: z
-    .string()
-    .min(1, "Please provide school matric or registration number"),
-  school: z.string().min(1),
+  matNo: z.string().min(1, REQUIRED),
+  // Was `.min(1)` with no message, so an unselected school fell back to Zod's
+  // default "Too small: expected string to have >=1 characters".
+  school: z.string().min(1, REQUIRED),
 });
 
 export const studentSignupSchema = z
   .object({
-    email: z.email(),
-    phone: z.string().min(10, "Phone number is too short"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string().min(1),
+    // `z.email()` on "" reports a format error, which is misleading for a box
+    // the person simply hasn't filled. Require first, then check the format.
+    email: z
+      .string()
+      .min(1, REQUIRED)
+      .pipe(z.email("Please enter a valid email address")),
+    phone: z.string().min(1, REQUIRED).min(10, "Phone number is too short"),
+    password: z
+      .string()
+      .min(1, REQUIRED)
+      .min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string().min(1, REQUIRED),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -79,14 +92,18 @@ export const studentSignupSchema = z
   });
 
 export const companySignupSchema = z.object({
-  name: z.string().min(1, "Company name is required"),
+  name: z.string().min(1, REQUIRED),
   email: z
-    .email("Please enter a valid email address")
-    .min(1, "Email address is required"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+    .string()
+    .min(1, REQUIRED)
+    .pipe(z.email("Please enter a valid email address")),
+  password: z
+    .string()
+    .min(1, REQUIRED)
+    .min(6, "Password must be at least 6 characters"),
   cacNumber: z
     .string()
-    .min(1, "CAC number is required")
+    .min(1, REQUIRED)
     .regex(/^(RC|BN)\s?\d{4,}$/i, "Enter a valid CAC number (e.g. RC 1210548 or BN 373466)"),
   claimToken: z.string().optional(),
 });
@@ -109,11 +126,17 @@ export const companyProfileSchema = z.object({
 });
 
 export const corpsSignupSchema = z.object({
-  email: z.email("Please enter a valid email address"),
-  phone: z.string().min(10, "Phone number is too short"),
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  email: z
+    .string()
+    .min(1, REQUIRED)
+    .pipe(z.email("Please enter a valid email address")),
+  phone: z.string().min(1, REQUIRED).min(10, "Phone number is too short"),
+  firstName: z.string().min(1, REQUIRED),
+  lastName: z.string().min(1, REQUIRED),
+  password: z
+    .string()
+    .min(1, REQUIRED)
+    .min(6, "Password must be at least 6 characters"),
 });
 
 export type CorpsSignupInput = z.infer<typeof corpsSignupSchema>;

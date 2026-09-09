@@ -733,3 +733,93 @@ install. None in any touched file. CSS braces and comments balanced. Still no
 
 Not seen rendered. Open any modal in the portal in dark mode first - that is
 the fix with the widest blast radius and the easiest to confirm.
+
+---
+
+# What changed (session 13 - signup success modal + required-field errors)
+
+## Welcome modal
+
+All three signups fired a toast and redirected in the same tick, so the
+confirmation was gone before it registered. Now each one flips a `showSuccess`
+flag and `SignupSuccessModal` does the rest.
+
+`src/components/signup-success-modal.tsx` - shared by all three. Holds for 3s
+with a filling progress bar, then `router.replace`s to the login page.
+
+**The redirect had to move INTO the modal.** Leaving `router.replace` in
+`onSuccess` alongside the modal changes the route immediately and unmounts the
+modal before it can be read - the exact behaviour being replaced. Each form's
+`onSuccess` is now just `setShowSuccess(true)`, which made the local `router`
+dead in all three files; removed, along with the success toasts (the modal
+carries that message now). Error toasts stay.
+
+Copy differs per category because the flows do:
+
+- student - account created, kindly log in -> `/signin`
+- corps - account created, verify your email, then log in -> `/signin`
+- company - account created, kindly log in -> `/company/signin`
+
+**Open question on the company wording.** The orphaned modal this replaces said
+company accounts go for manual review and get activated later. Nothing on the
+client confirms that - `companySignup` just POSTs to `/auth/signup/company` and
+the old code redirected straight to `/company/signin`, implying immediate
+login. I used the neutral "kindly log in" for now. If the backend really does
+gate companies behind approval, that one string needs changing.
+
+Deleted `app/(auth)/company/signup/_molecules/success.tsx` - a half-built
+version of this modal, imported nowhere (only inside commented-out lines in
+`company-info-2.tsx`).
+
+## Required-field errors
+
+The reported symptom was "no error message". The actual cause was the submit
+button:
+
+```
+company-info-1  disabled={!form.formState.isValid || isExecuting}
+corps/index     disabled={!form.formState.isValid || isExecuting}
+signup-info     disabled={!isDirty || !isValid}
+school-info     disabled={!isValid || !isDirty || isExecuting}
+```
+
+A disabled button cannot fire submit, and react-hook-form only shows a field's
+error once that field has been touched. Skip a box entirely and it is never
+touched, so there is no message AND no working button - nothing to tell you
+why. Buttons are now `disabled={isExecuting}` only. Clicking runs
+`handleSubmit`, which validates every field at once and renders each message.
+Submission is still blocked while invalid - that is react-hook-form's own
+behaviour, not something added.
+
+**Schemas** (`schemas/auth.schema.ts`) - every required field now leads with
+`.min(1, REQUIRED)`, so an empty box always reads "This is a required field".
+Format rules sit after it and keep their specific messages for a box that has
+been filled in wrongly. Verified both directions:
+
+```
+empty        -> email/phone/firstName/lastName/password: This is a required field
+filled wrong -> Please enter a valid email address / Phone number is too short
+                / Password must be at least 6 characters
+```
+
+`z.email()` had to become `z.string().min(1, REQUIRED).pipe(z.email(...))`.
+Called directly on `""` it reports a format error, which is the wrong thing to
+say about a box nobody filled. Two fields were also falling back to Zod's raw
+"Too small: expected string to have >=1 characters" - `school` (an unselected
+dropdown) and student `confirmPassword`.
+
+**`src/components/form-error-summary.tsx`** - new. On a failed submit it names
+the fields needing attention above the form. Per-field messages alone are easy
+to miss when the first error is below the fold; react-hook-form's
+focus-first-error only helps if you notice the focus move. Takes a `labels`
+map so it reads "Company Name" rather than the schema's `name`.
+
+## Verified
+
+Type-checked: 36 errors, unchanged and all pre-existing `zustand`/`vaul`
+declaration noise. None in any touched file. Schema messages exercised
+directly against Zod for empty / malformed / valid input.
+
+Not seen rendered - no `npm run build`. Worth checking the 3s hold feels right
+on a real connection, and that the student modal sits correctly since that form
+is inside the multi-step wizard rather than a page of its own.
