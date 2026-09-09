@@ -266,12 +266,20 @@ body {
    surface, gray-900 becomes near-white text. So `bg-gray-50 text-gray-800`
    keeps its contrast relationship instead of turning into dark-on-dark.
 
-   What this does NOT cover:
-     - arbitrary values like `bg-[#F0F0F5]`, which never touch a variable.
-       Those are fixed by hand (57 of them; the shell ones are done).
-     - deliberate colour choices (brand gradients, illustrations, the dark
-       marketing footer) that need a designer's eye, not a remap.
-   Treat this as a solid base, not a finished design pass.
+   SCOPE: the `.dark` class is only ever set on portal routes - see
+   THEMEABLE_ROUTE_PREFIXES in src/lib/theme.ts. The marketing site, auth
+   screens and public pages are never dark, and that is deliberate.
+
+   The failure this prevents: a hardcoded light background (an arbitrary
+   `bg-[#f0f3ff]`, an inline `style={{ background: slide.bg }}`, a gradient
+   stop) does NOT flip, but the `text-gray-900` sitting on top of it DOES.
+   Light background, near-white text, nothing readable. The marketing pages
+   are built almost entirely that way, which is why they are out of scope
+   rather than remapped.
+
+   Before widening the scope to any new area, grep it for `-[#`, inline
+   style colours and gradient stops. If it has them, it needs a hand pass or
+   a `.theme-light` wrapper first.
    ========================================================================== */
 
 @custom-variant dark (&:is(.dark *));
@@ -380,11 +388,33 @@ body {
   --color-amber-100: #3a3119;
 }
 
-/* Images and illustrations drawn for a white page glare on a dark one. */
-.dark img[src$=".png"],
-.dark img[src$=".svg"] {
-  /* Intentionally left alone - blanket filters wreck logos and photos.
-     Listed here as the place to add per-asset overrides if one looks wrong. */
+/* Escape hatch. Put `.theme-light` on any section that must keep its light
+   design inside a dark screen - a brand banner, an illustration with a baked
+   background, an embed. It restores the light palette for that subtree only,
+   so text inside it stays dark and readable. */
+.dark .theme-light {
+  --background: #ffffff;
+  --foreground: #0f0f0f;
+  --card: #ffffff;
+  --card-foreground: #0f0f0f;
+  --muted: #f3f3f3;
+  --muted-foreground: #4f4f4f;
+  --border: #e5e5e5;
+  --black: #282828;
+  --white: #ffffff;
+  --color-white: #ffffff;
+  --color-black: #282828;
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+  color-scheme: light;
 }
 
 /* ==========================================================================

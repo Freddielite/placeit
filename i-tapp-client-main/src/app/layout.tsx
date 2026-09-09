@@ -205,9 +205,16 @@ export default function RootLayout({
                   if (isNative) root.classList.add("is-native-app");
 
                   // Theme, resolved in the same pass so there is never a
-                  // light frame before a dark one. Dark mode is app-only, so
-                  // the website skips this entirely and stays light.
-                  if (isApp) {
+                  // light frame before a dark one.
+                  //
+                  // Two gates: app mode AND a portal route. The marketing
+                  // pages set their own light backgrounds and would render
+                  // white-on-white under the dark palette. Keep this list in
+                  // sync with THEMEABLE_ROUTE_PREFIXES in src/lib/theme.ts.
+                  var path = window.location.pathname;
+                  var themeable = path === "/portal" || path.indexOf("/portal/") === 0;
+
+                  if (isApp && themeable) {
                     var pref = null;
                     try { pref = localStorage.getItem("placeit:theme"); } catch (e) {}
                     if (pref !== "light" && pref !== "dark") pref = "system";

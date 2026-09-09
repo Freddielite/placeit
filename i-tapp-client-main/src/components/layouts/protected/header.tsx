@@ -60,7 +60,7 @@ export function Header({ link }: { link: { text: string; href: string }[] }) {
               <button type="button" className="relative cursor-pointer" data-tour="notifications">
                 <Notification
                   size={35}
-                  className="border border-[#C9C9DA] rounded-full p-2"
+                  className="border border-border rounded-full p-2"
                 />
                 {unreadCount > 0 && (
                   <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[10px] flex items-center justify-center font-bold">

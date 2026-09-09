@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The PlaceIT App: What's Been Built</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #477dc0;
+    --primary-deep: #35619a;
+    --primary-soft: #eaf0f9;
+    --bg: #ffffff;
+    --bg-alt: #f7f9fc;
+    --fg: #282828;
+    --fg-muted: #5f6b78;
+    --border: #e3e8ef;
+    --card: #ffffff;
+    --shadow-sm: 0 1px 2px rgba(16,24,40,.04);
+    --shadow: 0 1px 2px rgba(16,24,40,.04), 0 10px 30px rgba(16,24,40,.07);
+    --radius: 0.75rem;
+    --note: #b8860b;
+    --note-bg: #fdf8e8;
+    --note-border: #ecdaa4;
+    --good: #2f8f5b;
+    --good-bg: #eef8f2;
+  }
+
+  html[data-theme="dark"] {
+    --primary: #6fa2e0;
+    --primary-deep: #8fbaf0;
+    --primary-soft: #1e2b3a;
+    --bg: #12161c;
+    --bg-alt: #161c24;
+    --fg: #e9edf2;
+    --fg-muted: #9aa6b4;
+    --border: #2a323d;
+    --card: #191f27;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35);
+    --note: #e8c46a;
+    --note-bg: #241f12;
+    --note-border: #3d3520;
+    --good: #6ecb96;
+    --good-bg: #142219;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: "Open Sans", system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    transition: background .2s ease, color .2s ease;
+  }
+
+  h1, h2, h3, h4 { font-family: Montserrat, system-ui, sans-serif; line-height: 1.22; }
+  p { margin: 0 0 14px; }
+  p:last-child { margin-bottom: 0; }
+
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 24px; }
+
+  /* --- Top bar ---------------------------------------------------------- */
+  .topbar {
+    position: sticky; top: 0; z-index: 20;
+    background: color-mix(in srgb, var(--bg) 86%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar-inner { display: flex; align-items: center; justify-content: space-between; height: 62px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-family: Montserrat, sans-serif; font-weight: 700; }
+  .brand-mark {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: var(--primary); color: #fff;
+    display: grid; place-items: center; font-size: 16px; font-weight: 700;
+  }
+  .theme-btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    height: 34px; padding: 0 13px;
+    border: 1px solid var(--border); border-radius: 999px;
+    background: var(--card); color: var(--fg-muted);
+    font: 600 12.5px/1 "Open Sans", sans-serif; cursor: pointer;
+  }
+  .theme-btn:hover { color: var(--fg); border-color: var(--primary); }
+
+  /* --- Hero ------------------------------------------------------------- */
+  .hero { padding: 64px 0 20px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: var(--primary-soft); color: var(--primary-deep);
+    font-size: 11.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    padding: 6px 14px; border-radius: 999px; margin-bottom: 20px;
+  }
+  .hero h1 { font-size: clamp(2.1rem, 6vw, 3.15rem); margin: 0 0 18px; font-weight: 700; letter-spacing: -.015em; }
+  .hero h1 .accent { color: var(--primary); }
+  .lede { font-size: 1.1rem; color: var(--fg-muted); max-width: 60ch; }
+
+  .stats {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; margin: 36px 0 8px;
+  }
+  .stat { background: var(--card); padding: 20px 22px; }
+  .stat .n { font-family: Montserrat, sans-serif; font-size: 1.7rem; font-weight: 700; color: var(--primary); line-height: 1.1; }
+  .stat .l { font-size: .82rem; color: var(--fg-muted); margin-top: 4px; }
+
+  /* --- Sections --------------------------------------------------------- */
+  section { padding: 46px 0; border-top: 1px solid var(--border); }
+  section.tint { background: var(--bg-alt); }
+  section h2 { font-size: 1.65rem; margin: 0 0 8px; letter-spacing: -.01em; }
+  .sub { color: var(--fg-muted); margin: 0 0 26px; max-width: 62ch; }
+
+  /* --- Cards ------------------------------------------------------------ */
+  .cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow-sm);
+  }
+  .card h3 { font-size: 1.05rem; margin: 0 0 8px; }
+  .card p { font-size: .93rem; color: var(--fg-muted); }
+  .card .num {
+    display: grid; place-items: center;
+    width: 30px; height: 30px; border-radius: 9px; margin-bottom: 13px;
+    background: var(--primary-soft); color: var(--primary-deep);
+    font: 700 14px/1 Montserrat, sans-serif;
+  }
+
+  /* --- Feature groups --------------------------------------------------- */
+  .group { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); margin-bottom: 16px; overflow: hidden; }
+  .group-head { padding: 18px 22px 14px; border-bottom: 1px solid var(--border); }
+  .group-head h3 { margin: 0 0 3px; font-size: 1.08rem; }
+  .group-head p { font-size: .88rem; color: var(--fg-muted); margin: 0; }
+  .group ul { list-style: none; margin: 0; padding: 6px 0; }
+  .group li { display: flex; gap: 13px; padding: 11px 22px; align-items: flex-start; }
+  .group li + li { border-top: 1px solid var(--border); }
+  .tick { flex: none; width: 19px; height: 19px; border-radius: 50%; background: var(--good-bg); color: var(--good); display: grid; place-items: center; font-size: 11px; font-weight: 700; margin-top: 4px; }
+  .li-body strong { display: block; font-size: .95rem; }
+  .li-body span { font-size: .88rem; color: var(--fg-muted); }
+
+  /* --- Table ------------------------------------------------------------ */
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); }
+  table { border-collapse: collapse; width: 100%; min-width: 460px; font-size: .93rem; }
+  th, td { text-align: left; padding: 13px 18px; border-bottom: 1px solid var(--border); }
+  th { font-family: Montserrat, sans-serif; font-size: .76rem; text-transform: uppercase; letter-spacing: .05em; color: var(--fg-muted); background: var(--bg-alt); }
+  tbody tr:last-child td { border-bottom: none; }
+  td:first-child { font-weight: 600; }
+  .yes { color: var(--good); font-weight: 700; }
+  .no { color: var(--fg-muted); }
+
+  /* --- Notes ------------------------------------------------------------ */
+  .note { background: var(--note-bg); border: 1px solid var(--note-border); border-left: 3px solid var(--note); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 14px; }
+  .note h3 { margin: 0 0 7px; font-size: 1rem; color: var(--note); }
+  .note p { font-size: .93rem; }
+
+  /* --- Roadmap ---------------------------------------------------------- */
+  .road { list-style: none; padding: 0; margin: 0; }
+  .road li { position: relative; padding: 0 0 26px 30px; border-left: 2px solid var(--border); }
+  .road li:last-child { border-left-color: transparent; padding-bottom: 0; }
+  .road li::before { content: ""; position: absolute; left: -7px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--primary); border: 3px solid var(--bg); }
+  .road h4 { margin: 0 0 4px; font-size: 1.02rem; }
+  .road .why { font-size: .92rem; color: var(--fg-muted); margin: 0; }
+  .road .tagline { display: inline-block; margin-left: 8px; font-size: 10.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; background: var(--primary-soft); color: var(--primary-deep); vertical-align: middle; }
+
+  .ask { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow-sm); }
+  .ask ol { margin: 0; padding-left: 20px; }
+  .ask li { margin-bottom: 13px; }
+  .ask li:last-child { margin-bottom: 0; }
+  .ask li::marker { color: var(--primary); font-weight: 700; }
+
+  footer { padding: 40px 0 70px; border-top: 1px solid var(--border); color: var(--fg-muted); font-size: .88rem; }
+
+  @media print {
+    .topbar { position: static; }
+    .theme-btn { display: none; }
+    section { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap topbar-inner">
+    <div class="brand"><span class="brand-mark">P</span> PlaceIT</div>
+    <button class="theme-btn" id="themeBtn" type="button">
+      <span id="themeIcon">🌙</span><span id="themeLabel">Dark</span>
+    </button>
+  </div>
+</div>
+
+<div class="wrap hero">
+  <span class="eyebrow">Progress update</span>
+  <h1>Making PlaceIT<br>feel like <span class="accent">a real app</span></h1>
+  <p class="lede">
+    PlaceIT now runs as a proper mobile app as well as a website, from the same
+    system, with no separate app to maintain. This page covers what's changed,
+    what it means for your users, and what we'd recommend next.
+  </p>
+
+  <div class="stats">
+    <div class="stat"><div class="n">3</div><div class="l">Ways to reach PlaceIT</div></div>
+    <div class="stat"><div class="n">1</div><div class="l">System to maintain</div></div>
+    <div class="stat"><div class="n">13</div><div class="l">App-only improvements</div></div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2>Three front doors, one PlaceIT</h2>
+    <p class="sub">
+      Users can reach PlaceIT three different ways. Each one now behaves the way people
+      expect it to, but you only pay to build and maintain it once.
+    </p>
+    <div class="cards">
+      <div class="card">
+        <div class="num">1</div>
+        <h3>The website</h3>
+        <p>getplaceit.com in any browser. Stays fast, searchable on Google, and behaves
+        like a normal website should.</p>
+      </div>
+      <div class="card">
+        <div class="num">2</div>
+        <h3>Add to home screen</h3>
+        <p>Users tap "Install" in their browser and get an icon on their phone. No app
+        store, no download. Useful in Nigeria where data and storage are tight.</p>
+      </div>
+      <div class="card">
+        <div class="num">3</div>
+        <h3>The Play Store app</h3>
+        <p>The full Android app, for the credibility and discoverability of being listed
+        in the store.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tint">
+  <div class="wrap">
+    <h2>What's new in the app</h2>
+    <p class="sub">
+      Everything below happens only in the app. The website is deliberately left alone.
+      More on why further down.
+    </p>
+
+    <div class="group">
+      <div class="group-head">
+        <h3>It behaves like an app, not a web page in a box</h3>
+        <p>The small details that make users stop noticing they're inside a browser.</p>
+      </div>
+      <ul>
+        <li><span class="tick">✓</span><div class="li-body"><strong>Branded launch screen</strong><span>Your logo animates in while the app loads, instead of a blank white screen.</span></div></li>
+        <li><span class="tick">✓</span><div class="li-body"><strong>Smooth screen transitions</strong><span>Screens fade into each other rather than jumping the way web pages do.</span></div></li>
+        <li><span class="tick">✓</span><div class="li-body"><strong>Bottom tab bar</strong><span>The familiar row of tabs along the bottom, tailored to each user type: student, corps member, or company.</span></div></li>
+        <li><span class="tick">✓</span><div class="li-body"><strong>The back button works properly</strong><span>Android's back button now goes back a screen. Previously it closed the app from anywhere, which was the single most frustrating thing about it.</span></div></li>
+        <li><span class="tick">✓</span><div class="li-body"><strong>Subtle vibration feedback</strong><span>A light tap when switching tabs or pulling to refresh.</span></div></li>
+        <li><span class="tick">✓</span><div class="li-body"><strong>No accidental zooming or text highlighting</strong><span>Two things that instantly give away that something is a website.</span></div></li>
+      </ul>
+    </div>
+
+    <div class="group">
+      <div class="group-head">
+        <h3>It copes with a bad connection</h3>
+        <p>Built for the reality of Nigerian mobile data, not an office wifi connection.</p>
+      </div>
+      <ul>
+        <li><span class="tick">✓</span><div class="li-body"><strong>Works offline</strong><span>Lose signal and the app still shows the listings and applications you last loaded, with a small note that it's showing saved information.</span></div></li>
+        <li><span class="tick">✓</span><div class="li-body"><strong>Pull down to refresh</strong><span>Drag down to update. It now refreshes just the information on screen rather than reloading everything. Noticeably faster, and you don't lose your place.</span></div></li>
+        <li><span class="tick">✓</span><div class="li-body"><strong>Honest connection detection</strong><span>Phones often report "connected" when there's no actual internet. The app now checks properly before telling the user anything.</span></div></li>
+      </ul>
+    </div>
+
+    <div class="group">
+      <div class="group-head">
+        <h3>It's more comfortable to use</h3>
+        <p>Particularly on the long forms: onboarding, applications, profiles.</p>
+      </div>
+      <ul>
+        <li><span class="tick">✓</span><div class="li-body"><strong>Dark mode</strong><span>Light, dark, or automatically match the phone's setting. Users choose from their profile menu. It covers the signed-in area, where people spend their time.</span></div></li>
+        <li><span class="tick">✓</span><div class="li-body"><strong>The keyboard stops covering the form</strong><span>Previously the field you were typing in could disappear behind the keyboard, a common complaint on forms this long.</span></div></li>
+        <li><span class="tick">✓</span><div class="li-body"><strong>Correct spacing on modern phones</strong><span>Content no longer sits under the notch or the home bar.</span></div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Why not make the website identical?</h2>
+    <p class="sub">
+      It's a fair question, and the answer is that the same feature can help in one place
+      and hurt in the other.
+    </p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Feature</th><th>App</th><th>Website</th><th>Reason</th></tr></thead>
+        <tbody>
+          <tr><td>Launch screen</td><td class="yes">Yes</td><td class="no">No</td><td>Making a first-time visitor wait two seconds before seeing anything loses them.</td></tr>
+          <tr><td>Screen transitions</td><td class="yes">Yes</td><td class="no">No</td><td>On a website this just makes every click feel slower.</td></tr>
+          <tr><td>Pull to refresh</td><td class="yes">Yes</td><td class="no">No</td><td>Browsers already have their own. Adding ours would replace something that works.</td></tr>
+          <tr><td>Blocking zoom</td><td class="yes">Yes</td><td class="no">No</td><td>Blocking zoom on a public website breaks accessibility rules and is penalised by Google.</td></tr>
+          <tr><td>Dark mode</td><td class="yes">Signed-in area</td><td class="no">Not yet</td><td>The public pages use fixed colours chosen by hand, so they need a proper design pass before they can go dark.</td></tr>
+          <tr><td>Saving data offline</td><td class="yes">Yes</td><td class="no">No</td><td>Appropriate on a personal phone, less so on a shared or public computer.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:18px; color:var(--fg-muted); font-size:.94rem;">
+      All of this is controlled from one place, so any of these can be switched on for the
+      website later without rebuilding anything.
+    </p>
+  </div>
+</section>
+
+<section class="tint">
+  <div class="wrap">
+    <h2>Before this goes live</h2>
+    <p class="sub">Three things we'd want your input or sign-off on.</p>
+
+    <div class="note">
+      <h3>Testing on real devices</h3>
+      <p>The back button, vibration and keyboard behaviour can only be properly tested on
+      an actual phone, since they don't exist on a laptop. We'd recommend a round of testing on
+      a few real Android devices before submitting to the Play Store.</p>
+    </div>
+
+    <div class="note">
+      <h3>Offline mode stores information on the phone</h3>
+      <p>To work without a connection, the app saves what a user last viewed onto their
+      device. It's cleared when they log out and expires after 24 hours.</p>
+      <p>Worth a quick review together: if there's any information you'd consider too
+      sensitive to sit on a student's phone overnight, tell us and we'll exclude it.</p>
+    </div>
+
+    <div class="note">
+      <h3>Dark mode covers the signed-in area</h3>
+      <p>Dark mode applies once a user logs in. The public pages stay light for now, because
+      their colours were each chosen by hand and would need a proper design pass rather than
+      an automatic conversion.</p>
+      <p>Worth someone walking through the signed-in screens in dark mode before launch and
+      flagging anything that looks off.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What we'd recommend next</h2>
+    <p class="sub">In the order we'd tackle them, based on impact rather than effort.</p>
+    <ul class="road">
+      <li>
+        <h4>Push notifications <span class="tagline">Highest impact</span></h4>
+        <p class="why">"Your application was viewed." "A new placement matches your course."
+        This is the main reason someone keeps an app installed rather than bookmarking the
+        website, and the main reason they come back. It's the largest piece of the
+        remaining work, as it needs backend support too.</p>
+      </li>
+      <li>
+        <h4>Links that open the app</h4>
+        <p class="why">Right now, tapping a verification or password-reset link from an
+        email opens the browser instead of the app, which is confusing for someone who
+        installed it. A contained fix.</p>
+      </li>
+      <li>
+        <h4>Camera upload for CVs and documents</h4>
+        <p class="why">Let users photograph a document directly rather than hunting for a
+        file. Removes real friction from onboarding.</p>
+      </li>
+      <li>
+        <h4>Dark mode across the public pages</h4>
+        <p class="why">Extends what's already built to the homepage and marketing pages.
+        This one needs design input first: those pages use individually chosen colours
+        rather than a shared set, so someone has to decide what each becomes.</p>
+      </li>
+      <li>
+        <h4>"Get the app" prompt for website visitors</h4>
+        <p class="why">A gentle banner encouraging people browsing on a phone to install.
+        The groundwork is in place; it just needs the design.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="tint">
+  <div class="wrap">
+    <h2>What we need from you</h2>
+    <div class="ask">
+      <ol>
+        <li><strong>A few Android phones for testing.</strong> Ideally a mix of newer and
+        older devices, since that's what your users actually have.</li>
+        <li><strong>A decision on offline data.</strong> Whether anything should be
+        excluded from what's saved on the device.</li>
+        <li><strong>Someone to review dark mode.</strong> Half an hour walking through the
+        signed-in screens with fresh eyes, flagging anything that looks wrong.</li>
+        <li><strong>A steer on push notifications.</strong> Whether that's in scope, since
+        it's the biggest remaining item and needs backend work alongside it.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Prepared for PlaceIT. Happy to walk through any of this in more detail, or demo it
+    on a device.
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var btn = document.getElementById("themeBtn");
+    var icon = document.getElementById("themeIcon");
+    var label = document.getElementById("themeLabel");
+    var KEY = "placeit-client-doc-theme";
+
+    function set(theme) {
+      root.setAttribute("data-theme", theme);
+      icon.textContent = theme === "dark" ? "☀️" : "🌙";
+      label.textContent = theme === "dark" ? "Light" : "Dark";
+      try { localStorage.setItem(KEY, theme); } catch (e) {}
+    }
+
+    var saved = null;
+    try { saved = localStorage.getItem(KEY); } catch (e) {}
+    if (saved !== "light" && saved !== "dark") {
+      saved = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark" : "light";
+    }
+    set(saved);
+
+    btn.addEventListener("click", function () {
+      set(root.getAttribute("data-theme") === "dark" ? "light" : "dark");
+    });
+  })();
+</script>
+
+</body>
+</html>

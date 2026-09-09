@@ -19,6 +19,8 @@ import {
   type ThemePreference,
 } from "@/lib/theme";
 import { getStatusBarPlugin, whenBridgeReady } from "@/lib/capacitor-bridge";
+import { usePathname } from "next/navigation";
+import { isThemeableRoute } from "@/lib/theme";
 import { useAppMode, useFeature } from "./app-mode-provider";
 
 type ThemeContextValue = {
@@ -27,7 +29,10 @@ type ThemeContextValue = {
   /** What that actually resolves to right now. */
   theme: ResolvedTheme;
   setPreference: (next: ThemePreference) => void;
-  /** False on the website, where the theme is forced light. */
+  /**
+   * True only where the theme can actually be applied: in the app, on a
+   * themeable route. The toggle hides itself when this is false.
+   */
   available: boolean;
 };
 
@@ -38,16 +43,19 @@ const ThemeContext = createContext<ThemeContextValue>({
   available: false,
 });
 
-// APP-EXCLUSIVE (scope: `darkMode` in config/app-features.ts).
+// APP-EXCLUSIVE (scope: `darkMode` in config/app-features.ts) and additionally
+// limited to the portal routes in THEMEABLE_ROUTE_PREFIXES.
 //
-// Scoped to the app because the marketing site is built from ~155 files of
-// hardcoded light colours, and a half-converted dark website is worse than a
-// light one. The portal - where people actually spend time - is covered by
-// the palette remap in globals.css. Flip the scope to "all" once the site
-// pages have been audited.
+// Both gates are needed. Runtime alone isn't enough: installing the PWA drops
+// you on the marketing homepage, so "app mode" was painting a dark palette
+// onto pages built entirely from hardcoded light colours. See the comment on
+// THEMEABLE_ROUTE_PREFIXES for what that looked like.
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const enabled = useFeature("darkMode");
   const { isNative } = useAppMode();
+  const pathname = usePathname();
+  const themeable = isThemeableRoute(pathname ?? "/");
+  const active = enabled && themeable;
 
   // Initialised from what the boot script already resolved, so the first
   // render agrees with the DOM and nothing flashes.
@@ -62,9 +70,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     return resolvePreference(preference);
   }, [enabled, preference]);
 
+  // Re-runs on navigation, so leaving the portal restores the light palette
+  // and returning to it puts the theme back.
   useEffect(() => {
-    applyTheme(theme);
-  }, [theme]);
+    applyTheme(theme, active);
+  }, [theme, active]);
 
   // Native status bar. The bar sits above the webview, so it stays white
   // over a dark app unless we tell it otherwise. Note the inversion: the
@@ -72,24 +82,27 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   // LIGHT text.
   useEffect(() => {
     if (!isNative) return;
+    const painted: ResolvedTheme = active && theme === "dark" ? "dark" : "light";
     return whenBridgeReady(() => {
       const statusBar = getStatusBarPlugin();
       if (!statusBar) return;
-      void statusBar.setStyle({ style: theme === "dark" ? "LIGHT" : "DARK" });
-      void statusBar.setBackgroundColor({ color: THEME_CHROME_COLOR[theme] });
+      void statusBar.setStyle({ style: painted === "dark" ? "LIGHT" : "DARK" });
+      void statusBar.setBackgroundColor({
+        color: THEME_CHROME_COLOR[painted],
+      });
     });
-  }, [isNative, theme]);
+  }, [isNative, theme, active]);
 
   // Follow the OS while the preference is "system".
   useEffect(() => {
-    if (!enabled || preference !== "system") return;
+    if (!active || preference !== "system") return;
     if (typeof window.matchMedia !== "function") return;
 
     const query = window.matchMedia("(prefers-color-scheme: dark)");
-    const onChange = () => applyTheme(query.matches ? "dark" : "light");
+    const onChange = () => applyTheme(query.matches ? "dark" : "light", true);
     query.addEventListener("change", onChange);
     return () => query.removeEventListener("change", onChange);
-  }, [enabled, preference]);
+  }, [active, preference]);
 
   const setPreference = useCallback((next: ThemePreference) => {
     setPreferenceState(next);
@@ -97,8 +110,15 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo<ThemeContextValue>(
-    () => ({ preference, theme, setPreference, available: enabled }),
-    [preference, theme, setPreference, enabled]
+    () => ({
+      preference,
+      // Callers styling their own surfaces need the PAINTED theme, not the
+      // preference - outside the portal the page is light regardless.
+      theme: active ? theme : "light",
+      setPreference,
+      available: active,
+    }),
+    [preference, theme, setPreference, active]
   );
 
   return (

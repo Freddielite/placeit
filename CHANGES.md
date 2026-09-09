@@ -326,13 +326,17 @@ Also done:
 
 ## Docs
 
-`APP-VS-BROWSER.html` - the guide rewritten for non-engineers and styled to
-match the site (Montserrat/Open Sans, #477dc0, the site's card and pill
-treatments). Self-contained single file, has its own dark mode toggle.
+`PLACEIT-APP-UPDATE.html` - a client-facing progress summary, styled to match
+the site (Montserrat/Open Sans, #477dc0, the site's card treatments).
+Self-contained single file, own dark mode toggle, print stylesheet included.
 
-`APP-VS-BROWSER.md` kept as the technical reference - the HTML drops file
-paths, the Tailwind v4 mechanics and the rationale, which are still worth
-having. Each now points at the other.
+Written for the client, not for developers: no file paths, no library names,
+no implementation detail. Structured as what changed for users, why the
+website was deliberately left alone, what needs sign-off before launch, a
+recommended roadmap, and what's needed from them.
+
+`APP-VS-BROWSER.md` remains the developer reference and points at the client
+doc.
 
 ## Verified
 
@@ -340,3 +344,77 @@ Same caveat: no full `npm run build` (npm won't install here). All modified
 files type-checked in isolation under `--strict`, clean. The HTML was parsed
 for tag balance. Dark mode needs a real visual pass on a device - a palette
 remap gets you a correct base, not a finished design.
+
+---
+
+# What changed (session 6 - dark mode fix)
+
+## The bug
+
+The screenshots were all **marketing pages**: homepage testimonials,
+who-is-it-for cards, stats band, the NYSC landing hero. Not the portal.
+
+Scoping dark mode by *runtime* was the mistake. Installing the PWA drops the
+user on the marketing homepage, so "app mode" was true there, and the dark
+palette got painted onto pages that were never built for one.
+
+The specific failure: those pages set backgrounds by hand - arbitrary
+`bg-[#f0f3ff]`, inline `style={{ background: slide.bg }}`, gradient stops.
+None of those touch a CSS variable, so they stayed light. The `text-gray-900`
+sitting on top of them DID flip, to near-white. White text on a mint
+background. That's "Before Camp Ends" and the "Real Stories" heading being
+invisible, and the washed-out corps/company cards.
+
+The remap was doing exactly what it was built to do. It was pointed at the
+wrong pages.
+
+## The fix
+
+**The theme now follows the surface, not the runtime.** A page only goes dark
+if its colours come from tokens.
+
+- `THEMEABLE_ROUTE_PREFIXES` in `src/lib/theme.ts` - currently `/portal` only.
+- `applyTheme(theme, active)` takes an active flag; `ThemeProvider` watches
+  `usePathname()` and repaints on navigation.
+- The boot script has the same route check, so there's still no flash.
+- The preference is still remembered outside the portal, just not painted.
+
+Marketing, auth and public pages are light regardless of the setting. All four
+screenshots are fixed by this alone.
+
+## Also fixed
+
+Portal surfaces that had the same latent problem:
+- `bg-[#f5f5f5]` (opportunity cards), `bg-[#F9FBFF]` (sort, application
+  search x2), `bg-gray-200 text-[#333]` (company onboarding facts) -> tokens.
+- `border-[#C9C9DA]` and `text-[#3D3C42]` -> `border-border`, `text-foreground`.
+- **The logo was invisible on the dark portal header** (dark navy wordmark on
+  a dark surface). `dark:brightness-0 dark:invert` as a stopgap - a real
+  light-on-dark asset would be better.
+
+The portal now has zero hardcoded colour values.
+
+## New: `.theme-light` escape hatch
+
+Wrap any subtree that must keep its light design inside a dark screen - brand
+banner, illustration with a baked background, embed - and the light palette is
+restored for that subtree only.
+
+## Rule for anyone widening the scope later
+
+Before adding a route prefix, grep that area for `-[#`, inline `style`
+colours and gradient stops. If it has them, it needs a hand pass or a
+`.theme-light` wrapper first. This is now written into globals.css and
+APP-VS-BROWSER.md at the point where someone would make the change.
+
+## Known rough edge
+
+Logging out goes to `/signin`, outside the themeable set, so the app flips to
+light at that moment. Fixable by designing dark auth screens, or by adding
+`/signin` to the prefix list once they've been checked.
+
+## Docs
+
+Client HTML updated: dark mode is now described as covering the signed-in
+area, and the roadmap item for public pages says plainly that it needs design
+input rather than just development time.

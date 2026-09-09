@@ -27,7 +27,7 @@ export default function Facts() {
   }, []);
 
   return (
-    <blockquote className="border-primary mt-40 bg-gray-200 py-2 px-4 text-sm rounded-xl h-20 text-[#333] italic flex items-center">
+    <blockquote className="border-primary mt-40 bg-muted text-muted-foreground py-2 px-4 text-sm rounded-xl h-20 italic flex items-center">
       “{facts[factIndex]}”
     </blockquote>
   );

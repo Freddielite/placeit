@@ -1,7 +1,8 @@
 # App mode vs browser mode
 
-> **Looking for the short version?** Open `APP-VS-BROWSER.html` in a browser —
-> same content, plain language, no file paths. This file is the technical one.
+> This is the developer reference. The client-facing summary is
+> `PLACEIT-APP-UPDATE.html` — no file paths, no implementation detail, framed
+> around what changed for users and what's outstanding.
 
 PlaceIT ships as three things off one codebase:
 
@@ -48,7 +49,7 @@ the script has to be inline and dependency-free to beat the first paint.
 | `keyboardHandling` | app | Soft-keyboard avoidance for a forms-heavy app |
 | `bottomTabBar` | app | Fixed portal tab bar, mobile widths only |
 | `offlineCache` | app | Persisted React Query cache |
-| `darkMode` | app | Light / dark / follow-system (see below) |
+| `darkMode` | app + `/portal` only | Light / dark / follow-system (see below) |
 | `serviceWorker` | **all** | Must stay on in the browser or the PWA can't be installed |
 | `installBanner` | browser | Only the website should advertise the app |
 
@@ -165,10 +166,28 @@ ramp is deliberately **inverted** — `gray-50` becomes the darkest surface,
 `gray-900` becomes near-white — so `bg-gray-50 text-gray-800` keeps its
 contrast relationship instead of going dark-on-dark.
 
-**What it doesn't cover:** the 57 arbitrary values like `bg-[#F0F0F5]`, which
-never touch a variable. The shell ones are converted; page-level ones aren't.
-That plus the marketing site's hand-picked colours is why the scope is `app`
-and not `all`.
+**Scoped to `/portal`, not just to app mode.** Runtime alone was the wrong
+gate and shipped visibly broken: installing the PWA drops you on the marketing
+homepage, so "app mode" painted the dark palette onto pages built entirely
+from hardcoded light colours. The background stayed light, the `text-gray-900`
+on it inverted to near-white, and whole sections became unreadable.
+
+The rule: **the theme follows the surface, not the runtime.** A page can only
+go dark if its colours come from tokens. The portal qualifies. The marketing
+site, auth screens and public pages don't, and stay light regardless of the
+user's preference (the preference is still remembered, just not painted).
+
+Route list is `THEMEABLE_ROUTE_PREFIXES` in `src/lib/theme.ts`, duplicated in
+the boot script. **Before adding a prefix, grep that area for `-[#`, inline
+`style` colours and gradient stops.** If it has them, it needs a hand pass or
+a `.theme-light` wrapper first.
+
+**`.theme-light`** (globals.css) restores the light palette for one subtree
+inside a dark screen - for a brand banner, an illustration with a baked
+background, or an embed.
+
+Known rough edge: logging out sends you to `/signin`, which is outside the
+themeable set, so the app goes light at that moment.
 
 Theme is resolved in the same boot script pass as the mode, so a dark cold
 start never shows a light frame first. On native, the status bar style and

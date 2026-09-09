@@ -25,7 +25,7 @@ export default function ApplicationSearch() {
       <h6 className="text-h6 self-center">All Application</h6>
       <div className="flex gap-4 whitespace-nowrap  ">
         <Input
-          className="rounded-xl bg-[#F9FBFF] border-none h-9 "
+          className="rounded-xl bg-muted text-foreground border-none h-9 "
           id="search"
           placeholder="Search"
           onChange={(e) => handleSearch(e.target.value)}
@@ -35,7 +35,7 @@ export default function ApplicationSearch() {
         <ArrowDown2
           color="black"
           size="35"
-          className="bg-[#F9FBFF] p-1 px-4 w-14 rounded-lg sm:hidden"
+          className="bg-muted text-muted-foreground p-1 px-4 w-14 rounded-lg sm:hidden"
         />
       </div>
     </div>
