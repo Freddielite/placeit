@@ -1,18 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { isInstalledApp } from "@/lib/is-installed-app";
+import { useFeature } from "./app-mode-provider";
 
-// Full-screen "you're offline" state, shown only in the installed app
-// (native Capacitor shell or installed PWA).
+// APP-EXCLUSIVE (scope: `offlineScreen` in config/app-features.ts).
+//
+// Full-screen "you're offline" takeover. App-only on purpose: a browser tab
+// already has Chrome's own offline page, and hijacking the viewport of a
+// website that the user may have open in a background tab is hostile.
 export function OfflineScreen() {
-  const [enabled, setEnabled] = useState(false);
+  const enabled = useFeature("offlineScreen");
   const [offline, setOffline] = useState(false);
   const [checking, setChecking] = useState(false);
 
   useEffect(() => {
-    if (!isInstalledApp()) return;
-    setEnabled(true);
+    if (!enabled) return;
     setOffline(typeof navigator !== "undefined" && !navigator.onLine);
 
     const goOffline = () => setOffline(true);
@@ -25,7 +27,7 @@ export function OfflineScreen() {
       window.removeEventListener("offline", goOffline);
       window.removeEventListener("online", goOnline);
     };
-  }, []);
+  }, [enabled]);
 
   if (!enabled || !offline) return null;
 

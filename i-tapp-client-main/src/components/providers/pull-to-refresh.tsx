@@ -1,31 +1,31 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useFeature } from "./app-mode-provider";
 
 const PULL_THRESHOLD = 70;
 const MAX_PULL = 110;
 const RESISTANCE = 0.5;
 
-// Custom pull-to-refresh, works everywhere (browser tab, installed PWA,
-// native app). Native browser pull-to-refresh/rubber-banding is disabled
-// globally (see overscroll-behavior-y in globals.css), so this is the
-// only pull-to-refresh available anywhere - it can't be app-only, or
-// browser users get neither the native one nor this one.
+// APP-EXCLUSIVE (scope: `pullToRefresh` in config/app-features.ts).
 //
-// Uses margin-top (not a CSS transform) to push content down - a
-// transform on this wrapper would create a new containing block for any
-// position:fixed element inside the app (headers, modals, sidenavs),
-// breaking their positioning app-wide. Margin doesn't have that problem.
+// In the installed app this is the only pull-to-refresh there is, because
+// `overscroll-behavior-y: contain` suppresses the browser's own - both are
+// gated together, so a browser tab keeps Chrome's native pull-to-refresh
+// and never gets this one. Turning one off without the other leaves users
+// with no refresh gesture at all; that pairing is enforced in the CSS
+// (html.is-app-mode) and in the feature registry.
+//
+// The wrapper elements render in every mode so the DOM shape is identical
+// browser vs app - that keeps SSR markup stable and means the page tree is
+// never torn down and rebuilt when the mode resolves. Only the listeners
+// and the indicator are conditional.
 export function PullToRefresh({ children }: { children: ReactNode }) {
-  const [enabled, setEnabled] = useState(false);
+  const enabled = useFeature("pullToRefresh");
   const [pullDistance, setPullDistance] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
   const startYRef = useRef<number | null>(null);
   const pullingRef = useRef(false);
-
-  useEffect(() => {
-    setEnabled(true);
-  }, []);
 
   useEffect(() => {
     if (!enabled) return;
@@ -78,12 +78,16 @@ export function PullToRefresh({ children }: { children: ReactNode }) {
       document.removeEventListener("touchstart", onTouchStart);
       document.removeEventListener("touchmove", onTouchMove);
       document.removeEventListener("touchend", onTouchEnd);
+      // Leaving app mode mid-session (rare, but possible) shouldn't strand
+      // the content pushed down.
+      setPullDistance(0);
+      setRefreshing(false);
     };
   }, [enabled, refreshing]);
 
-  if (!enabled) return <>{children}</>;
-
-  const shift = Math.max(pullDistance, refreshing ? PULL_THRESHOLD : 0);
+  const shift = enabled
+    ? Math.max(pullDistance, refreshing ? PULL_THRESHOLD : 0)
+    : 0;
   const progress = Math.min(pullDistance / PULL_THRESHOLD, 1);
   const transitionStyle = pullingRef.current
     ? "none"
@@ -91,56 +95,61 @@ export function PullToRefresh({ children }: { children: ReactNode }) {
 
   return (
     <div style={{ position: "relative" }}>
-      <div
-        aria-hidden="true"
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: shift,
-          overflow: "hidden",
-          opacity: shift > 0 ? 1 : 0,
-          transition: transitionStyle,
-        }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/placeit-icon.png"
-          alt=""
-          width={32}
-          height={32}
+      {enabled && (
+        <div
+          aria-hidden="true"
           style={{
-            borderRadius: 8,
-            transform: `scale(${0.7 + progress * 0.3}) rotate(${
-              progress * 10
-            }deg)`,
-            animation: refreshing
-              ? "pull-refresh-pulse 700ms ease-in-out infinite"
-              : "none",
-            opacity: 0.5 + progress * 0.5,
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: shift,
+            overflow: "hidden",
+            opacity: shift > 0 ? 1 : 0,
+            transition: transitionStyle,
           }}
-        />
-      </div>
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/placeit-icon.png"
+            alt=""
+            width={32}
+            height={32}
+            style={{
+              borderRadius: 8,
+              transform: `scale(${0.7 + progress * 0.3}) rotate(${
+                progress * 10
+              }deg)`,
+              animation: refreshing
+                ? "pull-refresh-pulse 700ms ease-in-out infinite"
+                : "none",
+              opacity: 0.5 + progress * 0.5,
+            }}
+          />
+        </div>
+      )}
 
       <div
-        style={{
-          marginTop: shift,
-          transition: transitionStyle,
-        }}
+        style={
+          enabled
+            ? { marginTop: shift, transition: transitionStyle }
+            : undefined
+        }
       >
         {children}
       </div>
 
-      <style>{`
-        @keyframes pull-refresh-pulse {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.12); }
-        }
-      `}</style>
+      {enabled && (
+        <style>{`
+          @keyframes pull-refresh-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.12); }
+          }
+        `}</style>
+      )}
     </div>
   );
 }

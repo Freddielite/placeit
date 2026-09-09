@@ -1,14 +1,18 @@
 "use client";
 
 import { useLayoutEffect, useState } from "react";
-import { isInstalledApp } from "@/lib/is-installed-app";
+import { useAppMode } from "./app-mode-provider";
 
 const TOTAL_MS = 1700; // ~1.5-2s on screen
 const FADE_OUT_MS = 300;
 
+// APP-EXCLUSIVE (scope: `splashScreen` in config/app-features.ts).
+//
 // Animated splash: logo fades/scales in, holds briefly, fades out. Only
 // shown when running as the installed app (native Capacitor shell or
-// installed PWA) - regular website visitors never see this.
+// installed PWA) - regular website visitors never see this, and must never
+// see it: 1.7s of branding in front of content is an app convention and a
+// bounce-rate problem on the web.
 //
 // Real content is hidden from first paint by a beforeInteractive boot
 // script in layout.tsx (see the "app-boot" class + matching CSS in
@@ -18,14 +22,15 @@ const FADE_OUT_MS = 300;
 // before the browser paints), so the two happen in the same frame: real
 // content only ever becomes visible already covered by this splash.
 export function AppSplash() {
+  // `mode` is resolved during the provider's first render (it reads the class
+  // the boot script wrote), so this is already correct inside useLayoutEffect.
+  const { feature } = useAppMode();
   const [shouldShow, setShouldShow] = useState(false);
   const [fadingOut, setFadingOut] = useState(false);
   const [mounted, setMounted] = useState(true);
 
   useLayoutEffect(() => {
-    const installed = isInstalledApp();
-
-    if (!installed) {
+    if (!feature("splashScreen")) {
       setMounted(false);
       document.documentElement.classList.remove("app-boot");
       return;
@@ -46,6 +51,7 @@ export function AppSplash() {
       clearTimeout(fadeTimer);
       clearTimeout(removeTimer);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!mounted || !shouldShow) return null;

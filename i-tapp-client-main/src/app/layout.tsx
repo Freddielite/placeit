@@ -26,11 +26,13 @@ export const opensans = Open_Sans({
 });
 const siteUrl = "https://www.getplaceit.com";
 
+// Ships the *web* viewport: pinch-zoom allowed (WCAG 1.4.4, and Lighthouse
+// penalises `user-scalable=no`). AppShellEffects rewrites this tag to the
+// locked-down app viewport at runtime, but only when running as the
+// installed app. See `disableZoom` in src/config/app-features.ts.
 export const viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
   viewportFit: "cover",
   themeColor: "#477dc0",
 };
@@ -166,16 +168,49 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               (function () {
+                // Runs before first paint. Mirrors src/lib/app-mode.ts -
+                // keep the two in sync. Everything app-exclusive is gated
+                // on the classes set here, so the website never renders a
+                // frame of app chrome and vice versa.
+                var root = document.documentElement;
                 try {
-                  var isNativeApp = window.Capacitor && typeof window.Capacitor.isNativePlatform === "function" && window.Capacitor.isNativePlatform();
-                  var isInstalledPwa = window.matchMedia && window.matchMedia("(display-mode: standalone)").matches;
-                  if (isNativeApp || isInstalledPwa) {
-                    document.documentElement.classList.add("app-boot");
+                  var isNative = !!(window.Capacitor && typeof window.Capacitor.isNativePlatform === "function" && window.Capacitor.isNativePlatform());
+
+                  var standalone = false;
+                  if (window.matchMedia) {
+                    var modes = ["standalone", "fullscreen", "minimal-ui"];
+                    for (var i = 0; i < modes.length; i++) {
+                      if (window.matchMedia("(display-mode: " + modes[i] + ")").matches) { standalone = true; break; }
+                    }
+                  }
+                  if (window.navigator.standalone === true) standalone = true;
+                  if (document.referrer.indexOf("android-app://") === 0) standalone = true;
+
+                  var forced = false;
+                  try {
+                    var q = new URLSearchParams(window.location.search).get("appmode");
+                    if (q === "1" || q === "true") { sessionStorage.setItem("placeit:force-app-mode", "1"); }
+                    else if (q === "0" || q === "false") { sessionStorage.removeItem("placeit:force-app-mode"); }
+                    forced = sessionStorage.getItem("placeit:force-app-mode") === "1";
+                  } catch (e) {}
+
+                  var isApp = isNative || standalone || forced;
+
+                  root.classList.add(isApp ? "is-app-mode" : "is-browser-mode");
+                  if (isNative) root.classList.add("is-native-app");
+
+                  if (isApp) {
+                    // Hide content until the splash overlay is mounted.
+                    root.classList.add("app-boot");
                     setTimeout(function () {
-                      document.documentElement.classList.remove("app-boot");
+                      root.classList.remove("app-boot");
                     }, 4000);
                   }
-                } catch (e) {}
+                } catch (e) {
+                  // Never leave the page invisible if detection throws.
+                  root.classList.add("is-browser-mode");
+                  root.classList.remove("app-boot");
+                }
               })();
             `,
           }}

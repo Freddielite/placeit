@@ -105,3 +105,81 @@ errors introduced. Only Google Fonts and env vars were stubbed for the
 sandbox test itself (network restriction here, not a bug) and both were
 reverted/removed before packaging - the delivered code has real font
 imports and no `.env.local`.
+
+---
+
+# What changed (session 3 - app vs browser separation)
+
+Split the "feels like an app" behaviours out of the website. Previously
+some were gated on `isInstalledApp()`, some were global, and the CSS
+comments disagreed with the code about which was which.
+
+## New: one switchboard
+
+`src/config/app-features.ts` - every app-feel feature with a scope of
+`all | app | native | browser | off`. This is the only file you edit to
+change what runs where. Full reference in `APP-VS-BROWSER.md`.
+
+## New: one detector
+
+`src/lib/app-mode.ts` replaces `src/lib/is-installed-app.ts` (deleted).
+Resolves a single `AppMode` of `native | pwa | browser`. Hardened beyond
+the old check: adds `display-mode: fullscreen` and `minimal-ui`, iOS
+Safari's `navigator.standalone`, and the Android TWA `android-app://`
+referrer - the old version missed installed apps on all three.
+
+Adds `?appmode=1` to force app mode in a desktop browser for testing
+(sticks for the session, `?appmode=0` clears).
+
+## New: one provider
+
+`src/components/providers/app-mode-provider.tsx` - `useAppMode()`,
+`useFeature("x")`, `<AppOnly>`, `<BrowserOnly>`. Components no longer
+sniff `window.Capacitor` themselves.
+
+The boot script in `layout.tsx` now writes `is-app-mode` /
+`is-browser-mode` / `is-native-app` onto `<html>` before first paint, and
+the provider reads that class in its `useState` initialiser - so the first
+client render is already correct and nothing remounts.
+
+## Moved to app-only
+
+- **Pull-to-refresh** - was running on the website too. Gated together
+  with the `overscroll-behavior-y: contain` CSS that suppresses Chrome's
+  own pull-to-refresh, so browser users get the native gesture back
+  rather than losing both.
+- **Page transitions** - was running everywhere; added ~250ms to every
+  click on the website. Browser navigations are now instant.
+- **`-webkit-tap-highlight-color: transparent`** - was global.
+- **`env(safe-area-inset-*)` body padding** - was global.
+- **Pinch-zoom block** - was in the static `viewport` export, so
+  `user-scalable=no` shipped on the public site (WCAG 1.4.4 failure,
+  Lighthouse penalty). The metadata now ships the accessible viewport and
+  `AppShellEffects` tightens the tag at runtime only in app mode.
+- **Text-selection lock** - unchanged in effect, but the CSS selector
+  moved from `.is-native-app` to `html.is-app-mode` so it matches what
+  the code actually did (the old comment claimed native-only).
+
+## Unchanged on purpose
+
+- **Service worker** stays registered in the browser - without it the PWA
+  isn't installable, which is how users reach app mode at all.
+- **Splash and offline screen** were already app-only; just rewired
+  through the shared gate.
+
+## Structural note
+
+`AppProvider` renders the same element tree in both modes - the app-only
+wrappers switch off internally instead of being conditionally mounted.
+Conditional mounting would tear down and rebuild the whole page tree the
+moment the mode resolves, losing scroll position, form state and
+in-flight React Query renders.
+
+## Verified
+
+`npm install` could not complete in this sandbox (the registry proxy
+hangs), so unlike session 2 this was **not** validated with a full
+`npm run build`. The changed files were type-checked in isolation with
+`tsc --noResolve` and are clean apart from the expected
+unresolved-import noise. Please run a real `npm run build` before
+shipping.

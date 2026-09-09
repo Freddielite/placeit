@@ -254,46 +254,83 @@ body {
   }
 }
 
-/* App-shell feel: makes it stop feeling like a browser tab once wrapped
-   in Capacitor/PWABuilder. Safe to keep even in a normal browser tab -
-   these are no-ops there. */
+/* ==========================================================================
+   APP MODE vs BROWSER MODE
+   --------------------------------------------------------------------------
+   `html.is-app-mode`     - native Capacitor shell OR installed PWA
+   `html.is-native-app`   - the compiled store build only
+   `html.is-browser-mode` - a plain browser tab (getplaceit.com)
+
+   These classes are set by the boot script in app/layout.tsx before the
+   first paint, so there's no flash of the wrong chrome. Which behaviours
+   belong to which mode is documented in src/config/app-features.ts - if you
+   change a scope there, change the matching rule here.
+   ========================================================================== */
+
+/* --- Everywhere ---------------------------------------------------------- */
+
 html,
 body {
-  overscroll-behavior-y: contain; /* no pull-to-refresh / rubber-band bounce */
-  -webkit-tap-highlight-color: transparent; /* no gray flash on tap */
+  /* Stops iOS Safari inflating text in landscape. Correct on the web too. */
   -webkit-text-size-adjust: 100%;
 }
 
-body {
+/* --- App only ------------------------------------------------------------ */
+
+/* `overscrollLock`. Kills the browser's rubber-band bounce and its built-in
+   pull-to-refresh, which the custom PullToRefresh component then replaces.
+   This is deliberately paired with that component: the website keeps
+   Chrome's native pull-to-refresh precisely because it doesn't get ours. */
+html.is-app-mode,
+html.is-app-mode body {
+  overscroll-behavior-y: contain;
+}
+
+/* `noTapHighlight`. The grey flash on tap is a browser affordance people
+   expect on a web page and a tell that you're in a browser inside an app. */
+html.is-app-mode,
+html.is-app-mode body,
+html.is-app-mode a,
+html.is-app-mode button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* `safeAreaInsets`. env() resolves to 0 in a browser tab so this is a no-op
+   there, but scoping it keeps the intent legible and avoids surprising
+   padding if a browser ever starts reporting non-zero insets. */
+html.is-app-mode body {
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* Paired with the beforeInteractive boot script in layout.tsx - hides real
-   page content the instant the browser parses <body>, before React even
-   loads, so there's no flash of the homepage before the splash covers it.
-   AppSplash removes this class itself once its overlay has mounted. */
-html.app-boot body {
-  visibility: hidden;
-}
-
-a,
-button {
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* Installed-app-only (native Capacitor app or installed PWA): no text
-   selection outside of actual inputs. Scoped to
-   .is-native-app so the website (and installed PWA) is unaffected - only
-   the wrapped native app gets this. */
-.is-native-app * {
+/* `textSelectionLock`. No long-press text selection outside real inputs.
+   Applied for installed PWAs as well as the native build, since "Install
+   app" from Chrome is the common install path. */
+html.is-app-mode * {
   -webkit-user-select: none;
   user-select: none;
 }
 
-.is-native-app input,
-.is-native-app textarea,
-.is-native-app [contenteditable="true"] {
+html.is-app-mode input,
+html.is-app-mode textarea,
+html.is-app-mode select,
+html.is-app-mode [contenteditable="true"] {
   -webkit-user-select: text;
   user-select: text;
 }
+
+/* `splashScreen`. Paired with the boot script in layout.tsx - hides real
+   page content the instant the browser parses <body>, before React loads,
+   so there's no flash of the homepage before the splash covers it. AppSplash
+   removes this class once its overlay has mounted. Only ever added in app
+   mode, so a website visitor can never hit a blank screen from it. */
+html.app-boot body {
+  visibility: hidden;
+}
+
+/* --- Browser only -------------------------------------------------------- */
+
+/* Nothing here yet. Website-exclusive chrome (install banner, cookie/consent
+   UI, marketing-only affordances) belongs under html.is-browser-mode, or
+   behind the <BrowserOnly> component in
+   components/providers/app-mode-provider.tsx. */
