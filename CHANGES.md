@@ -418,3 +418,38 @@ light at that moment. Fixable by designing dark auth screens, or by adding
 Client HTML updated: dark mode is now described as covering the signed-in
 area, and the roadmap item for public pages says plainly that it needs design
 input rather than just development time.
+
+---
+
+# What changed (session 7 - the toggle was unreachable)
+
+## Why it wasn't there
+
+Two reasons, both mine.
+
+**It was inside the avatar popover, in a `hidden md:flex` container.** The
+portal header's actions row is desktop-only; on a phone only the hamburger
+shows. So on the device these screenshots came from, the toggle did not exist.
+
+**The `darkMode` scope was `app`.** Route scoping (session 6) is what actually
+protects the marketing pages, so the runtime gate was buying nothing - but it
+was hiding the toggle from anyone testing the portal in a normal browser tab.
+
+## Fixed
+
+- `darkMode` scope is now `all`. Protection is entirely by route.
+- `<ThemeToggleButton />` promoted to a first-class header control, rendered
+  at every breakpoint (next to the hamburger on mobile, next to notifications
+  on desktop). No longer buried in a popover.
+- `<ThemeToggle />` (three-way: Light / Dark / Auto) added to the mobile nav
+  sheet under an "Appearance" heading.
+- Company portal header toggle unwrapped from `<AppOnly>`.
+
+## Also
+
+The mobile nav sheet had its own hardcoded light surfaces, which would have
+been a white sheet sliding over a dark app: `bg-white` -> `bg-background`,
+`bg-gray-50` -> `bg-muted`, `hover:bg-gray-100` -> `hover:bg-muted`, bare
+`border` -> `border-border`.
+
+Dark mode now also works in the portal on desktop web, not just in the app.

@@ -4,7 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Notification } from "iconsax-reactjs";
-import { AppOnly } from "@/components/providers/app-mode-provider";
 import { ThemeToggleButton } from "@/components/theme-toggle";
 import {
   Popover,
@@ -54,7 +53,8 @@ export function Header({ link }: { link: { text: string; href: string }[] }) {
             </Link>
           ))}
         </nav>
-        <div className="hidden md:flex gap-2">
+        <div className="hidden md:flex gap-2 items-center">
+          <ThemeToggleButton />
           <Popover>
             <PopoverTrigger asChild>
               <button type="button" className="relative cursor-pointer" data-tour="notifications">
@@ -113,12 +113,6 @@ export function Header({ link }: { link: { text: string; href: string }[] }) {
               >
                 <User className="w-4 h-4 text-gray-400" /> Profile
               </Link>
-              <AppOnly>
-                <div className="flex items-center justify-between gap-2 border-t border-border px-3 py-2">
-                  <span className="text-xs text-muted-foreground">Appearance</span>
-                  <ThemeToggleButton />
-                </div>
-              </AppOnly>
               <button
                 onClick={logout}
                 className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg hover:bg-red-50 text-red-600 transition-colors"
@@ -128,7 +122,10 @@ export function Header({ link }: { link: { text: string; href: string }[] }) {
             </PopoverContent>
           </Popover>
         </div>
-        <MobileNav links={link} />
+        <div className="flex items-center gap-1 md:hidden">
+          <ThemeToggleButton />
+          <MobileNav links={link} />
+        </div>
       </div>
     </header>
   );

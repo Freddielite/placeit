@@ -91,9 +91,7 @@ export function CompanyLayout({ children }: { children: React.ReactNode }) {
             <h2 className="text-lg font-semibold text-gray-800">Dashboard</h2>
           </div>
           <div className="flex items-center gap-2">
-            <AppOnly>
-              <ThemeToggleButton />
-            </AppOnly>
+            <ThemeToggleButton />
             <Link href={"/portal/profile"} data-tour="avatar-menu">
             <div className="rounded-full h-10 w-10">
               <Image

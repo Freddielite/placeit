@@ -49,7 +49,7 @@ the script has to be inline and dependency-free to beat the first paint.
 | `keyboardHandling` | app | Soft-keyboard avoidance for a forms-heavy app |
 | `bottomTabBar` | app | Fixed portal tab bar, mobile widths only |
 | `offlineCache` | app | Persisted React Query cache |
-| `darkMode` | app + `/portal` only | Light / dark / follow-system (see below) |
+| `darkMode` | `/portal` only (any runtime) | Light / dark / follow-system (see below) |
 | `serviceWorker` | **all** | Must stay on in the browser or the PWA can't be installed |
 | `installBanner` | browser | Only the website should advertise the app |
 
@@ -193,9 +193,18 @@ Theme is resolved in the same boot script pass as the mode, so a dark cold
 start never shows a light frame first. On native, the status bar style and
 colour follow the theme via `getStatusBarPlugin()`.
 
-Toggles: `<ThemeToggle />` (three-way segmented control, for a settings screen)
-and `<ThemeToggleButton />` (single cycling button, mounted in both portal
-headers). Both return `null` when the feature is out of scope.
+**Scope is `all`, not `app`.** The runtime gate bought nothing once route
+scoping existed (the marketing site is protected either way) and it hid the
+toggle from anyone using the portal in a normal browser tab. Route scoping is
+the only gate that matters.
+
+**Where the toggle lives.** `<ThemeToggleButton />` (single cycling button) in
+the portal header, at every breakpoint — this matters, because the header's
+actions row is `hidden md:flex`, so anything placed there alone is unreachable
+on a phone. `<ThemeToggle />` (three-way segmented control) also sits in the
+mobile nav sheet under "Appearance", since "follow my phone" is the option
+most people want and a cycling button can't express it. Both return `null`
+outside the themeable routes.
 
 ## Not done yet
 

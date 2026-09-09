@@ -13,6 +13,7 @@ import { useStudentStore } from "@/lib/store";
 import { useFetchCorpsProfile } from "@/queries/corps";
 import { cn } from "@/utils/tailwind";
 import { useLogout } from "@/hooks/use-logout";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface MobileNavProps {
   links: { text: string; href: string }[];
@@ -99,10 +100,10 @@ export function MobileNav({ links }: MobileNavProps) {
         </Button>
       </SheetTrigger>
 
-      <SheetContent className="w-full max-w-[320px] bg-white p-0 md:hidden">
+      <SheetContent className="w-full max-w-[320px] bg-background p-0 md:hidden">
         <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-4 border-b">
+        <div className="flex items-center justify-between px-4 py-4 border-b border-border">
           <p className="text-sm font-semibold">Menu</p>
           {/* <Button
             type="button"
@@ -118,7 +119,7 @@ export function MobileNav({ links }: MobileNavProps) {
         <div className="flex h-full flex-col px-4 py-5 gap-6">
           {/* Profile block */}
           <div className="flex items-center gap-3" data-tour="mnav-profile">
-            <div className="relative h-11 w-11 overflow-hidden rounded-full border bg-gray-50">
+            <div className="relative h-11 w-11 overflow-hidden rounded-full border border-border bg-muted">
               <Image
                 src={user.avatar}
                 alt={user.name}
@@ -160,7 +161,7 @@ export function MobileNav({ links }: MobileNavProps) {
                     "rounded-lg px-3 py-2 text-sm transition-colors",
                     active
                       ? "bg-primary/10 text-primary font-medium"
-                      : "text-muted-foreground hover:bg-gray-100",
+                      : "text-muted-foreground hover:bg-muted",
                   )}
                   onClick={() => setOpen(false)}
                 >
@@ -169,6 +170,14 @@ export function MobileNav({ links }: MobileNavProps) {
               );
             })}
           </nav>
+
+          {/* Appearance */}
+          <div className="flex flex-col gap-2 border-t border-border pt-4">
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Appearance
+            </span>
+            <ThemeToggle className="self-start" />
+          </div>
 
           {/* Footer actions */}
           <div className="mt-auto pb-15">

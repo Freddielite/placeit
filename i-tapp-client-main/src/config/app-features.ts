@@ -60,11 +60,15 @@ export const APP_FEATURES = {
   offlineCache: "app",
 
   /**
-   * Light / dark / follow-system. App-only for now: the marketing site is
-   * ~155 files of hardcoded light colours and a half-dark website is worse
-   * than a light one. Flip to "all" once those pages are audited.
+   * Light / dark / follow-system.
+   *
+   * Scope is "all" because the meaningful gate is by ROUTE, not runtime:
+   * THEMEABLE_ROUTE_PREFIXES in src/lib/theme.ts limits dark mode to /portal,
+   * whose colours all come from tokens. Gating by runtime as well bought
+   * nothing (the marketing site is protected either way) and hid the toggle
+   * from anyone using the portal in a normal browser tab.
    */
-  darkMode: "app",
+  darkMode: "all",
 
   /** Service worker - must stay on in the browser or the PWA isn't installable. */
   serviceWorker: "all",
