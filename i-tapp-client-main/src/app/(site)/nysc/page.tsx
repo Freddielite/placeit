@@ -20,6 +20,7 @@ import { cn } from "@/utils/tailwind";
 
 const green = "var(--accent-green)";
 const greenRgb = "var(--accent-green-rgb)";
+const greenText = "var(--accent-green-text)";
 
 const stats = [
   { value: "1,200+", label: "Corps members registered" },
@@ -125,12 +126,12 @@ export default function NyscPage() {
           <Reveal>
             <span
               className="inline-block text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-5"
-              style={{ background: `rgba(${greenRgb}, 0.09)`, color: green }}
+              style={{ background: `rgba(${greenRgb}, 0.09)`, color: greenText }}
             >
               NYSC PPA Placement
             </span>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-gray-950 leading-[1.08] tracking-tight max-w-3xl">
-              <span style={{ color: green }}>Secure Your PPA</span>{" "}
+              <span style={{ color: greenText }}>Secure Your PPA</span>{" "}
               Before Camp Ends
             </h1>
             <p className="mt-6 text-gray-500 text-lg max-w-xl leading-relaxed">
@@ -154,7 +155,7 @@ export default function NyscPage() {
             <div className="mt-8 flex flex-wrap gap-4">
               {["State-code matched", "3-week camp mode", "BulkApply available"].map((t) => (
                 <span key={t} className="flex items-center gap-1.5 text-sm text-gray-500">
-                  <CheckCircle2 className="w-4 h-4" style={{ color: green }} />
+                  <CheckCircle2 className="w-4 h-4" style={{ color: greenText }} />
                   {t}
                 </span>
               ))}
@@ -181,7 +182,7 @@ export default function NyscPage() {
       <section className="py-20 sm:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-16">
           <Reveal>
-            <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: green }}>
+            <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: greenText }}>
               Why PlaceIT for NYSC
             </span>
             <h2 className="mt-3 text-3xl sm:text-4xl font-black text-gray-950 tracking-tight max-w-xl">
@@ -196,7 +197,7 @@ export default function NyscPage() {
                     className="shrink-0 w-10 h-10 rounded-xl flex items-center justify-center"
                     style={{ background: `rgba(${greenRgb}, 0.08)` }}
                   >
-                    <p.icon className="w-5 h-5" style={{ color: green }} />
+                    <p.icon className="w-5 h-5" style={{ color: greenText }} />
                   </div>
                   <p className="text-sm font-medium text-gray-700 leading-snug self-center">{p.text}</p>
                 </div>
@@ -213,7 +214,7 @@ export default function NyscPage() {
             <Reveal className="flex-1">
               <span
                 className="inline-block text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-5"
-                style={{ background: `rgba(${greenRgb}, 0.15)`, color: green }}
+                style={{ background: `rgba(${greenRgb}, 0.15)`, color: greenText }}
               >
                 Pro Feature
               </span>
@@ -251,12 +252,12 @@ export default function NyscPage() {
                       className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
                       style={{ background: step.highlight ? `rgba(${greenRgb}, 0.25)` : "#ffffff10" }}
                     >
-                      <step.icon className="w-4 h-4" style={{ color: step.highlight ? green : "#9ca3af" }} />
+                      <step.icon className="w-4 h-4" style={{ color: step.highlight ? greenText : "#9ca3af" }} />
                     </div>
                     <span className={cn("text-sm font-medium", step.highlight ? "text-emerald-300" : "text-gray-300")}>
                       {step.label}
                     </span>
-                    {step.done && <CheckCircle2 className="w-4 h-4 ml-auto shrink-0" style={{ color: green }} />}
+                    {step.done && <CheckCircle2 className="w-4 h-4 ml-auto shrink-0" style={{ color: greenText }} />}
                   </div>
                 ))}
                 <div className="mt-2 p-3 rounded-xl border border-emerald-800 bg-emerald-900/20">
@@ -273,7 +274,7 @@ export default function NyscPage() {
       <section className="py-20 sm:py-28 bg-[var(--surface-green)] border-t border-emerald-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-16">
           <Reveal>
-            <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: green }}>
+            <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: greenText }}>
               How It Works
             </span>
             <h2 className="mt-3 text-3xl sm:text-4xl font-black text-gray-950 tracking-tight">
@@ -293,7 +294,7 @@ export default function NyscPage() {
                   </div>
                   <span
                     className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full mb-3 inline-block"
-                    style={{ background: `rgba(${greenRgb}, 0.08)`, color: green }}
+                    style={{ background: `rgba(${greenRgb}, 0.08)`, color: greenText }}
                   >
                     {s.tag}
                   </span>
@@ -313,7 +314,7 @@ export default function NyscPage() {
       <section className="py-20 sm:py-28 bg-white border-t border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-16">
           <Reveal>
-            <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: green }}>
+            <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: greenText }}>
               Corps Member Stories
             </span>
             <h2 className="mt-3 text-3xl sm:text-4xl font-black text-gray-950 tracking-tight">
@@ -336,7 +337,7 @@ export default function NyscPage() {
                     </div>
                     <span
                       className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                      style={{ background: `rgba(${greenRgb}, 0.08)`, color: green }}
+                      style={{ background: `rgba(${greenRgb}, 0.08)`, color: greenText }}
                     >
                       {t.tag}
                     </span>
@@ -352,7 +353,7 @@ export default function NyscPage() {
       <section className="py-20 sm:py-28 bg-[var(--surface-green)] border-t border-emerald-100">
         <div className="max-w-3xl mx-auto px-4 sm:px-8">
           <Reveal>
-            <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: green }}>
+            <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: greenText }}>
               FAQs
             </span>
             <h2 className="mt-3 text-3xl sm:text-4xl font-black text-gray-950 tracking-tight">
@@ -404,7 +405,7 @@ export default function NyscPage() {
               <Link
                 href="/corps/signup"
                 className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-bold text-sm bg-white shadow-lg hover:opacity-90 transition-all"
-                style={{ color: green }}
+                style={{ color: greenText }}
               >
                 <Shield className="w-4 h-4" /> Find my PPA now
               </Link>

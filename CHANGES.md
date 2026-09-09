@@ -525,3 +525,52 @@ Type-checked clean. CSS hex validated. No `npm run build` (npm still won't
 install here), and dark mode across ~48 site files has not been seen rendered
 - that review is yours. The homepage hero and the three persona landing pages
 are where to look first.
+
+---
+
+# What changed (session 10 - fill colours vs type colours)
+
+Everything wrong in the latest screenshots came from one mistake: a single
+variable was doing two incompatible jobs.
+
+A brand colour used as a SOLID FILL under white text has to stay dark enough
+for that text to read. The same colour used as TYPE on the page has to be
+light enough to read against the background. In light mode one value does
+both. In dark mode it can't, and I'd lifted everything for the type case -
+which is why "Get Started Free" was white on pastel and the stats band was a
+bright blue slab.
+
+## The split
+
+- `--primary` in dark is now **deepened** to `#3d6ca8`, not lifted. White text
+  on it is ~4.9:1, and a full-bleed band recedes instead of glowing.
+  `--primary-foreground` back to white.
+- `--accent-blue/green/violet` keep their brand value in dark - they're CTA
+  fills. New `--accent-*-text` variants lift, and every `color:` usage now
+  points at those. The `-rgb` triples stay at brand value since they only
+  feed low-alpha washes where hue is all that matters.
+- A rebinding rule lifts `text-primary` / `border-primary` / `ring-primary`
+  on the element, excluding `text-primary-foreground`. Same technique as the
+  white utilities.
+
+## Light-on-light elements
+
+`bg-white/70` got forced back to real white by the foreground rule, but the
+text on it kept inverting. Those are surfaces, not glows, so they now use
+surface tokens:
+
+- Hero secondary CTA ("Browse Opportunities") - was invisible.
+- Inactive persona pills ("Corps Member", "Company") - were invisible.
+- Opportunity detail modal close button.
+
+## Not in dark mode at all
+
+- **Sticky mobile CTA bar** - a white bar pinned over a dark page.
+  `bg-white/95` -> `bg-background/95`.
+- **Stats band wave SVG** - hardcoded `text-[#f7f8fc]` to match the section
+  below it. Now tracks `--surface-blue`, so it follows.
+
+## Verified
+
+Type-checked clean. Still no `npm run build`. The hero, the persona tabs and
+the stats band are the three to re-check on device.

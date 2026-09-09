@@ -45,6 +45,7 @@ const slides = [
       "Real-time tracking",
     ],
     accent: "var(--accent-blue)",
+    accentText: "var(--accent-blue-text)",
     accentRgb: "var(--accent-blue-rgb)",
     bg: "var(--surface-blue-strong)",
   },
@@ -61,6 +62,7 @@ const slides = [
     cta2: { label: "Browse PPAs", href: "/opportunities?type=ppa" },
     trust: ["State-code matched", "3-week camp mode", "BulkApply available"],
     accent: "var(--accent-green)",
+    accentText: "var(--accent-green-text)",
     accentRgb: "var(--accent-green-rgb)",
     bg: "var(--surface-green-strong)",
   },
@@ -81,6 +83,7 @@ const slides = [
       "Admin-assisted listing",
     ],
     accent: "var(--accent-violet)",
+    accentText: "var(--accent-violet-text)",
     accentRgb: "var(--accent-violet-rgb)",
     bg: "var(--surface-violet)",
   },
@@ -569,7 +572,7 @@ export function Hero() {
               <span
                 className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border"
                 style={{
-                  color: slide.accent,
+                  color: slide.accentText,
                   background: `rgba(${slide.accentRgb},0.09)`,
                   borderColor: `rgba(${slide.accentRgb},0.22)`,
                 }}
@@ -589,7 +592,7 @@ export function Hero() {
                   <span
                     key={i}
                     className="block relative"
-                    style={{ color: slide.accent }}
+                    style={{ color: slide.accentText }}
                   >
                     {line}
                     <svg
@@ -634,7 +637,7 @@ export function Hero() {
               </Link>
               <Link
                 href={slide.cta2.href}
-                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl text-sm font-semibold text-gray-700 border border-gray-200 bg-white/70 backdrop-blur-sm hover:bg-white hover:border-gray-300 transition-all duration-200"
+                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl text-sm font-semibold text-foreground border border-border bg-card/70 backdrop-blur-sm hover:bg-card hover:border-primary/30 transition-all duration-200"
               >
                 {slide.cta2.label}
               </Link>
@@ -649,7 +652,7 @@ export function Hero() {
                 >
                   <BadgeCheck
                     className="w-3.5 h-3.5 shrink-0"
-                    style={{ color: slide.accent }}
+                    style={{ color: slide.accentText }}
                   />
                   {item}
                 </span>
@@ -682,7 +685,7 @@ export function Hero() {
                   "relative inline-flex items-center gap-2 px-4 py-2 rounded-full text-[12px] font-semibold border overflow-hidden transition-all duration-200",
                   i === activeIdx
                     ? "text-white border-transparent shadow-sm"
-                    : "text-gray-500 border-gray-300 bg-white/70 hover:border-gray-400 hover:text-gray-700",
+                    : "text-muted-foreground border-border bg-card/70 hover:border-primary/40 hover:text-foreground",
                 )}
                 style={
                   i === activeIdx

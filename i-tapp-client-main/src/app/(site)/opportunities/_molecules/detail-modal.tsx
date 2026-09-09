@@ -106,7 +106,7 @@ export default function OpportunityDetailModal({
         {/* X button — always top-right, above everything */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-50 p-1.5 rounded-lg bg-white/80 backdrop-blur-sm text-gray-500 hover:text-gray-900 hover:bg-white shadow-sm transition-colors"
+          className="absolute top-4 right-4 z-50 p-1.5 rounded-lg bg-card/80 backdrop-blur-sm text-muted-foreground hover:text-foreground hover:bg-card shadow-sm transition-colors"
           aria-label="Close"
         >
           <X className="w-4 h-4" />

@@ -19,6 +19,7 @@ import { cn } from "@/utils/tailwind";
 
 const blue = "var(--accent-blue)";
 const blueRgb = "var(--accent-blue-rgb)";
+const blueText = "var(--accent-blue-text)";
 
 const stats = [
   { value: "2,000+", label: "Students registered" },
@@ -124,13 +125,13 @@ export default function StudentsPage() {
           <Reveal>
             <span
               className="inline-block text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-5"
-              style={{ background: `rgba(${blueRgb}, 0.09)`, color: blue }}
+              style={{ background: `rgba(${blueRgb}, 0.09)`, color: blueText }}
             >
               Nigeria&apos;s #1 SIWES Platform
             </span>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-gray-950 leading-[1.08] tracking-tight max-w-3xl">
               Find Your{" "}
-              <span style={{ color: blue }}>Industrial Training</span>{" "}
+              <span style={{ color: blueText }}>Industrial Training</span>{" "}
               Placement
             </h1>
             <p className="mt-6 text-gray-500 text-lg max-w-xl leading-relaxed">
@@ -154,7 +155,7 @@ export default function StudentsPage() {
             <div className="mt-8 flex flex-wrap gap-4">
               {["Free to get started", "Verified companies only", "Real-time tracking"].map((t) => (
                 <span key={t} className="flex items-center gap-1.5 text-sm text-gray-500">
-                  <CheckCircle2 className="w-4 h-4" style={{ color: blue }} />
+                  <CheckCircle2 className="w-4 h-4" style={{ color: blueText }} />
                   {t}
                 </span>
               ))}
@@ -181,7 +182,7 @@ export default function StudentsPage() {
       <section className="py-20 sm:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-16">
           <Reveal>
-            <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: blue }}>
+            <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: blueText }}>
               Why PlaceIT
             </span>
             <h2 className="mt-3 text-3xl sm:text-4xl font-black text-gray-950 tracking-tight max-w-xl">
@@ -196,7 +197,7 @@ export default function StudentsPage() {
                     className="shrink-0 w-10 h-10 rounded-xl flex items-center justify-center"
                     style={{ background: `rgba(${blueRgb}, 0.08)` }}
                   >
-                    <p.icon className="w-5 h-5" style={{ color: blue }} />
+                    <p.icon className="w-5 h-5" style={{ color: blueText }} />
                   </div>
                   <p className="text-sm font-medium text-gray-700 leading-snug self-center">{p.text}</p>
                 </div>
@@ -210,7 +211,7 @@ export default function StudentsPage() {
       <section className="py-20 sm:py-28 bg-[var(--surface-blue)] border-t border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-16">
           <Reveal>
-            <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: blue }}>
+            <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: blueText }}>
               How It Works
             </span>
             <h2 className="mt-3 text-3xl sm:text-4xl font-black text-gray-950 tracking-tight">
@@ -230,7 +231,7 @@ export default function StudentsPage() {
                   </div>
                   <span
                     className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full mb-3 inline-block"
-                    style={{ background: `rgba(${blueRgb}, 0.08)`, color: blue }}
+                    style={{ background: `rgba(${blueRgb}, 0.08)`, color: blueText }}
                   >
                     {s.tag}
                   </span>
@@ -250,7 +251,7 @@ export default function StudentsPage() {
       <section className="py-20 sm:py-28 bg-white border-t border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-16">
           <Reveal>
-            <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: blue }}>
+            <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: blueText }}>
               Student Stories
             </span>
             <h2 className="mt-3 text-3xl sm:text-4xl font-black text-gray-950 tracking-tight">
@@ -273,7 +274,7 @@ export default function StudentsPage() {
                     </div>
                     <span
                       className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                      style={{ background: `rgba(${blueRgb}, 0.08)`, color: blue }}
+                      style={{ background: `rgba(${blueRgb}, 0.08)`, color: blueText }}
                     >
                       {t.tag}
                     </span>
@@ -289,7 +290,7 @@ export default function StudentsPage() {
       <section className="py-20 sm:py-28 bg-[var(--surface-blue)] border-t border-gray-100">
         <div className="max-w-3xl mx-auto px-4 sm:px-8">
           <Reveal>
-            <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: blue }}>
+            <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: blueText }}>
               FAQs
             </span>
             <h2 className="mt-3 text-3xl sm:text-4xl font-black text-gray-950 tracking-tight">
@@ -341,7 +342,7 @@ export default function StudentsPage() {
               <Link
                 href="/welcome"
                 className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-bold text-sm bg-white shadow-lg hover:opacity-90 transition-all"
-                style={{ color: blue }}
+                style={{ color: blueText }}
               >
                 <Sparkles className="w-4 h-4" /> Create free account
               </Link>

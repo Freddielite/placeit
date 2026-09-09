@@ -49,7 +49,7 @@ export function MobileCtaBar() {
     >
       {/* Fade above bar */}
       <div className="h-8 pointer-events-none" />
-      <div className="bg-white/95 backdrop-blur-md border-t border-gray-100 px-4 py-3 pb-safe">
+      <div className="bg-background/95 backdrop-blur-md border-t border-border px-4 py-3 pb-safe">
         <Link
           href={cta.href}
           className="flex items-center justify-center gap-2 w-full py-3.5 rounded bg-primary text-white text-sm font-black shadow-lg shadow-primary/30 hover:opacity-90 active:scale-[0.98] transition-all duration-200"

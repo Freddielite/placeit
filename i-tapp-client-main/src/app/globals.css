@@ -84,6 +84,15 @@
   --accent-violet: #7c3aed;
   --accent-violet-rgb: 124, 58, 237;
 
+  /* An accent has two incompatible jobs. As a SOLID FILL under white text it
+     has to stay dark enough for that text to read. As TEXT on the page it has
+     to be light enough to read against the background. One value can't do
+     both once the page goes dark, so `-text` splits them. Identical in light
+     mode; lifted under `.dark`. */
+  --accent-blue-text: #445dcb;
+  --accent-green-text: #059669;
+  --accent-violet-text: #7c3aed;
+
   --surface-blue: #f7f8fc;
   --surface-blue-strong: #f0f3ff;
   --surface-green: #f0fdf4;
@@ -323,10 +332,16 @@ body {
   --popover: #1d242e;
   --popover-foreground: #e9edf2;
 
-  /* Lifted from #477dc0 - the brand blue is too dark to sit on a dark
-     surface at the same value. */
-  --primary: #6fa2e0;
-  --primary-foreground: #0b0f14;
+  /* Deepened rather than lifted. `bg-primary` is a solid fill under white
+     text in a lot of places (stats band, mobile CTA bar, primary buttons);
+     lifting it turned those into white-on-pastel. Slightly deeper than the
+     light value so a full-bleed band recedes on a dark page instead of
+     glowing. White text on this is ~4.9:1.
+
+     Where primary is the TYPE colour it gets lifted instead - see the
+     `text-primary` rebinding rule further down. */
+  --primary: #3d6ca8;
+  --primary-foreground: #ffffff;
 
   --secondary: #23313f;
   --secondary-foreground: #e9edf2;
@@ -469,16 +484,16 @@ body {
   --color-rose-600: #f2758f;  --color-rose-700: #f69eb1;
 
   /* --- Marketing site accents -------------------------------------------
-     Lifted so the accent stays legible as text on a near-black surface. The
-     originals (#445dcb, #059669, #7c3aed) are mid-dark and fail contrast
-     against #12161c. The surfaces become dark tints of the same hue, so the
-     persona colour-coding survives. */
-  --accent-blue: #8fa2f0;
-  --accent-blue-rgb: 143, 162, 240;
-  --accent-green: #4ecfa0;
-  --accent-green-rgb: 78, 207, 160;
-  --accent-violet: #b799f5;
-  --accent-violet-rgb: 183, 153, 245;
+     The base accents deliberately KEEP their brand value here: they're used
+     as solid CTA fills under white text, and lifting them was what made
+     "Get Started Free" read as white-on-pastel.
+
+     Only the `-text` variants lift, for the places the accent is the type
+     colour. The `-rgb` triples stay at brand value too, since they only feed
+     low-alpha washes and glows where the hue is all that matters. */
+  --accent-blue-text: #9db0f5;
+  --accent-green-text: #4ecfa0;
+  --accent-violet-text: #c0a7f7;
 
   --surface-blue: #161a26;
   --surface-blue-strong: #191e2e;
@@ -507,6 +522,20 @@ body {
 .dark [class*="divide-white"] {
   --white: #ffffff;
   --color-white: #ffffff;
+}
+
+/* The other half of the primary split: when primary is the type or border
+   colour rather than a fill, rebind it to a lifted value on that element.
+   Same technique as the white utilities above, and it covers responsive and
+   hover variants for free.
+
+   `text-primary-foreground` is excluded - that's the colour that sits ON a
+   primary fill, and it must stay white. */
+.dark [class*="text-primary"]:not([class*="text-primary-foreground"]),
+.dark [class*="border-primary"],
+.dark [class*="ring-primary"],
+.dark [class*="decoration-primary"] {
+  --primary: #8fbaf0;
 }
 
 /* Escape hatch. Put `.theme-light` on any section that must keep its light

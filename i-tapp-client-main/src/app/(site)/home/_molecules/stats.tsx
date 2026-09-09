@@ -94,7 +94,7 @@ export function Stats() {
         <svg
           viewBox="0 0 1440 52"
           preserveAspectRatio="none"
-          className="w-full block text-[#f7f8fc]"
+          className="w-full block text-[var(--surface-blue)]"
           style={{ height: "52px" }}
           aria-hidden="true"
         >
