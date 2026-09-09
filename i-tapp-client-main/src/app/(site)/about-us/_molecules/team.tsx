@@ -85,8 +85,10 @@ export default function Team() {
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                   style={{ objectPosition: member.position }}
                 />
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-950/40 via-transparent to-transparent" />
+                {/* Scrim over the photo. `theme-static` because a scrim is
+                    always a darkening pass — inverted it becomes a 40% white
+                    wash that fogs the portrait. */}
+                <div className="theme-static absolute inset-0 bg-gradient-to-t from-gray-950/40 via-transparent to-transparent" />
               </div>
 
               {/* Info */}

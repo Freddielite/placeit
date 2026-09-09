@@ -15,7 +15,7 @@ const SignupSuccessModal = () => {
   return (
     <>
       {isVisible && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
           <div className="bg-white rounded-lg shadow-lg p-8 max-w-md mx-auto">
             <div className="flex items-center justify-center mb-8">
               <Link href="/">

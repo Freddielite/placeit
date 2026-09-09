@@ -227,7 +227,7 @@ export default function OpportunityDetailsContent({
           {/* Subtle dot pattern */}
           <div
             className="absolute inset-0 opacity-[0.035] pointer-events-none"
-            style={{ backgroundImage: "radial-gradient(circle, #000 1px, transparent 1px)", backgroundSize: "18px 18px" }}
+            style={{ backgroundImage: "radial-gradient(circle, currentColor 1px, transparent 1px)", backgroundSize: "18px 18px" }}
           />
 
           {/* Logo + identity */}
@@ -257,7 +257,7 @@ export default function OpportunityDetailsContent({
                 {isVerified && (
                   <div className="relative group/v shrink-0">
                     <BadgeCheck className="w-3.5 h-3.5 text-blue-500" />
-                    <div className="absolute z-20 bottom-full mb-1 left-0 w-36 hidden group-hover/v:block bg-gray-900 text-white text-[10px] px-2 py-1.5 leading-relaxed whitespace-nowrap">
+                    <div className="theme-static absolute z-20 bottom-full mb-1 left-0 w-36 hidden group-hover/v:block bg-gray-900 text-white text-[10px] px-2 py-1.5 leading-relaxed whitespace-nowrap">
                       Verified company
                     </div>
                   </div>

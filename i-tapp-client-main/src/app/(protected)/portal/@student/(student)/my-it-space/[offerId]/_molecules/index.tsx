@@ -101,7 +101,9 @@ const CompanyDetailsPage = () => {
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-linear-to-t from-gray-900/60 to-transparent"></div>
+        {/* Scrim over the banner image. A scrim is always a darkening pass, so it
+            is pinned - inverted it becomes a 60% white wash. */}
+        <div className="theme-static absolute inset-0 bg-linear-to-t from-gray-900/60 to-transparent"></div>
       </div>
 
       {/* Main Content Container that overlaps the banner slightly */}

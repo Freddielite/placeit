@@ -40,7 +40,7 @@ export default function StudentDetail({
   if (!student) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-end z-50">
+    <div className="fixed inset-0 bg-black/50 flex justify-end z-50">
       <div className="bg-white w-full max-w-md h-full p-6 overflow-auto">
         <button
           onClick={onClose}

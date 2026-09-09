@@ -78,7 +78,9 @@ export function ForCompanies() {
           <div className="w-full lg:w-[420px] shrink-0">
             <div className="rounded-3xl border border-gray-200 bg-white shadow-[0_8px_40px_rgba(0,0,0,0.07)] overflow-hidden">
               {/* Dashboard header bar */}
-              <div className="bg-gray-950 px-5 py-3.5 flex items-center gap-2">
+              {/* Mock browser chrome — reads as a title bar only while it's
+                  dark, so it's pinned rather than themed. */}
+              <div className="theme-static bg-gray-950 px-5 py-3.5 flex items-center gap-2">
                 <div className="flex gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
                   <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />

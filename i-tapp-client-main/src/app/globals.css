@@ -538,11 +538,48 @@ body {
   --primary: #8fbaf0;
 }
 
-/* Escape hatch. Put `.theme-light` on any section that must keep its light
-   design inside a dark screen - a brand banner, an illustration with a baked
-   background, an embed. It restores the light palette for that subtree only,
-   so text inside it stays dark and readable. */
-.dark .theme-light {
+/* The same trap as `--white`, in the other direction. Remapping `--black` to
+   #e9edf2 makes `text-black` a light type colour, which is what you want. It
+   also catches every `bg-black/N` SCRIM - 17 of them: dialog, drawer, sheet
+   and alert-dialog overlays, the sidebar and filter-panel backdrops, the
+   avatar-crop overlays. A modal backdrop is a darkening pass by definition;
+   inverted, `bg-black/80` becomes a near-opaque WHITE sheet over the app.
+
+   Same technique and the same reasoning as the white rule above: rebind on
+   the element so each utility keeps its own alpha. `text-black` is left out
+   deliberately - that one SHOULD invert.
+
+   Verified: no element combines a black surface with `text-black`, and no
+   `text-black` element sits inside one of the three overlays that wrap
+   content rather than sitting empty. */
+.dark [class*="bg-black"],
+.dark [class*="from-black"],
+.dark [class*="via-black"],
+.dark [class*="to-black"],
+.dark [class*="shadow-black"],
+.dark [class*="ring-black"] {
+  --black: #000000;
+  --color-black: #000000;
+}
+
+/* Escape hatch. Two classes, one mechanism: both restore the light-mode
+   neutral ramp for a subtree, so colour utilities inside resolve to the
+   values they were authored against instead of the inverted ones.
+
+   `.theme-light` - a section that must keep its LIGHT design inside a dark
+   screen: a brand banner, an illustration with a baked background, an embed.
+
+   `.theme-static` - a section whose design is already DARK in light mode and
+   must stay that way: the BulkApply panel, the nysc spotlight band, a mock
+   browser chrome. Left alone these invert into near-white slabs while the
+   `text-white` on them stays white, which is unreadable and glares on a dark
+   page. Same restore, different intent - hence the separate name, so nobody
+   has to wonder why a near-black panel is tagged `theme-light`.
+
+   Pick by asking what the subtree's colours MEAN: semantic tokens follow the
+   theme, literal design values get pinned. */
+.dark .theme-light,
+.dark .theme-static {
   --background: #ffffff;
   --foreground: #0f0f0f;
   --card: #ffffff;
@@ -564,13 +601,37 @@ body {
   --color-gray-700: #374151;
   --color-gray-800: #1f2937;
   --color-gray-900: #111827;
+  --color-gray-950: #030712;
+  --color-slate-50: #f8fafc;
+  --color-slate-100: #f1f5f9;
+  --color-slate-200: #e2e8f0;
+  --color-slate-300: #cbd5e1;
+  --color-slate-400: #94a3b8;
+  --color-slate-500: #64748b;
+  --color-slate-600: #475569;
+  --color-slate-700: #334155;
+  --color-slate-800: #1e293b;
+  --color-slate-900: #0f172a;
+}
+
+/* `color-scheme` only flips for the light island. A pinned-dark panel is
+   still on a dark page, and its scrollbars and any native control inside it
+   should stay dark. */
+.dark .theme-light {
   color-scheme: light;
 }
 
-/* Note: .theme-light reverts the neutrals and core tokens, which is what
-   determines whether text is readable. It deliberately does not revert the
-   17 accent tint families above - an accent chip reading slightly off inside
-   a light island is cosmetic, where dark-on-dark body text is not. */
+/* Note: these revert the neutrals and core tokens, which is what determines
+   whether text is readable. They deliberately do not revert the 17 accent
+   tint families above - an accent chip reading slightly off inside a pinned
+   island is cosmetic, where dark-on-dark body text is not.
+
+   `--primary` is not reverted either: the rebinding rule above lifts it to
+   #8fbaf0 wherever it's the type colour, and that lifted value is the right
+   one on a dark panel. It would be too pale inside a `.theme-light` island,
+   but that rule binds the variable on the element itself, so an ancestor
+   can't win it back - a light island needing `text-primary` should carry its
+   own colour. No such island exists yet. */
 
 /* ==========================================================================
    APP MODE vs BROWSER MODE

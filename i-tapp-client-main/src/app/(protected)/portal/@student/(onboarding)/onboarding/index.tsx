@@ -127,7 +127,7 @@ export default function StudentOnboardingPage() {
     <div className="min-h-screen bg-white flex flex-col">
       {/* Top bar */}
       <header className="h-14 border-b flex items-center px-5 sm:px-8 shrink-0 bg-white z-10">
-        <Logo className="mix-blend-multiply" />
+        <Logo className="mix-blend-multiply dark:mix-blend-normal" />
         <div className="ml-auto flex items-center gap-4">
           <span className="hidden sm:block text-xs text-gray-400 font-medium">
             {steps[currentStep]?.title}

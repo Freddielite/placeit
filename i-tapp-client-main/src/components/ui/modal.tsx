@@ -5,7 +5,7 @@ export default function Modal({ children, showModal, setShowModal }: any) {
   if (showModal)
     return (
       <div
-        className="bg-black fixed inset-0 bg-opacity-25 backdrop-blur-sm z-50 flex justify-center items-center h-full"
+        className="bg-black/25 fixed inset-0 backdrop-blur-sm z-50 flex justify-center items-center h-full"
         id="wrapper"
         onClick={(e) => {
           if ((e.target as HTMLElement).id === "wrapper")

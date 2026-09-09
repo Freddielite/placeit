@@ -57,7 +57,7 @@ export default function NotificationPage() {
   const read = data.filter((n) => n.isRead);
 
   return (
-    <div className="min-h-screen pt-[55px]" style={{ backgroundImage: "radial-gradient(circle, #e5e7eb 1px, transparent 1px)", backgroundSize: "20px 20px" }}>
+    <div className="min-h-screen pt-[55px]" style={{ backgroundImage: "radial-gradient(circle, var(--border) 1px, transparent 1px)", backgroundSize: "20px 20px" }}>
       <div className="max-w-xl mx-auto px-4 py-10">
 
         {/* Page header */}

@@ -4,6 +4,18 @@ import Link from "next/link";
 import { GraduationCap, Building2, Shield, ArrowUpRight } from "lucide-react";
 import { Logo } from "@/components/logo";
 
+// The three roles are the same three personas the marketing site colour-codes
+// — student blue, corps green, company violet — so they read from the shared
+// `--accent-*` tokens rather than repeating the hexes. That's also what makes
+// this page themeable: the tokens already have dark values.
+//
+// Two variants per persona, for the reason documented in globals.css: `color`
+// is the SOLID FILL (hover CTA) and keeps its brand value so white text on it
+// still reads; `colorText` is the TYPE colour and lifts in dark mode.
+//
+// The tints are built with `rgba(var(--*-rgb), a)` rather than pastel hexes.
+// A low-alpha wash sits correctly on a white card or a dark one, where
+// `#EFF6FF` only ever works on the first.
 const roles = [
   {
     num: "01",
@@ -15,10 +27,11 @@ const roles = [
     href: "/welcome",
     cta: "Continue as Student",
     icon: GraduationCap,
-    color: "#2563EB",
-    colorLight: "#EFF6FF",
-    colorBorder: "#BFDBFE",
-    colorMuted: "rgba(37,99,235,0.08)",
+    color: "var(--accent-blue)",
+    colorText: "var(--accent-blue-text)",
+    colorLight: "rgba(var(--accent-blue-rgb), 0.10)",
+    colorBorder: "rgba(var(--accent-blue-rgb), 0.28)",
+    colorShadow: "rgba(var(--accent-blue-rgb), 0.19)",
   },
   {
     num: "02",
@@ -30,10 +43,11 @@ const roles = [
     href: "/corps/signup",
     cta: "Continue as Corps Member",
     icon: Shield,
-    color: "#059669",
-    colorLight: "#ECFDF5",
-    colorBorder: "#A7F3D0",
-    colorMuted: "rgba(5,150,105,0.08)",
+    color: "var(--accent-green)",
+    colorText: "var(--accent-green-text)",
+    colorLight: "rgba(var(--accent-green-rgb), 0.10)",
+    colorBorder: "rgba(var(--accent-green-rgb), 0.28)",
+    colorShadow: "rgba(var(--accent-green-rgb), 0.19)",
   },
   {
     num: "03",
@@ -45,10 +59,11 @@ const roles = [
     href: "/company/signup",
     cta: "Continue as Company",
     icon: Building2,
-    color: "#7C3AED",
-    colorLight: "#F5F3FF",
-    colorBorder: "#DDD6FE",
-    colorMuted: "rgba(124,58,237,0.08)",
+    color: "var(--accent-violet)",
+    colorText: "var(--accent-violet-text)",
+    colorLight: "rgba(var(--accent-violet-rgb), 0.10)",
+    colorBorder: "rgba(var(--accent-violet-rgb), 0.28)",
+    colorShadow: "rgba(var(--accent-violet-rgb), 0.19)",
   },
 ];
 
@@ -58,7 +73,19 @@ export default function GetStartedPage() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap');
 
-        .gs-root { font-family: 'DM Sans', sans-serif; background: #F8F9FC; }
+        /* Surfaces come from tokens, not hexes. This page used to hardcode
+           #F8F9FC / #fff / #E5E8EF, which meant the backgrounds stayed light
+           in dark mode while the Tailwind text utilities on top inverted to
+           near-white — the whole page washed out. */
+        .gs-root {
+          font-family: 'DM Sans', sans-serif;
+          background: var(--surface-blue);
+
+          /* Ghost numeral outline. Ink on a light page, light on a dark one. */
+          --gs-num-stroke: rgba(0,0,0,0.04);
+        }
+        .dark .gs-root { --gs-num-stroke: rgba(255,255,255,0.055); }
+
         .gs-serif { font-family: 'Instrument Serif', Georgia, serif; }
 
         @keyframes gs-fade-up {
@@ -72,8 +99,8 @@ export default function GetStartedPage() {
 
         .gs-card {
           position: relative;
-          background: #fff;
-          border: 1.5px solid #E5E8EF;
+          background: var(--card);
+          border: 1.5px solid var(--border);
           border-radius: 20px;
           transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
           overflow: hidden;
@@ -103,7 +130,7 @@ export default function GetStartedPage() {
           font-weight: 400;
           line-height: 1;
           color: transparent;
-          -webkit-text-stroke: 1.5px rgba(0,0,0,0.04);
+          -webkit-text-stroke: 1.5px var(--gs-num-stroke);
           pointer-events: none;
           user-select: none;
         }
@@ -133,7 +160,9 @@ export default function GetStartedPage() {
           border-radius: 10px;
           font-size: 13px;
           font-weight: 600;
-          color: var(--card-color);
+          /* Type colour, so the lifted variant. The fill value
+             (--card-color) is too dark to read on a dark card. */
+          color: var(--card-text);
           transition: background 0.15s;
         }
         @media (max-width: 639px) {
@@ -154,21 +183,26 @@ export default function GetStartedPage() {
         .gs-pill {
           display: inline-flex; align-items: center; gap: 5px;
           padding: 4px 12px; border-radius: 99px;
-          background: #EFF6FF; border: 1px solid #BFDBFE;
+          background: rgba(var(--accent-blue-rgb), 0.10);
+          border: 1px solid rgba(var(--accent-blue-rgb), 0.28);
           font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
-          text-transform: uppercase; color: #2563EB;
+          text-transform: uppercase; color: var(--accent-blue-text);
         }
 
         .gs-divider {
           width: 100%; height: 1px;
-          background: linear-gradient(90deg, transparent, #E5E8EF 20%, #E5E8EF 80%, transparent);
+          background: linear-gradient(90deg, transparent, var(--border) 20%, var(--border) 80%, transparent);
           margin: 8px 0;
         }
       `}</style>
 
       <div className="gs-root min-h-screen flex flex-col">
         {/* Header */}
-        <header className="px-5 sm:px-10 pt-5 pb-3 flex items-center justify-between border-b border-gray-100 bg-white/80 backdrop-blur-sm">
+        {/* `bg-background`, not `bg-white/80`. The white utilities are pinned
+            to real white in dark mode (they're mostly glows and labels), so a
+            translucent-white bar stayed white — and the logo, which inverts to
+            white in dark mode, disappeared into it. */}
+        <header className="px-5 sm:px-10 pt-5 pb-3 flex items-center justify-between border-b border-border bg-background/80 backdrop-blur-sm">
           <Link href="/">
             <Logo className="h-9 w-auto" />
           </Link>
@@ -186,9 +220,13 @@ export default function GetStartedPage() {
             <div className="gs-hero space-y-3">
               <div className="gs-pill">✦ Free to get started</div>
               <h1 className="gs-serif text-[2.8rem] sm:text-6xl lg:text-[4.5rem] font-normal text-gray-900 leading-[1.1] tracking-tight">
-                Who are <em style={{ color: "#2563EB" }}>you</em><span className="text-gray-300">?</span>
+                Who are <em style={{ color: "var(--accent-blue-text)" }}>you</em>
+                {/* gray-400, not gray-300: the ramp inverts, and 300 lands on
+                    a near-background value in dark mode. 400 keeps the "?"
+                    ghosted in both themes instead of vanishing in one. */}
+                <span className="text-gray-400">?</span>
               </h1>
-              <p className="text-gray-400 text-sm sm:text-base max-w-sm leading-relaxed">
+              <p className="text-gray-500 text-sm sm:text-base max-w-sm leading-relaxed">
                 Pick your role and we&apos;ll get you set up in minutes.
               </p>
             </div>
@@ -205,10 +243,13 @@ export default function GetStartedPage() {
                     className={`gs-card ${animClass} block`}
                     style={{
                       "--card-color": role.color,
-                      "--card-shadow": role.color + "30",
+                      "--card-text": role.colorText,
+                      // Was `role.color + "30"`. Hex-alpha concatenation can't
+                      // work now the accent is a var(), so the shadow carries
+                      // its own pre-mixed rgba — same fix as the site pages.
+                      "--card-shadow": role.colorShadow,
                       "--card-border": role.colorBorder,
                       "--card-light": role.colorLight,
-                      "--card-muted": role.colorMuted,
                     } as React.CSSProperties}
                   >
                     <span className="gs-num" aria-hidden="true">{role.num}</span>
@@ -217,14 +258,14 @@ export default function GetStartedPage() {
                       {/* Top row */}
                       <div className="flex items-start justify-between gap-3">
                         <div className="gs-icon-wrap shrink-0">
-                          <Icon style={{ color: role.color }} className="w-5 h-5" />
+                          <Icon style={{ color: role.colorText }} className="w-5 h-5" />
                         </div>
-                        <ArrowUpRight className="sm:hidden w-4 h-4 text-gray-300 mt-1 shrink-0" />
+                        <ArrowUpRight className="sm:hidden w-4 h-4 text-gray-400 mt-1 shrink-0" />
                       </div>
 
                       {/* Label + Title */}
                       <div>
-                        <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.1em] mb-1" style={{ color: role.color }}>
+                        <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.1em] mb-1" style={{ color: role.colorText }}>
                           {role.label}
                         </p>
                         <h2 className="gs-serif text-2xl sm:text-[1.75rem] font-normal text-gray-900 leading-tight">
@@ -232,15 +273,17 @@ export default function GetStartedPage() {
                         </h2>
                       </div>
 
-                      {/* Description */}
-                      <p className="text-gray-400 text-xs sm:text-sm leading-relaxed">
+                      {/* Description. gray-500 rather than 400 — the ramp is
+                          mirrored, so 400 lands at roughly 2.5:1 on the card
+                          in BOTH themes. 500 clears 5:1 either way. */}
+                      <p className="text-gray-500 text-xs sm:text-sm leading-relaxed">
                         {role.description}
                       </p>
 
                       {/* Features — desktop only */}
                       <ul className="hidden sm:flex flex-col gap-2">
                         {role.features.map((f) => (
-                          <li key={f} className="flex items-center gap-2.5 text-xs text-gray-400">
+                          <li key={f} className="flex items-center gap-2.5 text-xs text-gray-500">
                             <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: role.colorBorder }} />
                             {f}
                           </li>
@@ -261,7 +304,7 @@ export default function GetStartedPage() {
             </div>
 
             {/* Footer note */}
-            <p className="text-center text-xs text-gray-300">
+            <p className="text-center text-xs text-gray-400">
               By signing up, you agree to our{" "}
               <Link href="/terms-of-service" className="underline hover:text-gray-500 transition-colors">Terms</Link>
               {" "}and{" "}

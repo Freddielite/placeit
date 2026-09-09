@@ -164,7 +164,7 @@ export function CardView({
 
   return (
     <div
-      className={`flex items-center justify-between px-4 py-4 border-b border-[#F5F5F5] hover:bg-gray-50 transition`}
+      className={`flex items-center justify-between px-4 py-4 border-b border-border hover:bg-gray-50 transition`}
     >
       {/* Left: logo + details */}
       <div className="flex items-center gap-3 flex-1 min-w-0">

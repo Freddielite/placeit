@@ -207,8 +207,10 @@ export default function NyscPage() {
         </div>
       </section>
 
-      {/* BulkApply spotlight */}
-      <section className="py-20 sm:py-28 bg-gray-950 border-t border-gray-800">
+      {/* BulkApply spotlight — dark by design in both themes. `theme-static`
+          stops the gray-950/900/800 surfaces inverting into a near-white slab
+          with white text on it. */}
+      <section className="theme-static py-20 sm:py-28 bg-gray-950 border-t border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-16">
           <div className="flex flex-col lg:flex-row gap-12 items-center">
             <Reveal className="flex-1">

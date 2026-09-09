@@ -134,7 +134,7 @@ export default function AvailableOpportunity({
               {isVerified && (
                 <div className="relative group/badge inline-block shrink-0">
                   <BadgeCheck className="w-3 h-3 text-blue-500" />
-                  <div className="absolute z-10 bottom-full mb-1 left-0 w-40 hidden group-hover/badge:block bg-gray-900 text-white text-[10px] px-2 py-1.5 leading-relaxed whitespace-nowrap">
+                  <div className="theme-static absolute z-10 bottom-full mb-1 left-0 w-40 hidden group-hover/badge:block bg-gray-900 text-white text-[10px] px-2 py-1.5 leading-relaxed whitespace-nowrap">
                     Verified company
                   </div>
                 </div>

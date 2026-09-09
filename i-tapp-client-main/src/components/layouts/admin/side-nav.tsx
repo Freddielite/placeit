@@ -116,7 +116,7 @@ export default function SideNav({
 
             {/* Tooltip when collapsed (desktop only) */}
             {collapsed && !isMobile && (
-              <div className="absolute left-full rounded-md px-2 py-1 ml-3 bg-gray-900 text-white text-xs invisible opacity-0 -translate-x-1 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 z-50 whitespace-nowrap pointer-events-none">
+              <div className="theme-static absolute left-full rounded-md px-2 py-1 ml-3 bg-gray-900 text-white text-xs invisible opacity-0 -translate-x-1 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 z-50 whitespace-nowrap pointer-events-none">
                 {item.name}
               </div>
             )}

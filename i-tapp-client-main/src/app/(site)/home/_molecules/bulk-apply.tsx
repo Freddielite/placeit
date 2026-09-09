@@ -20,7 +20,10 @@ export function BulkApply() {
   return (
     <section className="bg-white border-t border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-16 py-20 sm:py-28">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 px-8 sm:px-14 py-14 sm:py-20">
+        {/* `theme-static`: this panel is dark BY DESIGN, not because the page
+            is. Without it the gray-950/900 gradient inverts to near-white in
+            dark mode while the `text-white` on top stays white. */}
+        <div className="theme-static relative overflow-hidden rounded-3xl bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 px-8 sm:px-14 py-14 sm:py-20">
           {/* Decorative */}
           <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-primary/10 pointer-events-none" />
           <div className="absolute -bottom-16 -left-16 w-56 h-56 rounded-full bg-primary/5 pointer-events-none" />

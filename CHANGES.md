@@ -574,3 +574,162 @@ surface tokens:
 
 Type-checked clean. Still no `npm run build`. The hero, the persona tabs and
 the stats band are the three to re-check on device.
+
+---
+
+# What changed (session 11 - the two pages the sweep missed)
+
+Two screenshots, two halves of the same mistake. The inversion trick only
+works on colours that mean something to the theme. Anywhere a colour is a
+literal design decision, it sits still while the utilities on top of it move.
+
+## `/get-started` - never converted
+
+It lives outside `(site)`, so session 9's sweep didn't reach it, and it drives
+its entire design from a raw `<style>` block: `#F8F9FC` page, `#fff` cards,
+`#E5E8EF` borders, three pastel role accents. None of that flips. The
+`text-gray-900` on top does. The tell is the `?` in "Who are you?" - it's
+`text-gray-300`, which inverts to near-black, so it rendered solid while the
+heading beside it washed out.
+
+Converted the same way as the site pages: surfaces onto `--card` / `--border`
+/ `--surface-blue`, and the three roles onto the existing persona tokens -
+they ARE the same three personas, student blue / corps green / company violet.
+
+- Fills use `--accent-*`, type uses `--accent-*-text`. Same split as session 10.
+- Tints are `rgba(var(--*-rgb), a)` washes, not pastel hexes. A wash works on a
+  white card and a dark one; `#EFF6FF` only works on the first.
+- `role.color + "30"` for the hover shadow had to become a pre-mixed rgba.
+  Hex-alpha concatenation can't survive the value becoming a `var()` - the same
+  trap as the 19 usages in session 9.
+- Body copy `gray-400` -> `gray-500`. The ramp is mirrored, so 400 was landing
+  around 2.5:1 on the card in BOTH themes. That one was never dark-only.
+
+**The missing logo** is the same bug one layer up. `Logo` carries
+`dark:brightness-0 dark:invert`, so it goes white; the header was
+`bg-white/80`, which the foreground rule pins to real white. White on white.
+Header is `bg-background/80` now. The comment in `logo.tsx` still claimed the
+dark class was portal-only - it hasn't been since `THEMEABLE_ROUTE_PREFIXES`
+widened to `["/"]`, and that stale assumption is what let this ship.
+
+## Dark islands - the inverse case
+
+A panel that is deliberately DARK in light mode inverts into a near-white slab
+while its `text-white` stays white. Screenshot 2 is the homepage BulkApply
+panel doing exactly that. Its paragraph read fine, which is the fingerprint:
+`text-gray-400` inverted to a dark grey and stayed legible on the flipped
+background.
+
+## New: `.theme-static`
+
+`.theme-light` already restored the light palette for a subtree, but the name
+only describes half the job and nobody would think to put it on a near-black
+CTA panel. `.theme-static` is the same restore under a name that fits: these
+colours are literal design values, don't re-map them.
+
+Both were also missing `--color-gray-950` and the whole slate ramp, so
+`.theme-light` couldn't have fixed these even if you'd reached for it.
+`color-scheme: light` stays on `.theme-light` only - a pinned-dark panel is
+still on a dark page.
+
+Applied to four places:
+
+- homepage BulkApply panel (screenshot 2)
+- the matching spotlight band on `/nysc` - identical bug, not yet reported
+- the mock browser chrome in `for-companies` - reads as a title bar only while
+  it's dark
+- the portrait scrim in `about-us/team` - inverted, a darkening pass becomes a
+  40% white wash that fogs the photos
+
+## Verified
+
+Type-checked: 36 errors remain, all `TS7016`/`TS7006` cascading from `zustand`
+and `vaul` declarations missing in a partial install (npm's `@sentry/cli`
+postinstall can't reach its CDN here; `--ignore-scripts` gets you a tree).
+None in any touched file. Still no `npm run build`.
+
+Not seen rendered. `/get-started` in dark and the `/nysc` spotlight band are
+the two to look at - the second is a fix for a bug nobody has screenshotted
+yet, so it's the more likely of the two to be wrong.
+
+---
+
+# What changed (session 12 - audit for the same bug class)
+
+Swept the whole of `src` for every way a colour can sit still while the
+utilities on top of it move. Four patterns, 19 files. The biggest find is not
+on the marketing site.
+
+## `bg-black` scrims - 17 of them, all inverted
+
+`--black` is remapped to `#e9edf2` so `text-black` becomes light type. That is
+right. It also catches every `bg-black/N` OVERLAY: the dialog, drawer, sheet
+and alert-dialog backdrops, the mobile sidebar and filter-panel scrims, both
+avatar-crop overlays, the admin student drawer.
+
+A backdrop is a darkening pass by definition. Inverted, `bg-black/80` is a
+near-opaque WHITE sheet over the app - so in dark mode every modal in the
+portal and the admin area dropped a white curtain behind itself.
+
+This is session 9's `text-white` bug in the other direction, and it takes the
+same fix: rebind `--black` to real black on the surface utilities, leaving
+`text-black` alone because that one should invert. Checked first that no
+element combines a black surface with `text-black`, and that no `text-black`
+element sits inside one of the three overlays that wrap content rather than
+sitting empty.
+
+**Also found while there:** `components/ui/modal.tsx`, the company signup
+success modal and the admin student drawer still use `bg-opacity-50`, which
+Tailwind v4 removed. Those backdrops have been fully opaque black in BOTH
+themes since the v4 upgrade - nothing to do with dark mode. Converted to
+slash-alpha.
+
+## Dark islands the first pass missed - 4
+
+Three tooltips (`bg-gray-900 text-white`) in the admin side-nav and two
+find-it-space panels, plus the offer banner scrim (`from-gray-900/60`). Same
+`theme-static` treatment. The tooltips were the worst of these: white text on
+a near-white bubble, so hovering produced a blank rectangle.
+
+## Light-on-light - 2
+
+- `about-us/details.tsx` - the "CAC Verified Platform" badge over the team
+  photo is `bg-white/95`, pinned to real white, with `text-gray-900` on it
+  that inverts to near-white. Invisible. Now `bg-background/95`, the same fix
+  session 10 applied to the sticky mobile CTA bar.
+- `opportunities/_molecules/index.tsx` - `border-[#F5F5F5]` row divider, a
+  near-white hairline on a dark card. Now `border-border`.
+
+## Textures and blend modes - 6
+
+- `Logo` still had a bare `mix-blend-multiply` in the student and corps
+  onboarding screens. Session 9 fixed the site header and missed these two,
+  which are in the portal - where dark mode has been live longest. Multiply
+  against a dark panel renders the wordmark as a solid black block.
+- Two dot-grid backdrops with baked colours: `#e5e7eb` on the notifications
+  page (a field of bright specks on a dark background) and `#000` on the
+  opportunity detail hero (texture disappears entirely). Now `var(--border)`
+  and `currentColor`.
+- `app/demo/tour` hardcoded `bg-[#F0F0F5]` on three full-screen containers.
+  Not linked from anywhere, but it's inside the `["/"]` scope, so it would
+  have washed out exactly like `/get-started`. Now `--surface-neutral`.
+
+## Looked at and left alone
+
+- `footer.tsx` `bg-[#0d1117] text-white`. An arbitrary hex is a literal, so it
+  does not invert - the footer is correctly dark in both themes already.
+- The WhatsApp mockup. Still deliberately pinned, per session 9.
+- `marquee.tsx` `from-white` edge fades. Its container is `bg-white`, so
+  fade and background remap together and stay matched.
+- `offline-screen.tsx` `stroke="#477dc0"` and the recharts `fill="#6366f1"`.
+  Brand-value graphics, legible on both backgrounds.
+
+## Verified
+
+Type-checked: 36 errors, unchanged from before this pass and all
+`TS7016`/`TS7006` from `zustand`/`vaul` declarations missing in a partial
+install. None in any touched file. CSS braces and comments balanced. Still no
+`npm run build`.
+
+Not seen rendered. Open any modal in the portal in dark mode first - that is
+the fix with the widest blast radius and the easiest to confirm.

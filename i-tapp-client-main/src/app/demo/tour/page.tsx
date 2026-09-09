@@ -290,7 +290,7 @@ export default function TourDemoPage() {
   const [role, setRole] = useState<Role>("student");
 
   return (
-    <div className="min-h-screen bg-[#F0F0F5]">
+    <div className="min-h-screen bg-[var(--surface-neutral)]">
       {/* Demo control bar — not part of the real app, only exists on this
           preview page so you can switch roles and re-trigger the tour. */}
       <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[1000] bg-white shadow-xl rounded-full px-3 py-2 flex items-center gap-2 border border-gray-200">
@@ -320,7 +320,7 @@ export default function TourDemoPage() {
       {role === "student" && (
         <>
           <DemoHeader navLinks={studentNavLinks} />
-          <main className="min-h-screen bg-[#F0F0F5]">
+          <main className="min-h-screen bg-[var(--surface-neutral)]">
             <DummyContent role="student" />
           </main>
           <OnboardingTour role="student" />
@@ -330,7 +330,7 @@ export default function TourDemoPage() {
       {role === "corps" && (
         <>
           <DemoHeader navLinks={corpsNavLinks} />
-          <main className="min-h-screen bg-[#F0F0F5]">
+          <main className="min-h-screen bg-[var(--surface-neutral)]">
             <DummyContent role="corps" />
           </main>
           <OnboardingTour role="corps" />
