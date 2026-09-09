@@ -49,7 +49,7 @@ the script has to be inline and dependency-free to beat the first paint.
 | `keyboardHandling` | app | Soft-keyboard avoidance for a forms-heavy app |
 | `bottomTabBar` | app | Fixed portal tab bar, mobile widths only |
 | `offlineCache` | app | Persisted React Query cache |
-| `darkMode` | `/portal` only (any runtime) | Light / dark / follow-system (see below) |
+| `darkMode` | everywhere | Light / dark / follow-system (see below) |
 | `serviceWorker` | **all** | Must stay on in the browser or the PWA can't be installed |
 | `installBanner` | browser | Only the website should advertise the app |
 
@@ -166,28 +166,49 @@ ramp is deliberately **inverted** — `gray-50` becomes the darkest surface,
 `gray-900` becomes near-white — so `bg-gray-50 text-gray-800` keeps its
 contrast relationship instead of going dark-on-dark.
 
-**Scoped to `/portal`, not just to app mode.** Runtime alone was the wrong
-gate and shipped visibly broken: installing the PWA drops you on the marketing
-homepage, so "app mode" painted the dark palette onto pages built entirely
-from hardcoded light colours. The background stayed light, the `text-gray-900`
-on it inverted to near-white, and whole sections became unreadable.
+**Scope is now everywhere**, including the marketing site. It was `/portal`
+only for two rounds because the public pages hardcoded their colour: the
+background stayed light, the `text-gray-900` on it inverted to near-white, and
+whole sections became unreadable.
 
-The rule: **the theme follows the surface, not the runtime.** A page can only
-go dark if its colours come from tokens. The portal qualifies. The marketing
-site, auth screens and public pages don't, and stay light regardless of the
-user's preference (the preference is still remembered, just not painted).
+The rule still holds: **the theme follows the surface, not the runtime.** A
+page can only go dark if its colours resolve through variables. The marketing
+site now does, via three changes:
+
+- **`--accent-blue` / `--accent-green` / `--accent-violet`** (+ matching
+  `-rgb` triples). Each public page drove all of its colour from one
+  module-level constant (`const green = "#059669"`). Those are variables now,
+  lifted under `.dark` because the originals fail contrast on `#12161c`.
+- **`--surface-*`** for the opaque tinted section backgrounds
+  (`bg-[#f0fdf4]` and friends).
+- **Hex-alpha concatenation rewritten.** `` `${green}18` `` can't work once
+  `green` is a `var()`, so every one became
+  `` `rgba(${greenRgb}, 0.09)` ``. That's why the `-rgb` twins exist.
+
+**17 accent tint families** (`bg-emerald-50` + `text-emerald-600` chips) are
+remapped at 50/100/200 and 600/700. 400/500 are left alone - they're solid
+fills that already carry white text.
+
+**The `--white` split.** Remapping `--white` fixes ~600 `bg-white` cards for
+free, but also catches ~250 foreground uses (`text-white` on a coloured
+button, `border-white/30`, `bg-white/10` glows). Those rebind the variable
+back to real white on the element itself, which preserves each utility's own
+alpha. `--white` is the *card* colour, not the page background, so `bg-white`
+cards keep their elevation.
 
 Route list is `THEMEABLE_ROUTE_PREFIXES` in `src/lib/theme.ts`, duplicated in
-the boot script. **Before adding a prefix, grep that area for `-[#`, inline
-`style` colours and gradient stops.** If it has them, it needs a hand pass or
-a `.theme-light` wrapper first.
+the boot script. **If you add an area that hardcodes colour, narrow this list
+rather than shipping it broken** - `["/portal"]` restores the previous
+behaviour. Grep any new area for `-[#`, inline `style` colours and gradient
+stops first.
 
 **`.theme-light`** (globals.css) restores the light palette for one subtree
 inside a dark screen - for a brand banner, an illustration with a baked
 background, or an embed.
 
-Known rough edge: logging out sends you to `/signin`, which is outside the
-themeable set, so the app goes light at that moment.
+Deliberately still light: the WhatsApp mockup's outgoing chat bubble
+(`#dcf8c6`) and the WhatsApp brand green, since that block is a replica of
+someone else's UI. Its text is pinned dark so it stays readable.
 
 Theme is resolved in the same boot script pass as the mode, so a dark cold
 start never shows a light frame first. On native, the status bar style and

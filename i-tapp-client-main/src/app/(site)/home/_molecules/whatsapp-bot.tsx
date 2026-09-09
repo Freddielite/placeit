@@ -98,7 +98,7 @@ export function WhatsAppBot() {
 
           {/* Right — mock chat UI */}
           <div className="flex-1 w-full max-w-sm lg:max-w-none">
-            <div className="bg-[#f0f2f5] rounded-3xl overflow-hidden shadow-2xl shadow-gray-200/60 border border-gray-100">
+            <div className="bg-[var(--surface-neutral)] rounded-3xl overflow-hidden shadow-2xl shadow-gray-200/60 border border-gray-100">
               {/* Chat header */}
               <div className="bg-[#25D366] px-5 py-4 flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
@@ -119,19 +119,19 @@ export function WhatsAppBot() {
                       className={cn(
                         "max-w-[85%] rounded-2xl px-4 py-2.5 shadow-sm",
                         msg.bot
-                          ? "bg-white rounded-tl-sm text-gray-800"
-                          : "bg-[#dcf8c6] rounded-tr-sm text-gray-800"
+                          ? "bg-card rounded-tl-sm text-foreground"
+                          : "bg-[#dcf8c6] rounded-tr-sm text-[#1f2c33]"
                       )}
                     >
                       <p className="text-sm leading-relaxed">{msg.text}</p>
-                      <p className="text-[10px] text-gray-400 mt-1 text-right">{msg.time}</p>
+                      <p className="text-[10px] text-current opacity-50 mt-1 text-right">{msg.time}</p>
                     </div>
                   </div>
                 ))}
               </div>
 
               {/* Input bar */}
-              <div className="bg-[#f0f2f5] px-4 py-3 flex items-center gap-3 border-t border-gray-200/60">
+              <div className="bg-[var(--surface-neutral)] px-4 py-3 flex items-center gap-3 border-t border-gray-200/60">
                 <div className="flex-1 bg-white rounded-full px-4 py-2.5 text-sm text-gray-400">
                   Message PlaceIT Bot…
                 </div>

@@ -29,11 +29,11 @@ export default function WelcomeLayout({
   const pathname = usePathname();
   const isStudent = pathname.includes("/welcome");
   return (
-    <div className="min-h-screen bg-[#faf8ff99]">
+    <div className="min-h-screen bg-[var(--surface-violet)]">
       <div
         className={cn(
           "flex px-4 py-6 sm:px-8 md:px-16 lg:px-28 gap-6 flex-col lg:flex-row",
-          isStudent && "max-w-3xl mx-auto bg-[#faf8ff99]",
+          isStudent && "max-w-3xl mx-auto bg-[var(--surface-violet)]",
         )}
       >
         <main className="flex-1 mb-6">{children}</main>

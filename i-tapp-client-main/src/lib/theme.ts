@@ -17,24 +17,26 @@ export const THEME_STORAGE_KEY = "placeit:theme";
 export const DARK_CLASS = "dark";
 
 /**
- * Dark mode applies to these route prefixes ONLY.
+ * Route prefixes dark mode applies to. `"/"` means everywhere.
  *
- * Scoping it by runtime (app vs website) was wrong. Someone who installs the
- * PWA lands on the marketing homepage, so "app mode" put a dark palette on
- * pages that were never built for one - and those pages are full of hardcoded
- * light backgrounds (`bg-emerald-50`, inline `style={{ background: slide.bg }}`,
- * gradient stops). The background stayed light while the text on it inverted
- * to near-white. White on mint. Unreadable.
+ * This gate exists because the theme has to follow the SURFACE, not the
+ * runtime. A page can only go dark if its colours resolve through variables;
+ * a page with hardcoded light backgrounds will keep them while the text on
+ * top inverts to near-white, and become unreadable.
  *
- * The theme has to follow the SURFACE, not the runtime. The portal is built
- * from design tokens and remaps cleanly; the marketing site, auth screens and
- * public pages stay light until someone has designed a dark version of them.
+ * The marketing site was excluded for exactly that reason until its accents
+ * and tinted section backgrounds were moved onto `--accent-*` / `--surface-*`
+ * variables. Now that they are, everything is in scope.
+ *
+ * If a new area is added that hardcodes colour, narrow this list rather than
+ * shipping it broken: `["/portal"]` restores the previous behaviour.
  */
-export const THEMEABLE_ROUTE_PREFIXES = ["/portal"];
+export const THEMEABLE_ROUTE_PREFIXES = ["/"];
 
 export function isThemeableRoute(pathname: string): boolean {
   return THEMEABLE_ROUTE_PREFIXES.some(
-    (prefix) => pathname === prefix || pathname.startsWith(prefix + "/")
+    (prefix) =>
+      prefix === "/" || pathname === prefix || pathname.startsWith(prefix + "/")
   );
 }
 

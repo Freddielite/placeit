@@ -15,7 +15,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/utils/tailwind";
 
-const violet = "#7c3aed";
+const violet = "var(--accent-violet)";
+const violetRgb = "var(--accent-violet-rgb)";
 
 const stats = [
   { value: "3,200+", label: "Active talent pool" },
@@ -144,7 +145,7 @@ export default function CompaniesPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero */}
-      <section className="relative overflow-hidden bg-[#faf5ff] border-b border-violet-100">
+      <section className="relative overflow-hidden bg-[var(--surface-violet)] border-b border-violet-100">
         <div className="absolute inset-0 pointer-events-none">
           <div
             className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full opacity-10"
@@ -156,7 +157,7 @@ export default function CompaniesPage() {
             <Reveal className="flex-1">
               <span
                 className="inline-block text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-5"
-                style={{ background: `${violet}18`, color: violet }}
+                style={{ background: `rgba(${violetRgb}, 0.09)`, color: violet }}
               >
                 Hire Placement-Ready Talent
               </span>
@@ -207,7 +208,7 @@ export default function CompaniesPage() {
                       <p className="font-bold text-sm text-gray-900">Software Dev Intern · SIWES</p>
                       <span
                         className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                        style={{ background: `${violet}15`, color: violet }}
+                        style={{ background: `rgba(${violetRgb}, 0.08)`, color: violet }}
                       >
                         Active
                       </span>
@@ -287,10 +288,10 @@ export default function CompaniesPage() {
           <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {perks.map((p, i) => (
               <Reveal key={p.title} delay={i * 60}>
-                <div className="flex flex-col gap-3 p-6 rounded-2xl border border-gray-100 bg-[#faf5ff] hover:border-violet-100 transition-colors h-full">
+                <div className="flex flex-col gap-3 p-6 rounded-2xl border border-gray-100 bg-[var(--surface-violet)] hover:border-violet-100 transition-colors h-full">
                   <div
                     className="w-10 h-10 rounded-xl flex items-center justify-center"
-                    style={{ background: `${violet}15` }}
+                    style={{ background: `rgba(${violetRgb}, 0.08)` }}
                   >
                     <p.icon className="w-5 h-5" style={{ color: violet }} />
                   </div>
@@ -306,7 +307,7 @@ export default function CompaniesPage() {
       </section>
 
       {/* How it works */}
-      <section id="how-it-works" className="py-20 sm:py-28 bg-[#faf5ff] border-t border-violet-100">
+      <section id="how-it-works" className="py-20 sm:py-28 bg-[var(--surface-violet)] border-t border-violet-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-16">
           <Reveal>
             <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: violet }}>
@@ -329,7 +330,7 @@ export default function CompaniesPage() {
                   </div>
                   <span
                     className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full mb-3 inline-block"
-                    style={{ background: `${violet}15`, color: violet }}
+                    style={{ background: `rgba(${violetRgb}, 0.08)`, color: violet }}
                   >
                     {s.tag}
                   </span>
@@ -360,7 +361,7 @@ export default function CompaniesPage() {
                 delay={i * 80}
                 className={t.featured ? "lg:col-span-3" : "lg:col-span-2"}
               >
-                <div className="h-full bg-[#faf5ff] rounded-2xl border border-violet-100 p-6 flex flex-col gap-4">
+                <div className="h-full bg-[var(--surface-violet)] rounded-2xl border border-violet-100 p-6 flex flex-col gap-4">
                   <p className="text-gray-700 text-sm leading-relaxed flex-1">&ldquo;{t.quote}&rdquo;</p>
                   <div className="flex items-center justify-between pt-3 border-t border-violet-100">
                     <div>
@@ -369,7 +370,7 @@ export default function CompaniesPage() {
                     </div>
                     <span
                       className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                      style={{ background: `${violet}15`, color: violet }}
+                      style={{ background: `rgba(${violetRgb}, 0.08)`, color: violet }}
                     >
                       {t.tag}
                     </span>
@@ -382,7 +383,7 @@ export default function CompaniesPage() {
       </section>
 
       {/* FAQs */}
-      <section className="py-20 sm:py-28 bg-[#faf5ff] border-t border-violet-100">
+      <section className="py-20 sm:py-28 bg-[var(--surface-violet)] border-t border-violet-100">
         <div className="max-w-3xl mx-auto px-4 sm:px-8">
           <Reveal>
             <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: violet }}>

@@ -56,7 +56,7 @@ export function OpportunitiesPreview() {
   if (opportunities.length === 0) return null;
 
   return (
-    <section className="bg-[#f7f8fc] border-t border-gray-100">
+    <section className="bg-[var(--surface-blue)] border-t border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-16 py-20 sm:py-28">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-12">

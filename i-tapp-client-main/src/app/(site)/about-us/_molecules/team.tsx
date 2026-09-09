@@ -53,7 +53,7 @@ const team = [
 
 export default function Team() {
   return (
-    <section className="bg-[#f7f8fc] border-t border-gray-100">
+    <section className="bg-[var(--surface-blue)] border-t border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-16 py-16 sm:py-24">
         {/* Header */}
         <div className="text-center mb-12 sm:mb-16">

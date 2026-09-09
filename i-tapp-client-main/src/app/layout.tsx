@@ -207,14 +207,13 @@ export default function RootLayout({
                   // Theme, resolved in the same pass so there is never a
                   // light frame before a dark one.
                   //
-                  // Two gates: app mode AND a portal route. The marketing
-                  // pages set their own light backgrounds and would render
-                  // white-on-white under the dark palette. Keep this list in
-                  // sync with THEMEABLE_ROUTE_PREFIXES in src/lib/theme.ts.
-                  var path = window.location.pathname;
-                  var themeable = path === "/portal" || path.indexOf("/portal/") === 0;
+                  // Every route is themeable now that the marketing pages
+                  // resolve their colour through CSS variables. If that ever
+                  // stops being true for some area, narrow this the same way
+                  // THEMEABLE_ROUTE_PREFIXES in src/lib/theme.ts is narrowed.
+                  var themeable = true;
 
-                  if (isApp && themeable) {
+                  if (themeable) {
                     var pref = null;
                     try { pref = localStorage.getItem("placeit:theme"); } catch (e) {}
                     if (pref !== "light" && pref !== "dark") pref = "system";

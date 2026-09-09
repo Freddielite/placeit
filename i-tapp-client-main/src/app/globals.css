@@ -65,6 +65,32 @@
   --sidebar-border: #d9e0ea;
   --sidebar-ring: #c0d3f0;
 
+  /* --- Marketing site accents -------------------------------------------
+     The public pages drive their colour from a per-persona accent: blue for
+     students, green for corps members, violet for companies. These used to
+     be hardcoded hexes in each page, which is why those pages couldn't go
+     dark. They're variables now, with lifted counterparts under `.dark`.
+
+     The `-rgb` triples exist because the pages compose translucent washes
+     (`rgba(var(--accent-blue-rgb), 0.09)`); a plain hex variable can't be
+     given an alpha channel. Keep each pair in sync.
+
+     `--surface-*` are the opaque tinted section backgrounds that go with
+     each accent. */
+  --accent-blue: #445dcb;
+  --accent-blue-rgb: 68, 93, 203;
+  --accent-green: #059669;
+  --accent-green-rgb: 5, 150, 105;
+  --accent-violet: #7c3aed;
+  --accent-violet-rgb: 124, 58, 237;
+
+  --surface-blue: #f7f8fc;
+  --surface-blue-strong: #f0f3ff;
+  --surface-green: #f0fdf4;
+  --surface-green-strong: #f0fdf8;
+  --surface-violet: #faf5ff;
+  --surface-neutral: #f0f2f5;
+
   /* Border radius */
   --radius: 0.625rem;
 }
@@ -324,9 +350,14 @@ body {
   --success: #f0cf5e;
   --danger: #f0655f;
 
-  /* --- Project greyscale (used via bg-white, text-black, text-grey-*) ---- */
+  /* --- Project greyscale (used via bg-white, text-black, text-grey-*) ----
+     `--white` is the CARD surface, not the page background. Tailwind's
+     `bg-white` resolves to it, and there are ~600 `bg-white` cards in this
+     app; making it slightly lighter than --background gives them their
+     elevation back for free, instead of every card disappearing into the
+     page. */
   --black: #e9edf2;
-  --white: #12161c;
+  --white: #191f27;
   --grey-1: #d4dae1;
   --grey-2: #b6bfc9;
   --grey-3: #8d97a3;
@@ -348,7 +379,7 @@ body {
   --sidebar-ring: #3d4a5a;
 
   /* --- Tailwind's own palette, inverted ---------------------------------- */
-  --color-white: #12161c;
+  --color-white: #191f27;
   --color-black: #e9edf2;
 
   --color-gray-50: #12161c;
@@ -374,18 +405,108 @@ body {
   --color-slate-800: #d5dce4;
   --color-slate-900: #e9edf2;
 
-  /* Pale tints (bg-red-50, bg-green-50 ...) become near-black on a dark
-     surface, otherwise every subtle status chip turns into a floodlight. */
-  --color-red-50: #2a1618;
-  --color-red-100: #3a1d20;
-  --color-green-50: #14241a;
-  --color-green-100: #1a3223;
-  --color-blue-50: #141f2e;
-  --color-blue-100: #1a2a3e;
-  --color-yellow-50: #2a2413;
-  --color-yellow-100: #3a3119;
-  --color-amber-50: #2a2413;
-  --color-amber-100: #3a3119;
+  /* --- Accent tints ------------------------------------------------------
+     Status chips, badges and callouts are built from `bg-<hue>-50` with
+     `text-<hue>-600` on top. Left alone, the 50 tints are near-white and each
+     one becomes a floodlight on a dark screen.
+
+     50/100/200 become dark tinted surfaces; 600/700 are lifted so accent text
+     stays legible on them. 400/500 are deliberately untouched - those are
+     solid fills that already carry white text.
+
+     Every hue below is in use somewhere in the app. Adding a new one means
+     adding it here too. */
+
+  --color-red-50: #2a1518;    --color-red-100: #3a1c20;    --color-red-200: #4d262a;
+  --color-red-600: #f4746e;   --color-red-700: #f89b96;
+
+  --color-orange-50: #2b1c11; --color-orange-100: #3b2617; --color-orange-200: #4e321e;
+  --color-orange-600: #f5a15c;--color-orange-700: #f8bb8a;
+
+  --color-amber-50: #2a2413;  --color-amber-100: #3a3119;  --color-amber-200: #4c4022;
+  --color-amber-600: #f2c25c; --color-amber-700: #f6d489;
+
+  --color-yellow-50: #2a2812; --color-yellow-100: #3a3618; --color-yellow-200: #4c4720;
+  --color-yellow-600: #ecd04f;--color-yellow-700: #f3de85;
+
+  --color-lime-50: #21290f;   --color-lime-100: #2d3715;   --color-lime-200: #3b481c;
+  --color-lime-600: #b6dd5c;  --color-lime-700: #cbe78a;
+
+  --color-green-50: #13241a;  --color-green-100: #1a3223;  --color-green-200: #22422e;
+  --color-green-600: #5fcb8a; --color-green-700: #8ddbaa;
+
+  --color-emerald-50: #10241c;--color-emerald-100: #163226;--color-emerald-200: #1d4231;
+  --color-emerald-600: #4ecfa0;--color-emerald-700: #82dcbb;
+
+  --color-teal-50: #10241f;   --color-teal-100: #16322b;   --color-teal-200: #1d4237;
+  --color-teal-600: #45ceb8;  --color-teal-700: #7edccd;
+
+  --color-cyan-50: #102325;   --color-cyan-100: #163131;   --color-cyan-200: #1d4140;
+  --color-cyan-600: #4bcbd8;  --color-cyan-700: #83dae3;
+
+  --color-sky-50: #101f2b;    --color-sky-100: #162b3a;    --color-sky-200: #1d394c;
+  --color-sky-600: #56b6ea;   --color-sky-700: #8acdf1;
+
+  --color-blue-50: #141f2e;   --color-blue-100: #1a2a3e;   --color-blue-200: #223651;
+  --color-blue-600: #6aa5ee;  --color-blue-700: #97c1f3;
+
+  --color-indigo-50: #171b30; --color-indigo-100: #1e2441; --color-indigo-200: #262e55;
+  --color-indigo-600: #8b96f0;--color-indigo-700: #adb5f4;
+
+  --color-violet-50: #1c1832; --color-violet-100: #262044; --color-violet-200: #302a58;
+  --color-violet-600: #a68df2;--color-violet-700: #c0aef6;
+
+  --color-purple-50: #1f1832; --color-purple-100: #2a2044; --color-purple-200: #352958;
+  --color-purple-600: #b389f1;--color-purple-700: #c8abf5;
+
+  --color-fuchsia-50: #24162e;--color-fuchsia-100: #311e3f;--color-fuchsia-200: #3f2751;
+  --color-fuchsia-600: #d283ec;--color-fuchsia-700: #e0a8f1;
+
+  --color-pink-50: #291623;   --color-pink-100: #371e2f;   --color-pink-200: #47263d;
+  --color-pink-600: #ee7bb0;  --color-pink-700: #f3a3c8;
+
+  --color-rose-50: #2a151d;   --color-rose-100: #391d27;   --color-rose-200: #4a2532;
+  --color-rose-600: #f2758f;  --color-rose-700: #f69eb1;
+
+  /* --- Marketing site accents -------------------------------------------
+     Lifted so the accent stays legible as text on a near-black surface. The
+     originals (#445dcb, #059669, #7c3aed) are mid-dark and fail contrast
+     against #12161c. The surfaces become dark tints of the same hue, so the
+     persona colour-coding survives. */
+  --accent-blue: #8fa2f0;
+  --accent-blue-rgb: 143, 162, 240;
+  --accent-green: #4ecfa0;
+  --accent-green-rgb: 78, 207, 160;
+  --accent-violet: #b799f5;
+  --accent-violet-rgb: 183, 153, 245;
+
+  --surface-blue: #161a26;
+  --surface-blue-strong: #191e2e;
+  --surface-green: #10241c;
+  --surface-green-strong: #122820;
+  --surface-violet: #1c1832;
+  --surface-neutral: #161c24;
+}
+
+/* Remapping `--white` fixes ~600 `bg-white` surfaces at zero cost, but it also
+   catches the 250-odd FOREGROUND uses - `text-white` on a coloured button,
+   `border-white/30`, `bg-white/10` glows on dark banners. Those all still want
+   real white.
+
+   Rebinding the variable on the element itself (rather than setting `color`
+   directly) preserves each utility's own alpha: `text-white/80` stays 80%,
+   `bg-white/10` stays a 10% glow. Attribute selectors so responsive and hover
+   variants (`hover:bg-white/10`) are covered too.
+
+   Verified safe: no element in the app combines solid `bg-white` with
+   `text-white`, so nothing gets a white-on-white surface out of this. */
+.dark [class*="text-white"],
+.dark [class*="border-white"],
+.dark [class*="bg-white/"],
+.dark [class*="ring-white"],
+.dark [class*="divide-white"] {
+  --white: #ffffff;
+  --color-white: #ffffff;
 }
 
 /* Escape hatch. Put `.theme-light` on any section that must keep its light
@@ -416,6 +537,11 @@ body {
   --color-gray-900: #111827;
   color-scheme: light;
 }
+
+/* Note: .theme-light reverts the neutrals and core tokens, which is what
+   determines whether text is readable. It deliberately does not revert the
+   17 accent tint families above - an accent chip reading slightly off inside
+   a light island is cosmetic, where dark-on-dark body text is not. */
 
 /* ==========================================================================
    APP MODE vs BROWSER MODE

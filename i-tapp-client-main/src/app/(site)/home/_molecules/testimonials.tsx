@@ -127,7 +127,7 @@ export function Testimonials() {
   const items = testimonials[persona ?? "default"];
 
   return (
-    <section className="bg-[#f7f8fc] border-t border-gray-100">
+    <section className="bg-[var(--surface-blue)] border-t border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-16 py-16 sm:py-24 lg:py-28">
 
         {/* Header */}

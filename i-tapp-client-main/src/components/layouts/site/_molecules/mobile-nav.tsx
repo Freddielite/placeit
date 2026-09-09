@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Menu } from "iconsax-reactjs";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { buttonVariants } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { app } from "@/config/app";
 import { cn } from "@/utils/tailwind";
 import { usePathname } from "next/navigation";
@@ -50,7 +51,7 @@ export function MobileNav() {
       <SheetContent
         className={cn(
           "w-full max-w-[300px] flex flex-col gap-0 py-0 px-0 md:hidden",
-          "bg-white shadow-lg overflow-y-auto"
+          "bg-background shadow-lg overflow-y-auto"
         )}
       >
         {/* Header */}
@@ -110,7 +111,7 @@ export function MobileNav() {
                 "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors",
                 pathname === link.href
                   ? "text-primary bg-primary/6 font-semibold"
-                  : "text-gray-700 hover:bg-gray-50 hover:text-primary"
+                  : "text-foreground hover:bg-muted hover:text-primary"
               )}
             >
               {pathname === link.href && (
@@ -120,6 +121,16 @@ export function MobileNav() {
             </Link>
           ))}
         </nav>
+
+        <Hr className="mx-4" />
+
+        {/* Appearance */}
+        <div className="flex flex-col gap-2 px-4 py-4">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+            Appearance
+          </span>
+          <ThemeToggle className="self-start" />
+        </div>
 
         <Hr className="mx-4" />
 

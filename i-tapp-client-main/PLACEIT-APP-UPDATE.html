@@ -281,7 +281,7 @@
         <p>Particularly on the long forms: onboarding, applications, profiles.</p>
       </div>
       <ul>
-        <li><span class="tick">✓</span><div class="li-body"><strong>Dark mode</strong><span>Light, dark, or automatically match the phone's setting. Users choose from their profile menu. It covers the signed-in area, where people spend their time.</span></div></li>
+        <li><span class="tick">✓</span><div class="li-body"><strong>Dark mode</strong><span>Light, dark, or automatically match the phone's setting. Covers the whole product, public pages included. The switch sits in the top bar and in the menu.</span></div></li>
         <li><span class="tick">✓</span><div class="li-body"><strong>The keyboard stops covering the form</strong><span>Previously the field you were typing in could disappear behind the keyboard, a common complaint on forms this long.</span></div></li>
         <li><span class="tick">✓</span><div class="li-body"><strong>Correct spacing on modern phones</strong><span>Content no longer sits under the notch or the home bar.</span></div></li>
       </ul>
@@ -304,7 +304,7 @@
           <tr><td>Screen transitions</td><td class="yes">Yes</td><td class="no">No</td><td>On a website this just makes every click feel slower.</td></tr>
           <tr><td>Pull to refresh</td><td class="yes">Yes</td><td class="no">No</td><td>Browsers already have their own. Adding ours would replace something that works.</td></tr>
           <tr><td>Blocking zoom</td><td class="yes">Yes</td><td class="no">No</td><td>Blocking zoom on a public website breaks accessibility rules and is penalised by Google.</td></tr>
-          <tr><td>Dark mode</td><td class="yes">Signed-in area</td><td class="no">Not yet</td><td>The public pages use fixed colours chosen by hand, so they need a proper design pass before they can go dark.</td></tr>
+          <tr><td>Dark mode</td><td class="yes">Yes</td><td class="yes">Yes</td><td>Genuinely useful in both places, so this one is not restricted to the app.</td></tr>
           <tr><td>Saving data offline</td><td class="yes">Yes</td><td class="no">No</td><td>Appropriate on a personal phone, less so on a shared or public computer.</td></tr>
         </tbody>
       </table>
@@ -337,12 +337,13 @@
     </div>
 
     <div class="note">
-      <h3>Dark mode covers the signed-in area</h3>
-      <p>Dark mode applies once a user logs in. The public pages stay light for now, because
-      their colours were each chosen by hand and would need a proper design pass rather than
-      an automatic conversion.</p>
-      <p>Worth someone walking through the signed-in screens in dark mode before launch and
-      flagging anything that looks off.</p>
+      <h3>Dark mode needs a walkthrough</h3>
+      <p>Dark mode now covers everything, the public pages included. The persona colours are
+      preserved: students stay blue, corps members green, companies violet, each lightened so
+      they still read against a dark background.</p>
+      <p>This is the one item we would most like eyes on. Someone should walk the whole app in
+      dark mode on a phone and flag anything that looks wrong, particularly on the homepage
+      and the student, corps and company landing pages.</p>
     </div>
   </div>
 </section>
@@ -371,12 +372,6 @@
         file. Removes real friction from onboarding.</p>
       </li>
       <li>
-        <h4>Dark mode across the public pages</h4>
-        <p class="why">Extends what's already built to the homepage and marketing pages.
-        This one needs design input first: those pages use individually chosen colours
-        rather than a shared set, so someone has to decide what each becomes.</p>
-      </li>
-      <li>
         <h4>"Get the app" prompt for website visitors</h4>
         <p class="why">A gentle banner encouraging people browsing on a phone to install.
         The groundwork is in place; it just needs the design.</p>
@@ -394,8 +389,8 @@
         older devices, since that's what your users actually have.</li>
         <li><strong>A decision on offline data.</strong> Whether anything should be
         excluded from what's saved on the device.</li>
-        <li><strong>Someone to review dark mode.</strong> Half an hour walking through the
-        signed-in screens with fresh eyes, flagging anything that looks wrong.</li>
+        <li><strong>Someone to review dark mode.</strong> Half an hour walking the whole app
+        on a phone with fresh eyes, flagging anything that looks wrong.</li>
         <li><strong>A steer on push notifications.</strong> Whether that's in scope, since
         it's the biggest remaining item and needs backend work alongside it.</li>
       </ol>

@@ -111,7 +111,7 @@ export default function OpportunitiesBrowse() {
   const pagination = data?.pagination;
 
   return (
-    <div className="min-h-screen bg-[#f7f8fc]">
+    <div className="min-h-screen bg-[var(--surface-blue)]">
       {/* ── Hero ── */}
       <div className="relative overflow-hidden bg-white border-b border-gray-100">
         {/* Mesh background */}

@@ -7,6 +7,7 @@ import { Logo } from "@/components/logo";
 import { Wrapper } from "@/components/wrapper";
 import { MobileNav } from "./mobile-nav";
 import { buttonVariants } from "@/components/ui/button";
+import { ThemeToggleButton } from "@/components/theme-toggle";
 import { cn } from "@/utils/tailwind";
 import { ChevronDown, GraduationCap, Shield, Building2, X, ArrowRight } from "lucide-react";
 import { usePersona, type Persona } from "@/app/(site)/_context/persona";
@@ -88,7 +89,7 @@ function PersonaDropdown({ className }: { className?: string }) {
           aria-expanded={open ? "true" : "false"}
           aria-haspopup="listbox"
           onClick={() => setOpen((o) => !o)}
-          className="inline-flex items-center gap-2 text-sm font-semibold px-3.5 py-2 rounded-xl border transition-all duration-200 text-gray-600 bg-gray-50 border-gray-200 hover:border-primary/30 hover:text-primary hover:bg-primary/5"
+          className="inline-flex items-center gap-2 text-sm font-semibold px-3.5 py-2 rounded-xl border transition-all duration-200 text-muted-foreground bg-muted border-border hover:border-primary/30 hover:text-primary hover:bg-primary/5"
         >
           I am a...
           <ChevronDown
@@ -102,7 +103,7 @@ function PersonaDropdown({ className }: { className?: string }) {
       )}
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-2xl border border-gray-100 shadow-xl shadow-gray-200/60 z-50 overflow-hidden">
+        <div className="absolute right-0 top-full mt-2 w-64 bg-card rounded-2xl border border-border shadow-xl shadow-black/10 z-50 overflow-hidden">
           <div className="px-3 py-2.5 border-b border-gray-50">
             <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
               Who are you?
@@ -159,8 +160,8 @@ export function Header() {
       className={cn(
         "w-full fixed top-0 z-40 transition-all duration-300",
         scrolled
-          ? "border-b border-gray-200/80 bg-white/95 backdrop-blur-md shadow-sm shadow-gray-100/60"
-          : "border-b border-gray-100/80 bg-white/80 backdrop-blur-md"
+          ? "border-b border-border bg-background/95 backdrop-blur-md shadow-sm shadow-black/5"
+          : "border-b border-border/60 bg-background/80 backdrop-blur-md"
       )}
     >
       <Wrapper
@@ -169,7 +170,7 @@ export function Header() {
           scrolled ? "h-14" : "h-16"
         )}
       >
-        <Logo className="mix-blend-multiply w-55 lg:w-70" />
+        <Logo className="mix-blend-multiply dark:mix-blend-normal w-55 lg:w-70" />
 
         <nav className="items-center gap-8 hidden md:flex">
           {app.nav_links.map((link) => (
@@ -195,6 +196,7 @@ export function Header() {
         </nav>
 
         <div className="hidden md:flex items-center gap-2">
+          <ThemeToggleButton />
           <PersonaDropdown />
           <Link
             href={app.links.signin}
@@ -223,7 +225,10 @@ export function Header() {
           </Link>
         </div>
 
-        <MobileNav />
+        <div className="flex items-center gap-1 md:hidden">
+          <ThemeToggleButton />
+          <MobileNav />
+        </div>
       </Wrapper>
     </header>
   );

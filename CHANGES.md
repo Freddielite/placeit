@@ -453,3 +453,75 @@ been a white sheet sliding over a dark app: `bg-white` -> `bg-background`,
 `border` -> `border-border`.
 
 Dark mode now also works in the portal on desktop web, not just in the app.
+
+---
+
+# What changed (session 8 - accent tints)
+
+Auditing why the marketing site can't go dark turned up a live bug in the
+portal: the dark palette only covered red/green/blue/yellow/amber at 50/100.
+The portal uses 170+ tint utilities across emerald, violet, purple, orange,
+indigo, sky and the 200 steps - none of which were overridden, so every one of
+those chips and callouts was still rendering near-white on the dark UI.
+
+Now covers 17 hue families at 50/100/200 (surfaces) and 600/700 (accent text
+lifted so it stays legible on those surfaces). 400/500 left alone - they're
+solid fills that already carry white text.
+
+Marketing site still out of scope. See the note in APP-VS-BROWSER.md.
+
+---
+
+# What changed (session 9 - dark mode across the marketing site)
+
+The public pages turned out to be far more mechanical than the first look
+suggested. Each one drove ALL of its colour from a single module-level
+constant - `const green = "#059669"` in nysc, `violet` in companies, `blue` in
+students - and the hero's three slides did the same through a data object.
+83 usages, but only 6 source values.
+
+## What was converted
+
+- **`--accent-blue` / `--accent-green` / `--accent-violet`** plus matching
+  `-rgb` triples, with lifted values under `.dark` (the originals fail
+  contrast on `#12161c`). The persona colour-coding survives the theme.
+- **`--surface-*`** for the opaque tinted section backgrounds:
+  `bg-[#f7f8fc]`, `bg-[#f0fdf4]`, `bg-[#faf5ff]`, `bg-[#f0f3ff]`,
+  `bg-[#f0f2f5]`, `bg-[#faf8ff99]`.
+- **Hex-alpha concatenation rewritten.** `${green}18` can't work once `green`
+  is a `var()`, so all 19 became `rgba(${greenRgb}, 0.09)` etc. That's what
+  the `-rgb` twins are for.
+- **hero.tsx** slide data onto variables; `StudentVisual`/`CorpsVisual`/
+  `CompanyVisual` now take `accentRgb` alongside `accent` for the same reason.
+- **Toggle added to the public header** (desktop and mobile) and an
+  "Appearance" section in the public mobile menu.
+- `THEMEABLE_ROUTE_PREFIXES` widened to `["/"]`.
+
+## Two bugs found on the way
+
+**`text-white` was broken app-wide.** Remapping `--white` to fix ~600
+`bg-white` cards also caught 187 `text-white`, 44 `bg-white/N` and 26
+`border-white` - every white label on a coloured button had turned dark.
+Fixed by rebinding the variable back to real white on those elements, which
+preserves each utility's own alpha (`text-white/80` stays 80%). Checked first
+that no element combines solid `bg-white` with `text-white`; the 6 overlaps
+are all translucent.
+
+`--white` is now the CARD colour rather than the page background, so
+`bg-white` cards sit above the page instead of vanishing into it.
+
+**The site logo had `mix-blend-multiply`**, which renders as solid black on a
+dark header. Now `dark:mix-blend-normal`.
+
+## Left light on purpose
+
+The WhatsApp mockup's outgoing bubble (`#dcf8c6`) and the WhatsApp brand
+green - that block is a replica of someone else's UI. Its text is pinned dark
+so it stays readable against the fixed green.
+
+## Verified
+
+Type-checked clean. CSS hex validated. No `npm run build` (npm still won't
+install here), and dark mode across ~48 site files has not been seen rendered
+- that review is yours. The homepage hero and the three persona landing pages
+are where to look first.
