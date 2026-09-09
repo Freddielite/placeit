@@ -44,6 +44,21 @@ export const APP_FEATURES = {
   /** Pad content past notches / home indicator via env(safe-area-inset-*). */
   safeAreaInsets: "app",
 
+  /** Android hardware back button -> in-app navigation instead of exit. */
+  hardwareBackButton: "native",
+
+  /** Vibration feedback on refresh, tab taps, form results. */
+  haptics: "app",
+
+  /** Soft-keyboard avoidance: --keyboard-height, focused-field scroll. */
+  keyboardHandling: "app",
+
+  /** Fixed bottom tab bar in the portal (mobile widths only). */
+  bottomTabBar: "app",
+
+  /** Persist the React Query cache so last-seen data survives going offline. */
+  offlineCache: "app",
+
   /** Service worker - must stay on in the browser or the PWA isn't installable. */
   serviceWorker: "all",
 

@@ -328,6 +328,36 @@ html.app-boot body {
   visibility: hidden;
 }
 
+/* `bottomTabBar`. The bar is fixed, so content needs room underneath it or
+   the last row of every list sits behind it. Only applied at the breakpoint
+   where the bar is actually visible (it's lg:hidden). */
+html.is-app-mode {
+  --app-tabbar-height: 0px;
+}
+
+@media (max-width: 1023px) {
+  html.is-app-mode {
+    --app-tabbar-height: 60px;
+  }
+
+  html.is-app-mode body:has([data-app-tabbar]) {
+    padding-bottom: calc(
+      var(--app-tabbar-height) + env(safe-area-inset-bottom)
+    );
+  }
+}
+
+/* `keyboardHandling`. The soft keyboard would otherwise sit under a fixed
+   bottom bar, leaving it stranded halfway up the screen. KeyboardHandler
+   sets this class and the --keyboard-height variable. */
+html.keyboard-open [data-app-tabbar] {
+  display: none;
+}
+
+html.keyboard-open.is-app-mode body:has([data-app-tabbar]) {
+  padding-bottom: 0;
+}
+
 /* --- Browser only -------------------------------------------------------- */
 
 /* Nothing here yet. Website-exclusive chrome (install banner, cookie/consent

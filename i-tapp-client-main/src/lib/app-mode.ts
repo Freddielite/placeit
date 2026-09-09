@@ -26,7 +26,24 @@ export const BROWSER_CLASS = "is-browser-mode"; // plain browser tab
 /** Query param / storage key for forcing app mode in a desktop browser while developing. */
 export const APP_MODE_OVERRIDE_KEY = "placeit:force-app-mode";
 
+/**
+ * UA marker injected by the shell (`appendUserAgent` in
+ * capacitor.config.json). This is the PRIMARY native signal, not a fallback.
+ *
+ * The shell loads getplaceit.com remotely rather than bundled files, so the
+ * `window.Capacitor` bridge is injected into a page Capacitor doesn't serve -
+ * it is not guaranteed to exist by the time the boot script runs. And a bare
+ * Android WebView does NOT report `display-mode: standalone`, so if the
+ * bridge is late there is nothing else to catch it and the store build would
+ * classify itself as a browser, silently disabling every app feature.
+ * The user-agent string is set on the WebView before the first request and is
+ * always readable synchronously.
+ */
+export const NATIVE_UA_MARKER = "PlaceItApp";
+
 function isNativeShell(): boolean {
+  if (navigator.userAgent.includes(NATIVE_UA_MARKER)) return true;
+
   const w = window as unknown as {
     Capacitor?: { isNativePlatform?: () => boolean };
   };

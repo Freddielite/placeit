@@ -12,6 +12,8 @@ import SideNav from "../company-sidenav";
 import Image from "next/image";
 import { useCompanyStore } from "@/lib/store";
 import { useFetchCompanyProfile } from "@/hooks/query";
+import { AppOnly } from "@/components/providers/app-mode-provider";
+import { AppTabBar } from "../app-tab-bar";
 
 const links = [
   {
@@ -105,6 +107,9 @@ export function CompanyLayout({ children }: { children: React.ReactNode }) {
         </main>
       </div>
       <OnboardingTour role="company" />
+      <AppOnly>
+        <AppTabBar role="company" />
+      </AppOnly>
     </div>
   );
 }

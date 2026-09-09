@@ -1,11 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { useFeature } from "./app-mode-provider";
+import { haptic } from "@/lib/haptics";
 
 const PULL_THRESHOLD = 70;
 const MAX_PULL = 110;
 const RESISTANCE = 0.5;
+const MIN_INDICATOR_MS = 450;
 
 // APP-EXCLUSIVE (scope: `pullToRefresh` in config/app-features.ts).
 //
@@ -22,10 +26,40 @@ const RESISTANCE = 0.5;
 // and the indicator are conditional.
 export function PullToRefresh({ children }: { children: ReactNode }) {
   const enabled = useFeature("pullToRefresh");
+  const queryClient = useQueryClient();
+  const router = useRouter();
   const [pullDistance, setPullDistance] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
   const startYRef = useRef<number | null>(null);
   const pullingRef = useRef(false);
+  const armedRef = useRef(false);
+
+  // Refetch rather than reload. `window.location.reload()` re-downloads the
+  // JS bundle, flashes white, drops scroll position and blows away every
+  // client cache - several seconds on a poor connection, and unmistakably
+  // "this is a web page". Invalidating React Query refetches only the data
+  // that's actually on screen; router.refresh() re-runs the server
+  // components alongside it.
+  const runRefresh = useCallback(async () => {
+    haptic("medium");
+    const startedAt = Date.now();
+    try {
+      router.refresh();
+      await queryClient.invalidateQueries({ refetchType: "active" });
+    } catch {
+      // A failed refetch leaves the last-known data on screen, which is the
+      // right outcome - don't escalate to a reload.
+    } finally {
+      // A cached refetch can resolve in ~20ms, which reads as a broken
+      // flicker rather than a refresh. Hold the indicator briefly.
+      const elapsed = Date.now() - startedAt;
+      const remaining = Math.max(0, MIN_INDICATOR_MS - elapsed);
+      window.setTimeout(() => {
+        setRefreshing(false);
+        setPullDistance(0);
+      }, remaining);
+    }
+  }, [queryClient, router]);
 
   useEffect(() => {
     if (!enabled) return;
@@ -51,6 +85,15 @@ export function PullToRefresh({ children }: { children: ReactNode }) {
       }
 
       const resisted = Math.min(delta * RESISTANCE, MAX_PULL);
+
+      // One tick as the gesture crosses the release threshold, the way a
+      // native pull-to-refresh tells you it's armed.
+      const armed = resisted >= PULL_THRESHOLD;
+      if (armed !== armedRef.current) {
+        armedRef.current = armed;
+        if (armed) haptic("light");
+      }
+
       setPullDistance(resisted);
       e.preventDefault();
     };
@@ -59,11 +102,12 @@ export function PullToRefresh({ children }: { children: ReactNode }) {
       if (!pullingRef.current) return;
       pullingRef.current = false;
       startYRef.current = null;
+      armedRef.current = false;
 
       setPullDistance((current) => {
         if (current >= PULL_THRESHOLD) {
           setRefreshing(true);
-          setTimeout(() => window.location.reload(), 550);
+          void runRefresh();
           return PULL_THRESHOLD;
         }
         return 0;
@@ -83,7 +127,7 @@ export function PullToRefresh({ children }: { children: ReactNode }) {
       setPullDistance(0);
       setRefreshing(false);
     };
-  }, [enabled, refreshing]);
+  }, [enabled, refreshing, runRefresh]);
 
   const shift = enabled
     ? Math.max(pullDistance, refreshing ? PULL_THRESHOLD : 0)

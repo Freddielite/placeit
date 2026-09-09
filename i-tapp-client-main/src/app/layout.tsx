@@ -174,7 +174,11 @@ export default function RootLayout({
                 // frame of app chrome and vice versa.
                 var root = document.documentElement;
                 try {
-                  var isNative = !!(window.Capacitor && typeof window.Capacitor.isNativePlatform === "function" && window.Capacitor.isNativePlatform());
+                  // UA marker first - the Capacitor bridge may not be
+                  // injected yet on a remotely-loaded page. See
+                  // NATIVE_UA_MARKER in src/lib/app-mode.ts.
+                  var isNative = navigator.userAgent.indexOf("PlaceItApp") !== -1
+                    || !!(window.Capacitor && typeof window.Capacitor.isNativePlatform === "function" && window.Capacitor.isNativePlatform());
 
                   var standalone = false;
                   if (window.matchMedia) {

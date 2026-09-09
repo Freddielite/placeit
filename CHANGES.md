@@ -183,3 +183,100 @@ hangs), so unlike session 2 this was **not** validated with a full
 `tsc --noResolve` and are clean apart from the expected
 unresolved-import noise. Please run a real `npm run build` before
 shipping.
+
+---
+
+# What changed (session 4 - native features)
+
+All four items from the shortlist, built on the session-3 switchboard. Every
+new behaviour has an entry in `src/config/app-features.ts`.
+
+## 1. Detection fix (the important one)
+
+The shell loads getplaceit.com remotely, so `window.Capacitor` is injected
+into a page Capacitor doesn't serve and may not exist when the boot script
+runs. A bare Android WebView also doesn't report `display-mode: standalone`,
+so there was no fallback - the store build could have classified itself as a
+browser and silently disabled every app feature.
+
+- `appendUserAgent: "PlaceItApp/1"` in `capacitor.config.json`
+- `NATIVE_UA_MARKER` checked first in both `app-mode.ts` and the boot script
+
+New `src/lib/capacitor-bridge.ts`: typed, dependency-free access to
+`window.Capacitor.Plugins.*`. The Next app installs no `@capacitor/*`
+packages. `hasBridge()` is what plugin callers check (the UA can say "native"
+before the bridge lands); `whenBridgeReady()` polls briefly for the gap.
+
+## 2. Android hardware back button (native)
+
+`back-button-handler.tsx`. Priority order: close an open Radix overlay via a
+synthetic Escape → close the custom sidenav/mobile-nav via their existing
+window events → `router.back()` → at a root route, press-back-twice-to-exit
+with a toast. Previously back exited the app from any screen.
+
+## 3. Haptics (app)
+
+`src/lib/haptics.ts` - Capacitor Haptics on native, Vibration API fallback in
+an installed PWA, no-op in a browser and on iOS Safari. Wired to the
+pull-to-refresh arm/trigger points and tab bar taps.
+
+## 4. Pull-to-refresh now refetches instead of reloading
+
+Was `window.location.reload()`: re-downloaded the bundle, flashed white, lost
+scroll position, cleared every client cache. Now `router.refresh()` plus
+`queryClient.invalidateQueries({ refetchType: "active" })`, with a 450ms
+minimum on the indicator so a cached refetch doesn't read as a flicker.
+
+Required hoisting the `QueryClient` out of `ReactQueryProvider`'s `useState`
+into `src/lib/query-client.ts` so non-React code can reach the same instance.
+`gcTime` raised to 24h - the offline cache is worthless if entries are
+collected before a cold start.
+
+## 5. Bottom tab bar (app, mobile widths)
+
+`components/layouts/protected/app-tab-bar.tsx`, mounted in all three role
+layouts inside `<AppOnly>`. Per-role tabs, `lucide-react` icons (iconsax's
+export names couldn't be verified without node_modules), 56px targets, hidden
+at `lg` and while the keyboard is open. Body padding is handled in CSS via
+`--app-tabbar-height` so list ends don't sit behind it. Header and sidenav
+are untouched.
+
+## 6. Keyboard handling (app)
+
+`Keyboard` plugin with `resize: "body"`, plus `keyboard-handler.tsx` for the
+two things resize alone doesn't cover: publishing `--keyboard-height` so
+fixed UI moves out of the way, and scrolling the focused field into view.
+Installed PWAs get a `visualViewport` version of the same thing.
+
+## 7. Offline cache (app)
+
+`src/lib/query-persist.ts` - built on React Query's own `dehydrate`/`hydrate`,
+so **no new dependencies and no lockfile change**. Debounced writes, flush on
+backgrounding, 24h expiry, keyed to `NEXT_PUBLIC_BUILD_ID`.
+
+The offline screen now has two forms: a slim bar when there's cached data
+behind it, the full-screen takeover only when there genuinely isn't. It also
+stopped trusting `navigator.onLine`, which reports true on captive portals -
+it now confirms with a real HEAD request.
+
+**Privacy:** this writes API responses to localStorage in plaintext.
+Mitigated by a `DO_NOT_PERSIST` key denylist and `clearPersistedCache()` in
+`useLogout`. Read the "Offline cache" section of `APP-VS-BROWSER.md` before
+shipping, and set `NEXT_PUBLIC_BUILD_ID` in your build.
+
+## Also spotted (not fixed)
+
+`companyNavLinks` in `src/constants/index.ts` points at
+`/portal/space/add-new-space` and `/portal/candidates/accepted`. Neither route
+exists. Predates this work; left alone because the fix is a product decision.
+
+## Verified
+
+Same caveat as session 3: `npm install` will not complete in this sandbox, so
+there is **no full `npm run build`**. Every new and modified file was
+type-checked in isolation under `--strict` with TypeScript 5.9 and is clean
+apart from expected unresolved-import noise. Run a real build, and test on a
+device - the back button, haptics and keyboard paths cannot be exercised in a
+desktop browser even with `?appmode=1`.
+
+After pulling: `cd placeit-mobile && npm install && npx cap sync android`.
