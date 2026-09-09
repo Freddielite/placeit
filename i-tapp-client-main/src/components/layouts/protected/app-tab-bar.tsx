@@ -114,7 +114,7 @@ export function AppTabBar({ role }: { role: PortalRole }) {
       className={cn(
         "fixed bottom-0 left-0 right-0 z-40 lg:hidden",
         "flex items-stretch justify-around",
-        "border-t border-gray-200 bg-white",
+        "border-t border-border bg-background",
         "pb-[env(safe-area-inset-bottom)]"
         // Hidden while the keyboard is open - see html.keyboard-open in
         // globals.css, which also owns the body padding that keeps content
@@ -132,7 +132,7 @@ export function AppTabBar({ role }: { role: PortalRole }) {
             className={cn(
               "flex min-h-[56px] flex-1 flex-col items-center justify-center gap-1 px-1 pt-2 pb-1",
               "text-[10px] font-medium leading-none transition-colors",
-              active ? "text-[#477dc0]" : "text-gray-500"
+              active ? "text-primary" : "text-muted-foreground"
             )}
           >
             <span className={active ? "opacity-100" : "opacity-70"}>

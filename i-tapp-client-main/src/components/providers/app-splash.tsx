@@ -66,7 +66,9 @@ export function AppSplash() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "#ffffff",
+        // Matches the pre-paint theme so a dark cold start
+        // doesn't flash a white card. See THEME_CHROME_COLOR.
+        background: "var(--background, #ffffff)",
         opacity: fadingOut ? 0 : 1,
         transition: `opacity ${FADE_OUT_MS}ms ease`,
         pointerEvents: fadingOut ? "none" : "auto",

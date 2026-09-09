@@ -4,6 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Notification } from "iconsax-reactjs";
+import { AppOnly } from "@/components/providers/app-mode-provider";
+import { ThemeToggleButton } from "@/components/theme-toggle";
 import {
   Popover,
   PopoverContent,
@@ -30,7 +32,7 @@ export function Header({ link }: { link: { text: string; href: string }[] }) {
   const recent = notifications.slice(0, 3);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background border-b border-border">
       <div className="flex items-center justify-between px-6 h-[55px] border-b border-grey-5">
         <Link href="/portal " data-tour="logo">
           <Logo />
@@ -111,6 +113,12 @@ export function Header({ link }: { link: { text: string; href: string }[] }) {
               >
                 <User className="w-4 h-4 text-gray-400" /> Profile
               </Link>
+              <AppOnly>
+                <div className="flex items-center justify-between gap-2 border-t border-border px-3 py-2">
+                  <span className="text-xs text-muted-foreground">Appearance</span>
+                  <ThemeToggleButton />
+                </div>
+              </AppOnly>
               <button
                 onClick={logout}
                 className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg hover:bg-red-50 text-red-600 transition-colors"

@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>App vs Browser — PlaceIT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #477dc0;
+    --primary-soft: #eaf0f9;
+    --bg: #ffffff;
+    --bg-alt: #f7f9fc;
+    --fg: #282828;
+    --fg-muted: #5f6b78;
+    --border: #e3e8ef;
+    --card: #ffffff;
+    --shadow: 0 1px 2px rgba(16,24,40,.04), 0 8px 24px rgba(16,24,40,.06);
+    --radius: 0.625rem;
+    --accent-warn: #b8860b;
+    --accent-warn-bg: #fdf8e8;
+    --accent-warn-border: #ecdaa4;
+  }
+
+  html[data-theme="dark"] {
+    --primary: #6fa2e0;
+    --primary-soft: #1e2b3a;
+    --bg: #12161c;
+    --bg-alt: #161c24;
+    --fg: #e9edf2;
+    --fg-muted: #9aa6b4;
+    --border: #2a323d;
+    --card: #191f27;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+    --accent-warn: #e8c46a;
+    --accent-warn-bg: #241f12;
+    --accent-warn-border: #3d3520;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: "Open Sans", system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    transition: background .2s ease, color .2s ease;
+  }
+
+  h1, h2, h3 { font-family: Montserrat, system-ui, sans-serif; line-height: 1.2; }
+
+  a { color: var(--primary); }
+
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: .875em;
+    background: var(--primary-soft);
+    color: var(--fg);
+    padding: .12em .4em;
+    border-radius: 5px;
+  }
+
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+
+  /* --- Top bar ---------------------------------------------------------- */
+  .topbar {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 9px;
+    font-family: Montserrat, sans-serif; font-weight: 700; letter-spacing: -.01em;
+  }
+  .brand-mark {
+    width: 26px; height: 26px; border-radius: 7px;
+    background: var(--primary); color: #fff;
+    display: grid; place-items: center;
+    font-size: 15px; font-weight: 700;
+  }
+  .theme-btn {
+    display: flex; align-items: center; gap: 7px;
+    height: 34px; padding: 0 13px;
+    border: 1px solid var(--border); border-radius: 999px;
+    background: var(--card); color: var(--fg-muted);
+    font: 600 12.5px/1 "Open Sans", sans-serif;
+    cursor: pointer;
+  }
+  .theme-btn:hover { color: var(--fg); border-color: var(--primary); }
+
+  /* --- Hero ------------------------------------------------------------- */
+  .hero { padding: 60px 0 44px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: var(--primary-soft); color: var(--primary);
+    font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+    padding: 6px 13px; border-radius: 999px; margin-bottom: 18px;
+  }
+  .hero h1 { font-size: clamp(2rem, 5.5vw, 3rem); margin: 0 0 16px; font-weight: 700; }
+  .hero h1 .accent { color: var(--primary); }
+  .lede { font-size: 1.075rem; color: var(--fg-muted); margin: 0; max-width: 62ch; }
+
+  /* --- Sections --------------------------------------------------------- */
+  section { padding: 34px 0; border-top: 1px solid var(--border); }
+  section h2 { font-size: 1.5rem; margin: 0 0 6px; }
+  section > .wrap > .sub { color: var(--fg-muted); margin: 0 0 22px; }
+
+  /* --- Cards ------------------------------------------------------------ */
+  .cards { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow);
+  }
+  .card h3 { font-size: 1.05rem; margin: 0 0 6px; }
+  .card p { margin: 0; color: var(--fg-muted); font-size: .93rem; }
+  .card .tag {
+    display: inline-block; margin-bottom: 11px;
+    font-size: 10.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+    padding: 3px 9px; border-radius: 999px;
+    background: var(--primary-soft); color: var(--primary);
+  }
+  .card .tag.grey { background: var(--bg-alt); color: var(--fg-muted); }
+
+  /* --- Table ------------------------------------------------------------ */
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: .93rem; }
+  th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-family: Montserrat, sans-serif; font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; color: var(--fg-muted); }
+  tbody tr:last-child td { border-bottom: none; }
+  td:first-child { font-weight: 600; white-space: nowrap; }
+
+  .pill { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 700; }
+  .pill.app { background: var(--primary-soft); color: var(--primary); }
+  .pill.both { background: var(--bg-alt); color: var(--fg-muted); border: 1px solid var(--border); }
+  .pill.web { background: var(--bg-alt); color: var(--fg-muted); border: 1px solid var(--border); }
+
+  /* --- Callout ---------------------------------------------------------- */
+  .callout {
+    background: var(--accent-warn-bg);
+    border: 1px solid var(--accent-warn-border);
+    border-left: 3px solid var(--accent-warn);
+    border-radius: var(--radius);
+    padding: 16px 18px; margin: 16px 0;
+  }
+  .callout h3 { margin: 0 0 6px; font-size: 1rem; color: var(--accent-warn); }
+  .callout p { margin: 0; font-size: .93rem; }
+  .callout p + p { margin-top: 8px; }
+
+  ul.plain { padding-left: 20px; margin: 0; }
+  ul.plain li { margin-bottom: 9px; }
+  ul.plain li::marker { color: var(--primary); }
+
+  .steps { list-style: none; counter-reset: s; padding: 0; margin: 0; }
+  .steps li { counter-increment: s; position: relative; padding-left: 40px; margin-bottom: 15px; }
+  .steps li::before {
+    content: counter(s); position: absolute; left: 0; top: 1px;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--primary); color: #fff;
+    display: grid; place-items: center;
+    font: 700 13px/1 Montserrat, sans-serif;
+  }
+
+  footer { padding: 34px 0 60px; border-top: 1px solid var(--border); color: var(--fg-muted); font-size: .87rem; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap topbar-inner">
+    <div class="brand"><span class="brand-mark">P</span> PlaceIT</div>
+    <button class="theme-btn" id="themeBtn" type="button">
+      <span id="themeIcon">🌙</span><span id="themeLabel">Dark</span>
+    </button>
+  </div>
+</div>
+
+<div class="wrap hero">
+  <span class="eyebrow">Engineering guide</span>
+  <h1>One codebase,<br><span class="accent">three PlaceITs</span></h1>
+  <p class="lede">
+    The website, the installed app, and the Play Store app all run the same code.
+    Some things only happen in the app. This page explains which, and why.
+  </p>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2>The three versions</h2>
+    <p class="sub">Same code, three different places it can be running.</p>
+    <div class="cards">
+      <div class="card">
+        <span class="tag grey">Browser</span>
+        <h3>The website</h3>
+        <p>Someone visits getplaceit.com in Chrome or Safari. It should feel like a normal web page.</p>
+      </div>
+      <div class="card">
+        <span class="tag">App</span>
+        <h3>Installed app</h3>
+        <p>Someone tapped "Install app" in Chrome. It opens from the home screen with no address bar.</p>
+      </div>
+      <div class="card">
+        <span class="tag">App</span>
+        <h3>Store app</h3>
+        <p>The real Android build. Same web pages inside a native wrapper.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What's different in the app</h2>
+    <p class="sub">Everything here is on in the app and off on the website — unless the badge says otherwise.</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Feature</th><th>Where</th><th>Why</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Pull to refresh</td><td><span class="pill app">App</span></td><td>Drag down to reload your data. The website already has Chrome's own version of this.</td></tr>
+          <tr><td>Screen transitions</td><td><span class="pill app">App</span></td><td>Screens fade between each other. On the website it just adds a delay to every click.</td></tr>
+          <tr><td>Splash screen</td><td><span class="pill app">App</span></td><td>The logo animation on launch. Making website visitors wait ~2 seconds would lose them.</td></tr>
+          <tr><td>Dark mode</td><td><span class="pill app">App</span></td><td>Light, dark, or follow the phone. Off on the website for now — see the note below.</td></tr>
+          <tr><td>Bottom tab bar</td><td><span class="pill app">App</span></td><td>The fixed row of tabs at the bottom. The website keeps its normal top menu.</td></tr>
+          <tr><td>Back button</td><td><span class="pill app">Store app</span></td><td>Android's back button goes back a screen instead of closing the app.</td></tr>
+          <tr><td>Vibration</td><td><span class="pill app">App</span></td><td>A small buzz when you tap a tab or trigger a refresh.</td></tr>
+          <tr><td>Keyboard handling</td><td><span class="pill app">App</span></td><td>Stops the keyboard covering the field you're typing in.</td></tr>
+          <tr><td>Offline mode</td><td><span class="pill app">App</span></td><td>Shows the data you last loaded instead of an error.</td></tr>
+          <tr><td>No text selecting</td><td><span class="pill app">App</span></td><td>Long-pressing text shouldn't highlight it. On a web page, people expect it to.</td></tr>
+          <tr><td>No pinch zoom</td><td><span class="pill app">App</span></td><td>Blocked in the app. Left on for the website — blocking it there fails accessibility rules.</td></tr>
+          <tr><td>Service worker</td><td><span class="pill both">Everywhere</span></td><td>Must stay on in the browser, or nobody can install the app in the first place.</td></tr>
+          <tr><td>"Get the app" banner</td><td><span class="pill web">Website</span></td><td>Only the website should advertise the app. Not built yet.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Where to change things</h2>
+    <p class="sub">Three files. You'll almost always only need the first one.</p>
+    <ol class="steps">
+      <li>
+        <strong><code>src/config/app-features.ts</code> — the switchboard.</strong><br>
+        One line per feature. Each is set to <code>app</code>, <code>browser</code>,
+        <code>native</code>, <code>all</code>, or <code>off</code>. Change a line, and the
+        whole app follows. <strong>Start here.</strong>
+      </li>
+      <li>
+        <strong><code>src/lib/app-mode.ts</code> — the detector.</strong><br>
+        Works out which of the three versions is currently running.
+      </li>
+      <li>
+        <strong><code>src/app/layout.tsx</code> — the boot script.</strong><br>
+        Runs the same check a split second earlier, before anything is drawn on screen.
+        That's why you never see the wrong version flash up first.
+      </li>
+    </ol>
+    <p style="color:var(--fg-muted); font-size:.92rem; margin-top:18px;">
+      Files 2 and 3 do the same job twice on purpose — the boot script has to run before
+      everything else, so it can't share code. <strong>If you change one, change the other.</strong>
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Two things you can't change on their own</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Pull-to-refresh &amp; overscroll</h3>
+        <p>Turning off the browser's built-in pull-to-refresh is what makes room for ours.
+        Turn that off without turning ours on and users get no refresh gesture at all.
+        Keep them together.</p>
+      </div>
+      <div class="card">
+        <h3>Splash screen &amp; the hidden page</h3>
+        <p>The page is deliberately hidden for a moment so the splash can cover it cleanly.
+        There's a 4-second safety timer that un-hides it no matter what. Don't remove that
+        timer — it's the only thing between a JavaScript error and a permanently blank screen.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>How to test it</h2>
+    <ul class="plain">
+      <li><strong>Fake the app on your laptop:</strong> add <code>?appmode=1</code> to any URL.
+      It sticks until you close the tab. <code>?appmode=0</code> turns it off.</li>
+      <li><strong>Test the real website:</strong> a normal tab, no extra bits in the URL.</li>
+      <li><strong>Test the installed app:</strong> Chrome menu → Install app → open it from your home screen.</li>
+      <li><strong>Test the store app:</strong> <code>cd placeit-mobile &amp;&amp; npx cap run android</code>.</li>
+    </ul>
+    <p style="color:var(--fg-muted); font-size:.92rem; margin-top:16px;">
+      Quick check: open developer tools and look at the <code>&lt;html&gt;</code> tag. You should
+      see either <code>is-app-mode</code> or <code>is-browser-mode</code> — never both.
+    </p>
+    <p style="color:var(--fg-muted); font-size:.92rem;">
+      The back button, vibration and keyboard behaviour <strong>can't be tested on a laptop at all</strong>,
+      even with <code>?appmode=1</code>. Those need a real phone.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Before you ship</h2>
+
+    <div class="callout">
+      <h3>Offline mode saves data onto the phone</h3>
+      <p>To work offline, the app writes whatever you last loaded — your profile, your
+      applications — into the phone's storage as plain text.</p>
+      <p>It's wiped when you log out, and it expires after 24 hours. But if you add a
+      screen that loads anything more sensitive than that, add it to the
+      <code>DO_NOT_PERSIST</code> list in <code>src/lib/query-persist.ts</code> first.</p>
+    </div>
+
+    <div class="callout">
+      <h3>Set NEXT_PUBLIC_BUILD_ID in your build</h3>
+      <p>Saved data is tagged with the version that saved it. Without this, every release
+      shares the same tag, and a release that changes the shape of your data could make the
+      app crash on old saved data.</p>
+    </div>
+
+    <div class="callout">
+      <h3>Dark mode is the app only, on purpose</h3>
+      <p>The colours flip automatically almost everywhere, but around 57 places in the code
+      have a colour written out by hand, and those won't change. The portal is covered;
+      the public marketing pages aren't.</p>
+      <p>That's why it's app-only for now. Once someone has walked through the marketing
+      pages, flip <code>darkMode</code> to <code>all</code> in the switchboard.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Not built yet</h2>
+    <ul class="plain">
+      <li><strong>Push notifications.</strong> "Your application was viewed", "a new PPA matches
+      your course". The single best reason for someone to keep the app installed. Needs backend work too.</li>
+      <li><strong>App links.</strong> Right now, verification and password-reset emails open the
+      browser instead of the app.</li>
+      <li><strong>Camera upload</strong> for CVs and documents.</li>
+      <li><strong>Skip the splash</strong> when returning from the background — it currently replays every time.</li>
+      <li><strong>The "get the app" banner</strong> for website visitors.</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    For the full technical version — exact file paths, the reason each decision was made,
+    and the known bug in <code>companyNavLinks</code> — see <code>APP-VS-BROWSER.md</code>
+    in the repo root.
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var btn = document.getElementById("themeBtn");
+    var icon = document.getElementById("themeIcon");
+    var label = document.getElementById("themeLabel");
+    var KEY = "placeit-doc-theme";
+
+    function set(theme) {
+      root.setAttribute("data-theme", theme);
+      icon.textContent = theme === "dark" ? "☀️" : "🌙";
+      label.textContent = theme === "dark" ? "Light" : "Dark";
+      try { localStorage.setItem(KEY, theme); } catch (e) {}
+    }
+
+    var saved = null;
+    try { saved = localStorage.getItem(KEY); } catch (e) {}
+    if (saved !== "light" && saved !== "dark") {
+      saved = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark" : "light";
+    }
+    set(saved);
+
+    btn.addEventListener("click", function () {
+      set(root.getAttribute("data-theme") === "dark" ? "light" : "dark");
+    });
+  })();
+</script>
+
+</body>
+</html>

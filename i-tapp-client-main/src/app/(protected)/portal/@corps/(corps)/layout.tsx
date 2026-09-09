@@ -9,7 +9,7 @@ export default function CorpsLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <Header link={corpsNavLinks} />
-      <main className="h-screen bg-[#F0F0F5]">{children}</main>
+      <main className="h-screen bg-muted dark:bg-background">{children}</main>
       <OnboardingTour role="corps" />
       <AppOnly>
         <AppTabBar role="corps" />

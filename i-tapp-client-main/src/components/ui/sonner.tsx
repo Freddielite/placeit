@@ -1,12 +1,15 @@
 "use client"
 
-import { useTheme } from "next-themes"
+// Was next-themes, which has no provider mounted anywhere in this app -
+// so `theme` was always the "system" fallback and ignored the user's
+// actual choice. Reads the real theme now.
+import { useTheme } from "@/components/providers/theme-provider"
 import { Toaster as Sonner } from "sonner"
 
 type ToasterProps = React.ComponentProps<typeof Sonner>
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = "system" } = useTheme()
+  const { theme } = useTheme()
 
   return (
     <Sonner

@@ -1,5 +1,8 @@
 # App mode vs browser mode
 
+> **Looking for the short version?** Open `APP-VS-BROWSER.html` in a browser —
+> same content, plain language, no file paths. This file is the technical one.
+
 PlaceIT ships as three things off one codebase:
 
 | Runtime | What it is | Mode |
@@ -45,6 +48,7 @@ the script has to be inline and dependency-free to beat the first paint.
 | `keyboardHandling` | app | Soft-keyboard avoidance for a forms-heavy app |
 | `bottomTabBar` | app | Fixed portal tab bar, mobile widths only |
 | `offlineCache` | app | Persisted React Query cache |
+| `darkMode` | app | Light / dark / follow-system (see below) |
 | `serviceWorker` | **all** | Must stay on in the browser or the PWA can't be installed |
 | `installBanner` | browser | Only the website should advertise the app |
 
@@ -144,6 +148,35 @@ profile and applications sitting on disk. Three mitigations are in place:
   deploy that changes an API shape invalidates them rather than crashing on
   stale data. **Set that env var in your build** or every deploy shares the
   `"dev"` key and stale-shape crashes become possible.
+
+## Dark mode
+
+`ThemeProvider` is hand-rolled rather than next-themes, for one reason:
+ordering. next-themes injects its own pre-paint script and we already have one
+(the app-mode boot script) that has to run first and decides whether dark mode
+is even available. Two competing pre-paint scripts race and the loser causes a
+flash. next-themes stays in `package.json` only because `ui/sonner.tsx`
+imported it — that import now points at our provider instead.
+
+**How the palette flips.** Tailwind v4 compiles every colour utility to
+`var(--color-*)`, so `.dark` in `globals.css` redefines those variables rather
+than adding a `dark:` variant to ~1,700 utilities across 155 files. The neutral
+ramp is deliberately **inverted** — `gray-50` becomes the darkest surface,
+`gray-900` becomes near-white — so `bg-gray-50 text-gray-800` keeps its
+contrast relationship instead of going dark-on-dark.
+
+**What it doesn't cover:** the 57 arbitrary values like `bg-[#F0F0F5]`, which
+never touch a variable. The shell ones are converted; page-level ones aren't.
+That plus the marketing site's hand-picked colours is why the scope is `app`
+and not `all`.
+
+Theme is resolved in the same boot script pass as the mode, so a dark cold
+start never shows a light frame first. On native, the status bar style and
+colour follow the theme via `getStatusBarPlugin()`.
+
+Toggles: `<ThemeToggle />` (three-way segmented control, for a settings screen)
+and `<ThemeToggleButton />` (single cycling button, mounted in both portal
+headers). Both return `null` when the feature is out of scope.
 
 ## Not done yet
 

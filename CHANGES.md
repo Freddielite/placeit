@@ -280,3 +280,63 @@ device - the back button, haptics and keyboard paths cannot be exercised in a
 desktop browser even with `?appmode=1`.
 
 After pulling: `cd placeit-mobile && npm install && npx cap sync android`.
+
+---
+
+# What changed (session 5 - dark mode + reader docs)
+
+## Dark mode
+
+`darkMode` scope: `app`. Light / dark / follow-system.
+
+**Why not next-themes** (it's already in package.json): it injects its own
+pre-paint script, and we already have one that must run first and decides
+whether dark mode is available at all. Two racing pre-paint scripts means one
+loses and you get a flash. `theme-provider.tsx` is ~110 lines and hooks into
+the boot script we already own. next-themes stays installed because
+`ui/sonner.tsx` imported it - that import now points at our provider, which
+also fixes a live bug: no next-themes provider was ever mounted, so sonner had
+been silently falling back to "system" forever.
+
+**How the palette flips without touching 155 files.** Tailwind v4 compiles
+every colour utility to `var(--color-*)`. So `.dark` in globals.css redefines
+those variables instead of adding a `dark:` variant to ~1,700 utilities. The
+neutral ramp is inverted - gray-50 becomes the darkest surface, gray-900
+becomes near-white - so existing `bg-gray-50 text-gray-800` pairs keep their
+contrast rather than going dark-on-dark. Pale status tints (red-50, green-50
+and friends) are darkened too, or every subtle chip becomes a floodlight.
+
+**Not covered:** the 57 arbitrary values like `bg-[#F0F0F5]`. Those never
+touch a variable. Shell ones are converted (portal backgrounds, tab bar,
+headers, splash); page-level ones aren't. Combined with the marketing site's
+hand-picked colours, that's why the scope is `app` rather than `all`.
+
+Also done:
+- Theme resolved in the same boot-script pass as the mode, so a dark cold
+  start never flashes light. `<html suppressHydrationWarning>` added.
+- Native status bar style + colour follow the theme (`getStatusBarPlugin()`,
+  already sitting unused in the bridge helper). Note the inversion: the
+  plugin's "style" is the *content* colour, so a dark UI needs LIGHT.
+- `<meta name="theme-color">` updated at runtime.
+- `ThemedToastContainer` - react-toastify was mounted OUTSIDE AppProvider, so
+  it would have read the default light context. Moved inside ThemeProvider.
+- `<ThemeToggle />` (three-way segmented) and `<ThemeToggleButton />` (single
+  cycling button). The button is mounted in both portal headers inside
+  `<AppOnly>`.
+
+## Docs
+
+`APP-VS-BROWSER.html` - the guide rewritten for non-engineers and styled to
+match the site (Montserrat/Open Sans, #477dc0, the site's card and pill
+treatments). Self-contained single file, has its own dark mode toggle.
+
+`APP-VS-BROWSER.md` kept as the technical reference - the HTML drops file
+paths, the Tailwind v4 mechanics and the rationale, which are still worth
+having. Each now points at the other.
+
+## Verified
+
+Same caveat: no full `npm run build` (npm won't install here). All modified
+files type-checked in isolation under `--strict`, clean. The HTML was parsed
+for tag balance. Dark mode needs a real visual pass on a device - a palette
+remap gets you a correct base, not a finished design.

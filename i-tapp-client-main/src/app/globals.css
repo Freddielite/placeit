@@ -255,6 +255,139 @@ body {
 }
 
 /* ==========================================================================
+   DARK MODE
+   --------------------------------------------------------------------------
+   Tailwind v4 compiles every colour utility to `var(--color-*)`. That means
+   `bg-white`, `text-gray-700` and friends can be flipped by redefining those
+   variables under `.dark` - no need to add a `dark:` variant to each of the
+   ~1,700 colour utilities across 155 files.
+
+   The neutral ramp is INVERTED: gray-50 (lightest) becomes the darkest
+   surface, gray-900 becomes near-white text. So `bg-gray-50 text-gray-800`
+   keeps its contrast relationship instead of turning into dark-on-dark.
+
+   What this does NOT cover:
+     - arbitrary values like `bg-[#F0F0F5]`, which never touch a variable.
+       Those are fixed by hand (57 of them; the shell ones are done).
+     - deliberate colour choices (brand gradients, illustrations, the dark
+       marketing footer) that need a designer's eye, not a remap.
+   Treat this as a solid base, not a finished design pass.
+   ========================================================================== */
+
+@custom-variant dark (&:is(.dark *));
+
+.dark {
+  color-scheme: dark;
+
+  /* --- ShadCN semantic tokens ------------------------------------------- */
+  --background: #12161c;
+  --foreground: #e9edf2;
+
+  --card: #191f27;
+  --card-foreground: #e9edf2;
+
+  --popover: #1d242e;
+  --popover-foreground: #e9edf2;
+
+  /* Lifted from #477dc0 - the brand blue is too dark to sit on a dark
+     surface at the same value. */
+  --primary: #6fa2e0;
+  --primary-foreground: #0b0f14;
+
+  --secondary: #23313f;
+  --secondary-foreground: #e9edf2;
+
+  --muted: #1d242e;
+  --muted-foreground: #9aa6b4;
+
+  --accent: #23313f;
+  --accent-foreground: #e9edf2;
+
+  --destructive: #f0655f;
+  --destructive-foreground: #1a0d0d;
+
+  --border: #2a323d;
+  --input: #2a323d;
+  --ring: #3d4a5a;
+
+  /* --- Semantic ---------------------------------------------------------- */
+  --info: #5b9df5;
+  --warning: #4ac47d;
+  --success: #f0cf5e;
+  --danger: #f0655f;
+
+  /* --- Project greyscale (used via bg-white, text-black, text-grey-*) ---- */
+  --black: #e9edf2;
+  --white: #12161c;
+  --grey-1: #d4dae1;
+  --grey-2: #b6bfc9;
+  --grey-3: #8d97a3;
+  --grey-4: #5c6773;
+  --grey-5: #2a323d;
+
+  /* --- Tertiary ---------------------------------------------------------- */
+  --tertiary-1: #3f5f85;
+  --tertiary-2: #33465e;
+
+  /* --- Sidebar ----------------------------------------------------------- */
+  --sidebar: #161c24;
+  --sidebar-foreground: #e9edf2;
+  --sidebar-primary: #6fa2e0;
+  --sidebar-primary-foreground: #0b0f14;
+  --sidebar-accent: #23313f;
+  --sidebar-accent-foreground: #e9edf2;
+  --sidebar-border: #2a323d;
+  --sidebar-ring: #3d4a5a;
+
+  /* --- Tailwind's own palette, inverted ---------------------------------- */
+  --color-white: #12161c;
+  --color-black: #e9edf2;
+
+  --color-gray-50: #12161c;
+  --color-gray-100: #171d25;
+  --color-gray-200: #1e2630;
+  --color-gray-300: #2a323d;
+  --color-gray-400: #4a5563;
+  --color-gray-500: #7d8794;
+  --color-gray-600: #9aa6b4;
+  --color-gray-700: #bcc5d0;
+  --color-gray-800: #d5dce4;
+  --color-gray-900: #e9edf2;
+  --color-gray-950: #f5f7fa;
+
+  --color-slate-50: #12161c;
+  --color-slate-100: #171d25;
+  --color-slate-200: #1e2630;
+  --color-slate-300: #2a323d;
+  --color-slate-400: #4a5563;
+  --color-slate-500: #7d8794;
+  --color-slate-600: #9aa6b4;
+  --color-slate-700: #bcc5d0;
+  --color-slate-800: #d5dce4;
+  --color-slate-900: #e9edf2;
+
+  /* Pale tints (bg-red-50, bg-green-50 ...) become near-black on a dark
+     surface, otherwise every subtle status chip turns into a floodlight. */
+  --color-red-50: #2a1618;
+  --color-red-100: #3a1d20;
+  --color-green-50: #14241a;
+  --color-green-100: #1a3223;
+  --color-blue-50: #141f2e;
+  --color-blue-100: #1a2a3e;
+  --color-yellow-50: #2a2413;
+  --color-yellow-100: #3a3119;
+  --color-amber-50: #2a2413;
+  --color-amber-100: #3a3119;
+}
+
+/* Images and illustrations drawn for a white page glare on a dark one. */
+.dark img[src$=".png"],
+.dark img[src$=".svg"] {
+  /* Intentionally left alone - blanket filters wreck logos and photos.
+     Listed here as the place to add per-asset overrides if one looks wrong. */
+}
+
+/* ==========================================================================
    APP MODE vs BROWSER MODE
    --------------------------------------------------------------------------
    `html.is-app-mode`     - native Capacitor shell OR installed PWA

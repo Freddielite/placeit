@@ -59,6 +59,13 @@ export const APP_FEATURES = {
   /** Persist the React Query cache so last-seen data survives going offline. */
   offlineCache: "app",
 
+  /**
+   * Light / dark / follow-system. App-only for now: the marketing site is
+   * ~155 files of hardcoded light colours and a half-dark website is worse
+   * than a light one. Flip to "all" once those pages are audited.
+   */
+  darkMode: "app",
+
   /** Service worker - must stay on in the browser or the PWA isn't installable. */
   serviceWorker: "all",
 

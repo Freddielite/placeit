@@ -6,7 +6,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { Analytics } from "@vercel/analytics/next";
 import { AppProvider } from "@/components/providers/app-provider";
 import { ReactQueryProvider } from "@/provider/react-query-provider";
-import { ToastContainer } from "react-toastify";
 import { app } from "@/config/app";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Script from "next/script";
@@ -129,7 +128,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    // suppressHydrationWarning: the boot script adds mode and theme classes
+    // to <html> before React hydrates, so the server markup never matches.
+    <html lang="en" suppressHydrationWarning>
       <head>
         <meta name="google-adsense-account" content="ca-pub-2231106094660297" />
         <Script
@@ -203,6 +204,22 @@ export default function RootLayout({
                   root.classList.add(isApp ? "is-app-mode" : "is-browser-mode");
                   if (isNative) root.classList.add("is-native-app");
 
+                  // Theme, resolved in the same pass so there is never a
+                  // light frame before a dark one. Dark mode is app-only, so
+                  // the website skips this entirely and stays light.
+                  if (isApp) {
+                    var pref = null;
+                    try { pref = localStorage.getItem("placeit:theme"); } catch (e) {}
+                    if (pref !== "light" && pref !== "dark") pref = "system";
+                    var dark = pref === "dark" || (pref === "system"
+                      && window.matchMedia
+                      && window.matchMedia("(prefers-color-scheme: dark)").matches);
+                    if (dark) {
+                      root.classList.add("dark");
+                      root.style.colorScheme = "dark";
+                    }
+                  }
+
                   if (isApp) {
                     // Hide content until the splash overlay is mounted.
                     root.classList.add("app-boot");
@@ -230,11 +247,6 @@ export default function RootLayout({
             {/* </Suspense> */}
           </AppProvider>
         </ReactQueryProvider>
-        <ToastContainer
-          position="top-center"
-          autoClose={3000}
-          hideProgressBar
-        />
         <Analytics />
         <SpeedInsights />
       </body>
