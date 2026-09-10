@@ -1,0 +1,91 @@
+# ============================================
+# PlaceIT monorepo — root .gitignore
+# Covers i-tapp-client-main (Next.js) and placeit-mobile (Capacitor/Android)
+# ============================================
+
+# ---- Dependencies ----
+# node_modules is ignored everywhere; lockfiles are NOT ignored on purpose —
+# committing package-lock.json is what prevents dependency drift between
+# your machine, CI, and prod.
+node_modules/
+**/node_modules/
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# ---- Next.js (i-tapp-client-main) ----
+.next/
+out/
+build/
+next-env.d.ts
+*.tsbuildinfo
+
+# ---- Testing / coverage ----
+coverage/
+
+# ---- Env files (never commit secrets/API keys) ----
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.sentry-build-plugin
+!.env.example
+
+# ---- Vercel ----
+.vercel
+
+# ---- Sentry ----
+.sentryclirc
+
+# ---- Capacitor / Android (placeit-mobile) ----
+placeit-mobile/android/.gradle/
+placeit-mobile/android/build/
+placeit-mobile/android/app/build/
+placeit-mobile/android/local.properties
+placeit-mobile/android/captures/
+placeit-mobile/android/.cxx/
+placeit-mobile/android/.externalNativeBuild/
+placeit-mobile/android/app/src/main/assets/public/
+placeit-mobile/android/app/src/main/assets/capacitor.config.json
+placeit-mobile/android/app/src/main/assets/capacitor.plugins.json
+placeit-mobile/android/app/src/main/res/xml/config.xml
+placeit-mobile/android/capacitor-cordova-android-plugins/
+
+# Android build artifacts
+*.apk
+*.aab
+*.aar
+*.ap_
+*.dex
+*.class
+bin/
+gen/
+
+# ---- Signing keys — NEVER commit these ----
+*.jks
+*.keystore
+key.properties
+placeit-mobile/android/keystore.properties
+
+# ---- IDE / editor ----
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# ---- OS junk ----
+.DS_Store
+Thumbs.db
+
+# ---- Logs ----
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.log
