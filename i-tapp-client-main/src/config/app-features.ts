@@ -47,6 +47,30 @@ export const APP_FEATURES = {
   /** Android hardware back button -> in-app navigation instead of exit. */
   hardwareBackButton: "native",
 
+  /**
+   * App Links / custom-scheme URLs routed to an in-app screen instead of
+   * the browser - verification and password-reset emails, mainly.
+   *
+   * Native only, and not because a PWA doesn't deserve it: Chrome already
+   * routes in-scope links into an installed PWA itself, so there is nothing
+   * for us to do there. Only the wrapped shell has to be told, via the
+   * Capacitor App plugin. See src/lib/deep-links.ts.
+   */
+  deepLinks: "native",
+
+  /**
+   * "Take photo" alongside "choose file" on document uploads.
+   *
+   * Scope is "all" because the meaningful gate is the DEVICE, not the
+   * runtime - the same reasoning as darkMode being route-gated. A phone
+   * browser can open the camera through <input capture> perfectly well and
+   * photographing an IT letter is just as useful on the website; a desktop
+   * has nothing to point at a document. canOfferCamera() in src/lib/camera.ts
+   * makes that call at runtime. Set this to "app" to restrict it to the
+   * installed app, or "off" to go back to file-picker-only everywhere.
+   */
+  cameraCapture: "all",
+
   /** Vibration feedback on refresh, tab taps, form results. */
   haptics: "app",
 

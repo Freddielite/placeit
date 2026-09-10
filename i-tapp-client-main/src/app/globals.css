@@ -739,7 +739,21 @@ html.keyboard-open.is-app-mode body:has([data-app-tabbar]) {
 
 /* --- Browser only -------------------------------------------------------- */
 
-/* Nothing here yet. Website-exclusive chrome (install banner, cookie/consent
-   UI, marketing-only affordances) belongs under html.is-browser-mode, or
-   behind the <BrowserOnly> component in
+/* `installBanner`. The banner is fixed to the bottom, so the last row of
+   whatever is behind it - the final field of a form, a footer link - would
+   otherwise sit underneath and be untappable. Same approach as the app's
+   bottom tab bar above, and scoped to the same breakpoint the banner uses
+   (it's lg:hidden).
+
+   `:has([data-install-banner])` means the padding appears and disappears
+   with the banner itself, including after a dismiss, with nothing to keep
+   in sync. */
+@media (max-width: 1023px) {
+  html.is-browser-mode body:has([data-install-banner]) {
+    padding-bottom: calc(84px + env(safe-area-inset-bottom));
+  }
+}
+
+/* Other website-exclusive chrome (cookie/consent UI, marketing-only
+   affordances) belongs here too, or behind the <BrowserOnly> component in
    components/providers/app-mode-provider.tsx. */

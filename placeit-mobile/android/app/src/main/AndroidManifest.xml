@@ -18,6 +18,81 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <!--
+                App Links. Makes an https link from a verification or
+                password-reset email open THIS APP instead of Chrome.
+
+                android:autoVerify="true" tells Android to fetch
+                https://www.getplaceit.com/.well-known/assetlinks.json at
+                install time and confirm this package + signing certificate
+                are listed there. Until that file is live AND the SHA-256
+                fingerprint in it matches the installed build, Android
+                silently sends these links to the browser - the current
+                behaviour, with no error to tell you why. The file is served
+                by src/app/.well-known/assetlinks.json/route.ts in the Next
+                app and needs ANDROID_APP_FINGERPRINTS set in the deploy env.
+
+                ONE HOST ONLY, DELIBERATELY. Verification is all-or-nothing
+                across every host an autoVerify filter declares: add the
+                apex getplaceit.com here and, if it 301s to www (the usual
+                setup), it fails to serve assetlinks.json directly, that host
+                fails verification, and www stops working too. Add the apex
+                only after confirming it serves the file with no redirect.
+
+                PATHS ARE SCOPED to /account, which is where the emailed
+                links land - verify, activate, password-reset. Claiming the
+                whole domain would drag every shared link, marketing page and
+                Google result into the app, which is a product decision
+                nobody has made. Widening this means widening
+                ALLOWED_PATH_PREFIXES in src/lib/deep-links.ts to match; the
+                manifest decides what Android hands over, that list decides
+                what the app acts on.
+            -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https"
+                      android:host="www.getplaceit.com"
+                      android:pathPrefix="/account/" />
+                <!--
+                    TRAILING SLASH IS LOAD-BEARING. pathPrefix is a raw
+                    string prefix, not a path-segment match: "/account"
+                    would also claim /accounts-payable, /account-settings
+                    and anything else starting with those eight characters.
+                    Android would open the app, deep-links.ts would refuse
+                    the unrecognised path, and the user would be left on the
+                    homepage with the browser never getting the link at all
+                    - strictly worse than the behaviour being fixed.
+
+                    Every emailed link is /account/<something>, so nothing
+                    is lost. If a bare /account page ever exists, add a
+                    second <data android:path="/account" /> line rather than
+                    dropping the slash.
+                -->
+            </intent-filter>
+
+            <!--
+                Custom scheme fallback: placeit://account/verify?token=...
+
+                Needs no domain verification at all, so it works before
+                assetlinks.json is live and is the quickest way to test the
+                handler on a device:
+
+                  adb shell am start -a android.intent.action.VIEW \
+                    -d "placeit://account/verify?token=test"
+
+                Nothing generates these links today - the backend sends https
+                links in emails - so this is a debugging and stopgap route,
+                not a replacement for App Links.
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="placeit" />
+            </intent-filter>
         </activity>
 
         <provider
@@ -32,4 +107,24 @@
     <!-- Permissions -->
 
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!--
+        Camera capture for CV / IT letter uploads (@capacitor/camera).
+        Declaring it is what lets the plugin request it at runtime; without
+        this line getPhoto() fails on device with a permission error.
+
+        No READ_MEDIA_IMAGES / READ_EXTERNAL_STORAGE: we only ever call the
+        plugin with source: "CAMERA" and resultType: "dataUrl", never the
+        gallery picker, so photo-library access is never needed. Choosing an
+        existing file goes through <input type="file">, which the WebView's
+        own file chooser handles without any permission from us.
+    -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!--
+        required="false" so the Play Store doesn't filter the app off
+        devices without a camera. canOfferCamera() hides the button and the
+        file picker still works.
+    -->
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
 </manifest>

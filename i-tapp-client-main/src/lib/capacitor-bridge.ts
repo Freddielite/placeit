@@ -23,6 +23,16 @@ type CapacitorAppPlugin = {
     event: "appStateChange",
     fn: (state: { isActive: boolean }) => void
   ): PluginListener;
+  /** Fired when an App Link / custom-scheme URL opens an already-running app. */
+  addListener(
+    event: "appUrlOpen",
+    fn: (data: { url: string }) => void
+  ): PluginListener;
+  /**
+   * The URL the app was cold-started with, if any. `appUrlOpen` does not
+   * reliably fire for the launch intent, so both have to be checked.
+   */
+  getLaunchUrl?(): Promise<{ url: string } | null>;
   exitApp(): Promise<void>;
 };
 
@@ -46,6 +56,30 @@ type CapacitorKeyboardPlugin = {
   setAccessoryBarVisible?(opts: { isVisible: boolean }): Promise<void>;
 };
 
+/**
+ * Only the slice of @capacitor/camera we use: one shot from the rear camera,
+ * back as a data URL. Not the gallery picker - the plain <input type="file">
+ * already covers "choose an existing file" on every platform, and routing it
+ * through the plugin would mean asking for photo-library permission too.
+ */
+type CapacitorCameraPlugin = {
+  getPhoto(opts: {
+    quality?: number;
+    width?: number;
+    height?: number;
+    allowEditing?: boolean;
+    resultType: "dataUrl" | "base64" | "uri";
+    source?: "CAMERA" | "PHOTOS" | "PROMPT";
+    correctOrientation?: boolean;
+    saveToGallery?: boolean;
+    promptLabelHeader?: string;
+  }): Promise<{ dataUrl?: string; base64String?: string; format?: string }>;
+  checkPermissions?(): Promise<{ camera: string; photos: string }>;
+  requestPermissions?(opts?: {
+    permissions?: ("camera" | "photos")[];
+  }): Promise<{ camera: string; photos: string }>;
+};
+
 type CapacitorStatusBarPlugin = {
   setStyle(opts: { style: "DARK" | "LIGHT" }): Promise<void>;
   setBackgroundColor(opts: { color: string }): Promise<void>;
@@ -56,6 +90,7 @@ type CapacitorGlobal = {
   getPlatform?: () => string;
   Plugins?: {
     App?: CapacitorAppPlugin;
+    Camera?: CapacitorCameraPlugin;
     Haptics?: CapacitorHapticsPlugin;
     Keyboard?: CapacitorKeyboardPlugin;
     StatusBar?: CapacitorStatusBarPlugin;
@@ -80,6 +115,10 @@ export function hasBridge(): boolean {
 
 export function getAppPlugin() {
   return hasBridge() ? bridge()!.Plugins!.App ?? null : null;
+}
+
+export function getCameraPlugin() {
+  return hasBridge() ? bridge()!.Plugins!.Camera ?? null : null;
 }
 
 export function getHapticsPlugin() {

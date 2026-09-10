@@ -7,10 +7,12 @@ import { PullToRefresh } from "./pull-to-refresh";
 import { OfflineScreen } from "./offline-screen";
 import { PageTransition } from "./page-transition";
 import { BackButtonHandler } from "./back-button-handler";
+import { DeepLinkHandler } from "./deep-link-handler";
 import { KeyboardHandler } from "./keyboard-handler";
 import { QueryCachePersistence } from "./query-cache-persistence";
 import { ThemeProvider } from "./theme-provider";
 import { ThemedToastContainer } from "@/components/themed-toast-container";
+import { GetTheAppBanner } from "@/components/get-the-app-banner";
 
 // AppModeProvider must be the outermost wrapper - everything below it asks
 // it whether we're running as the installed app or as the public website.
@@ -28,6 +30,10 @@ import { ThemedToastContainer } from "@/components/themed-toast-container";
 // The tree shape is identical in both modes on purpose. The app-only bits
 // switch themselves off internally rather than being conditionally mounted,
 // so `children` is never unmounted and remounted when the mode resolves.
+//
+// DeepLinkHandler and GetTheAppBanner are opposite ends of the same split -
+// one is native-only, the other browser-only - and both are siblings rather
+// than wrappers, so each can safely return null in the mode it isn't for.
 export function AppProvider({ children }: { children: React.ReactNode }) {
   return (
     <AppModeProvider>
@@ -35,10 +41,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         <AppShellEffects />
         <QueryCachePersistence />
         <BackButtonHandler />
+        <DeepLinkHandler />
         <KeyboardHandler />
         <ThemedToastContainer />
         <AppSplash />
         <OfflineScreen />
+        <GetTheAppBanner />
         <PullToRefresh>
           <PageTransition>{children}</PageTransition>
         </PullToRefresh>

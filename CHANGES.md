@@ -823,3 +823,149 @@ directly against Zod for empty / malformed / valid input.
 Not seen rendered - no `npm run build`. Worth checking the 3s hold feels right
 on a real connection, and that the student modal sits correctly since that form
 is inside the multi-step wizard rather than a page of its own.
+
+---
+
+# Session 3 — the three outstanding items
+
+The three things on the "What's Been Built" list: links that open the app,
+camera upload for CVs and documents, and the "Get the app" prompt for
+website visitors. All three were already sketched in `APP-VS-BROWSER.md`
+under "Not done yet", so the intended shape was mostly settled — the
+`installBanner` feature key and its `<BrowserOnly>` wrapper had been sitting
+in the registry waiting for a component since the app/browser split went in.
+
+Verified with a real `npm run build`: compiled clean, TypeScript clean, all
+71 routes generated. (Google Fonts is unreachable from this sandbox, so the
+two `next/font/google` calls were temporarily stubbed to let the build run
+and then reverted — `git diff` on `layout.tsx`, `types/index.ts` and
+`utils/fonts.ts` should be empty.)
+
+## 1. Links that open the app
+
+Tapping a verification or password-reset link from an email opened Chrome,
+even on a phone with PlaceIT installed and signed in. Two sessions, two
+cookie jars, and a verification that appears not to have worked.
+
+Four pieces, all four required:
+
+- **`AndroidManifest.xml`** — an `autoVerify` intent filter for
+  `https://www.getplaceit.com/account/*`, plus an unverified `placeit://`
+  scheme as a fallback and test hook.
+- **`src/app/.well-known/assetlinks.json/route.ts`** — the Digital Asset
+  Links file Android fetches to confirm the domain vouches for the app.
+- **`src/lib/deep-links.ts`** — turns an incoming URL into an in-app path,
+  against an allowlist.
+- **`src/components/providers/deep-link-handler.tsx`** — listens for the
+  link and navigates the existing webview to it.
+
+**One thing is needed from you before this works.** Set
+`ANDROID_APP_FINGERPRINTS` in the deployment environment to the SHA-256
+fingerprint of the app signing key — Play Console → Release → Setup → App
+signing. It has to be the *app signing* key, not the upload key: Play
+re-signs your upload, so the upload key's fingerprint isn't what ends up on
+the device. Comma-separate to include your debug key as well.
+
+Until it's set, that route returns 404 on purpose. A file containing a
+placeholder would be worse than a missing one, because Android caches a
+verification *failure* and retries on its own schedule — you'd be debugging
+a response that had already poisoned itself.
+
+**Why only `www.getplaceit.com` and not the apex.** App Links verification
+is all-or-nothing across every host declared in one filter, and the file
+must be served with no redirect. If `getplaceit.com` 301s to `www` — the
+usual setup — including it would fail verification for `www` too, and the
+whole feature would silently do nothing. The apex can be added once it's
+confirmed to serve the file directly.
+
+**Why only `/account` and not the whole domain.** That's where the emailed
+links land. Claiming every URL would pull shared links, marketing pages and
+Google results into the app, which is a product decision nobody has made.
+It's also a security boundary: any installed app can fire a `placeit://`
+link at us, and that scheme has no domain verification behind it, so an
+unbounded list would let a hostile app drop someone on an arbitrary screen
+of a logged-in session.
+
+One nicety: on a cold start the shell has already begun loading the homepage
+by the time we redirect. Rather than fight it, the existing 1.7s splash
+covers it — what you see is splash, then the verification screen, never a
+flash of the homepage.
+
+## 2. Camera upload for CVs and documents
+
+Cheaper than expected: all eight upload fields — student IT letter and CV,
+corps call-up / CV / relocation letters, company logo and banner, and the
+offer attachment — already go through one shared component
+(`src/components/file-upload-thing.tsx`). Adding the camera there covers
+every one of them.
+
+Two implementations of the same button, picked at runtime. The native shell
+uses the Capacitor Camera plugin; a phone browser or installed PWA uses
+`<input type="file" capture="environment">`, which opens the camera on
+Android and iOS. The native path isn't redundant: the shell loads
+getplaceit.com remotely, so a page-driven camera input there depends on the
+WebView's file-chooser and permission delegation, and the plugin is the
+route that reliably works.
+
+The button is hidden on desktop, where `capture` is ignored and it would
+just be a second, identical file dialog.
+
+Details that matter in practice:
+
+- **Photos come out of the plugin as JPEG at quality 80, max 1600px** —
+  200-600KB for a photographed A4 page, comfortably inside the existing
+  10MB limit, and still legible enough to read a CV off.
+- **`correctOrientation` is on.** Phones record rotation in EXIF rather than
+  rotating the pixels, so without it a portrait photo of an IT letter
+  arrives sideways and whoever opens it has to tilt their head.
+- **Photos aren't saved to the camera roll.** Nobody wants their IT letter
+  in their gallery.
+- **Camera files get renamed.** They arrive as "image.jpg" or with no name
+  at all, which is unhelpful next to three other uploads in the same form.
+- **There's now a preview and a Remove/Retake control**, because the first
+  thing anyone does after photographing a document is check it's readable.
+
+The component's `onChange` widened to accept `undefined` so the field can be
+cleared. Every existing call site passes react-hook-form's `field.onChange`,
+which already accepts anything, so nothing else changed.
+
+**Run `cap sync` in `placeit-mobile/`** after pulling — `@capacitor/camera`
+is new in its `package.json` and won't reach the bridge until you do.
+Without it nothing breaks; the camera button just won't appear in the native
+build and the file picker carries on as before.
+
+## 3. "Get the app" prompt for website visitors
+
+`src/components/get-the-app-banner.tsx`. A compact bar at the bottom of the
+screen on phones, on the website only — the feature registry already scoped
+it that way, so it can't appear inside the app itself.
+
+Chrome and Safari share no common ground here, so there are two paths.
+Chrome on Android fires an event we can capture and replay from our own
+button, which gives a real one-tap install (and suppresses Chrome's own
+mini-infobar so there aren't two prompts competing). iOS Safari has no
+programmatic install at all, so there the button expands a short "tap Share,
+then Add to Home Screen" instruction instead. Chrome and Firefox on iOS are
+deliberately excluded — they're Safari underneath but can't install at all,
+so those instructions would be wrong.
+
+**Optional, for later:** set `NEXT_PUBLIC_ANDROID_STORE_URL` once the Play
+listing is live and Android visitors get sent there instead. A store install
+is the better outcome — it's the build that actually gets the native
+features. Leaving it unset is fine; the banner falls back to the PWA install
+prompt, so there's no dead link in the meantime.
+
+Behaviour is deliberately restrained: it waits 4 seconds before appearing
+(asking someone to install before they've read anything is how banners get
+reflexively dismissed), a dismissal is remembered for 14 days, and
+installing by any route — including Chrome's own menu — stops it for good.
+The page also gains padding while it's showing, so it never covers the last
+field of a form.
+
+## Second broken link spotted
+
+Same category as the `companyNavLinks` note from last session, so flagging
+rather than fixing. `src/app/(auth)/account/verify/index.tsx` links twice to
+`/resend-verification`, but the route is `/account/resend-verification` —
+both 404 today. It's the page someone lands on when a verification link has
+expired, which is now also where a deep link lands, so it's worth a minute.
