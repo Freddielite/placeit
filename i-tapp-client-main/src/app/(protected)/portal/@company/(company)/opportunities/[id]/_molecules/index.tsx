@@ -16,10 +16,74 @@ import {
 import { Calendar, MapPin, Briefcase } from "lucide-react";
 import OpportunityForm from "../../_molecules/opportunity-form";
 import { useAction } from "next-safe-action/hooks";
-import { Spinner } from "@/components/spinner";
 import { closeOpportunity, updateOpportunity } from "@/actions";
 import { toast } from "react-toastify";
 import { useInvalidateOpportunities } from "@/hooks/use-invalidate";
+import { Skeleton } from "@/components/ui/skeleton";
+
+function OpportunityDetailsSkeleton() {
+  return (
+    <div>
+      {/* Breadcrumb/Meta Info */}
+      <div className="flex items-center gap-4 mb-4">
+        <Skeleton className="h-4 w-16" />
+        <Skeleton className="h-4 w-20" />
+        <Skeleton className="h-4 w-32" />
+      </div>
+
+      <div className="bg-white rounded-lg border border-gray-200 p-4 md:p-6 w-full">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
+          <div className="flex-1 space-y-3">
+            <Skeleton className="h-8 w-2/3" />
+            <Skeleton className="h-7 w-24 rounded-lg" />
+          </div>
+          <div className="flex flex-row gap-2">
+            <Skeleton className="h-9 w-20 rounded-md" />
+            <Skeleton className="h-9 w-36 rounded-md" />
+          </div>
+        </div>
+
+        {/* Quick Stats */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="flex flex-col gap-2">
+              <Skeleton className="h-3 w-20" />
+              <Skeleton className="h-4 w-28" />
+            </div>
+          ))}
+        </div>
+
+        {/* Description */}
+        <div className="mb-6 space-y-2">
+          <Skeleton className="h-3 w-24" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-11/12" />
+          <Skeleton className="h-4 w-2/3" />
+        </div>
+
+        <hr className="-mx-4 md:-mx-6 border-gray-200 mb-6" />
+
+        {/* Applicants table */}
+        <div>
+          <Skeleton className="h-5 w-32 mb-4" />
+          <div className="flex flex-col gap-3">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="flex items-center gap-3 p-3 border border-gray-100 rounded-lg">
+                <Skeleton className="w-9 h-9 rounded-full shrink-0" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-3.5 w-1/3" />
+                  <Skeleton className="h-3 w-1/4" />
+                </div>
+                <Skeleton className="h-6 w-20 rounded-full" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function OpportunityDetailsPage() {
   const { id } = useParams();
@@ -55,7 +119,7 @@ export default function OpportunityDetailsPage() {
   );
 
   if (isLoading) {
-    return <Spinner />;
+    return <OpportunityDetailsSkeleton />;
   }
 
   if (error) {

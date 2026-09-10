@@ -4,10 +4,9 @@ export const isAbsoluteUrl = (url: string) => /^https?:\/\//i.test(url);
 
 const getEnv = (key: string, defaultValue?: string): string => {
   const value = process.env[key];
-  if (!value) {
-    throw new Error(`Environment variable ${key} is not defined`);
-  }
-  return value ?? defaultValue ?? "";
+  if (value) return value;
+  if (defaultValue !== undefined) return defaultValue;
+  throw new Error(`Environment variable ${key} is not defined`);
 };
 
 export const env = (defaultValue?: string): Env => {

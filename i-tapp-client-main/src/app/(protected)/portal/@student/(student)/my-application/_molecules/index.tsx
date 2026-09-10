@@ -10,6 +10,35 @@ import ApplicationCard from "@/components/application-card";
 import { FilterBy } from "@/components/filter-by";
 import { filtered } from "@/utils/filtered";
 import { CheckCircle2, AlertCircle, Clock } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+
+function MyApplicationSkeleton() {
+  return (
+    <div className="space-y-4">
+      {Array.from({ length: 4 }).map((_, i) => (
+        <div
+          key={i}
+          className="bg-white rounded-xl shadow-sm border border-gray-200 p-5"
+        >
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <Skeleton className="w-12 h-12 rounded-lg shrink-0" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-3 w-20" />
+              </div>
+            </div>
+            <Skeleton className="h-6 w-20 rounded-full shrink-0" />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <Skeleton className="h-3 w-24" />
+            <Skeleton className="h-3 w-24" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export default function MyApplication({
   searchParams,
@@ -113,11 +142,17 @@ export default function MyApplication({
           </div>
         </div>
 
-        {/* Desktop Table View */}
-        <ApplicationTable application={filteredApplications} />
+        {isLoading ? (
+          <MyApplicationSkeleton />
+        ) : (
+          <>
+            {/* Desktop Table View */}
+            <ApplicationTable application={filteredApplications} />
 
-        {/* Mobile/Tablet Card View */}
-        <ApplicationCard application={filteredApplications} />
+            {/* Mobile/Tablet Card View */}
+            <ApplicationCard application={filteredApplications} />
+          </>
+        )}
       </div>
     </Wrapper>
   );

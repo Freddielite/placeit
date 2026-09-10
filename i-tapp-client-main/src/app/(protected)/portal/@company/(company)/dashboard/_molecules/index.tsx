@@ -99,26 +99,26 @@ export function Dashboard() {
           title="Total"
           number={applicationsCount?.total}
           icon={<Profile2User />}
-          link={"/portal/overview/applicants"}
+          link={"/portal/opportunities"}
         />
         <OverviewBox
           title="Shortlisted"
           number={applicationsCount?.counts?.shortlisted ?? 0}
           icon={<ProfileTick />}
-          link={"/portal/candidates/shortlisted"}
+          link={"/portal/opportunities"}
         />
         <OverviewBox
           title="Accepted"
           number={applicationsCount?.counts?.hired ?? 0}
           icon={<TickCircle />}
-          link={"/portal/candidates/accepted"}
+          link={"/portal/opportunities"}
         />
       </div>
 
       <div>
         <div className="flex justify-between my-5">
           <span className="font-semibold">Recent Opportunities</span>
-          <Link href="#" className="flex mr-14 gap-2">
+          <Link href="/portal/opportunities" className="flex mr-14 gap-2">
             <span>See all</span>
             <ArrowRight size={24} color="#292D32" />
           </Link>

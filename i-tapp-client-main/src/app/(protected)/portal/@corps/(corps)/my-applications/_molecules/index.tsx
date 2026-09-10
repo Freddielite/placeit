@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useFetchCorpsApplications } from "@/queries/corps";
 import { withdrawPPAApplication } from "@/actions";
 import { Wrapper } from "@/components/wrapper";
-import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useAction } from "next-safe-action/hooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
@@ -13,6 +13,26 @@ import { MapPin, Clock, Building2 } from "lucide-react";
 import Link from "next/link";
 import { formatDate } from "@/utils/format-date";
 import { cn } from "@/utils/tailwind";
+
+function ApplicationRowSkeleton() {
+  return (
+    <div className="bg-white rounded-xl border border-gray-100 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex items-start gap-4 min-w-0 flex-1">
+        <Skeleton className="w-10 h-10 rounded-lg shrink-0" />
+        <div className="min-w-0 flex-1 space-y-2">
+          <Skeleton className="h-4 w-1/2" />
+          <Skeleton className="h-3 w-1/3" />
+          <div className="flex flex-wrap gap-3 mt-1">
+            <Skeleton className="h-3 w-16" />
+            <Skeleton className="h-3 w-16" />
+            <Skeleton className="h-3 w-20" />
+          </div>
+        </div>
+      </div>
+      <Skeleton className="h-6 w-20 rounded-full shrink-0" />
+    </div>
+  );
+}
 
 const STATUS_COLORS: Record<string, string> = {
   applied: "bg-blue-50 text-blue-700",
@@ -68,7 +88,11 @@ export default function CorpsMyApplications() {
         </div>
 
         {isLoading ? (
-          <div className="flex justify-center py-16"><Spinner /></div>
+          <div className="grid gap-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <ApplicationRowSkeleton key={i} />
+            ))}
+          </div>
         ) : applications.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-gray-400">
             <p className="text-lg font-medium">No applications yet</p>

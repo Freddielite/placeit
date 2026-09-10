@@ -79,6 +79,11 @@ export const companyListings = [
   },
 ];
 
+// Not currently rendered anywhere (the live company sidebar builds its own
+// links in components/layouts/protected/company/index.tsx). Fixed to point
+// at real routes rather than removed, so it isn't a landmine if this ever
+// gets wired up - /portal/space/add-new-space and /portal/candidates/accepted
+// don't exist; candidates are viewed per-opportunity from /portal/opportunities.
 export const companyNavLinks = [
   {
     text: "Overview",
@@ -86,11 +91,11 @@ export const companyNavLinks = [
   },
   {
     text: "IT Space",
-    href: "/portal/space/add-new-space",
+    href: "/portal/opportunities",
   },
   {
     text: "Candidates",
-    href: "/portal/candidates/accepted",
+    href: "/portal/opportunities",
   },
 ];
 
