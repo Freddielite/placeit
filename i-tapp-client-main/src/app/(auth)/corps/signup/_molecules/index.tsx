@@ -93,7 +93,7 @@ export default function CorpsSignup() {
               name="firstName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>First name</FormLabel>
+                  <FormLabel>First name <span className="text-red-500">*</span></FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="e.g. Chukwuemeka" className="placeholder:text-muted-foreground/50" />
                   </FormControl>
@@ -106,7 +106,7 @@ export default function CorpsSignup() {
               name="lastName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Last name</FormLabel>
+                  <FormLabel>Last name <span className="text-red-500">*</span></FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="e.g. Obi" className="placeholder:text-muted-foreground/50" />
                   </FormControl>
@@ -121,7 +121,7 @@ export default function CorpsSignup() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email address</FormLabel>
+                <FormLabel>Email address <span className="text-red-500">*</span></FormLabel>
                 <FormControl>
                   <Input {...field} type="email" placeholder="e.g. you@email.com" className="placeholder:text-muted-foreground/50" />
                 </FormControl>
@@ -135,7 +135,7 @@ export default function CorpsSignup() {
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Phone number</FormLabel>
+                <FormLabel>Phone number <span className="text-red-500">*</span></FormLabel>
                 <FormControl>
                   <Input {...field} placeholder="e.g. +234 801 234 5678" className="placeholder:text-muted-foreground/50" />
                 </FormControl>
@@ -149,7 +149,7 @@ export default function CorpsSignup() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>Password <span className="text-red-500">*</span></FormLabel>
                 <FormControl>
                   <Input
                     {...field}

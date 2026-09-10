@@ -100,7 +100,7 @@ export function SignupInfo({
               name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Phone Number</FormLabel>
+                  <FormLabel>Phone Number <span className="text-red-500">*</span></FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="e.g., +234 801 234 5678" />
                   </FormControl>
@@ -114,7 +114,7 @@ export function SignupInfo({
               render={({ field }) => {
                 return (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>Email <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
                       <Input {...field} placeholder="Enter your email" />
                     </FormControl>
@@ -129,7 +129,7 @@ export function SignupInfo({
               render={({ field }) => {
                 return (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>Password <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
                       <Input
                         type="password"
@@ -148,7 +148,7 @@ export function SignupInfo({
               render={({ field }) => {
                 return (
                   <FormItem>
-                    <FormLabel>Confirm Password</FormLabel>
+                    <FormLabel>Confirm Password <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
                       <Input
                         type="password"
