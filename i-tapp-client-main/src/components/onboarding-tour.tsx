@@ -219,7 +219,14 @@ function getSteps(role: TourRole, isMobile: boolean): Step[] {
 
 type Rect = { top: number; left: number; width: number; height: number };
 
-export function OnboardingTour({ role }: { role: TourRole }) {
+export function OnboardingTour({
+  role,
+  blocked = false,
+}: {
+  role: TourRole;
+  /** While true, the tour won't auto-start (e.g. a higher-priority modal is still open). */
+  blocked?: boolean;
+}) {
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
   const [step, setStep] = useState(0);
@@ -256,13 +263,15 @@ export function OnboardingTour({ role }: { role: TourRole }) {
     setVisible(true);
   }, [buildSteps]);
 
-  // Auto-trigger for first-time visitors.
+  // Auto-trigger for first-time visitors. Waits for `blocked` to clear (e.g. a
+  // pending-review modal closing) before starting, and re-arms once it does.
   useEffect(() => {
     if (!mounted) return;
+    if (blocked) return;
     if (localStorage.getItem(storageKey)) return;
     const t = setTimeout(start, 700);
     return () => clearTimeout(t);
-  }, [mounted, storageKey, start]);
+  }, [mounted, blocked, storageKey, start]);
 
   // Manual replay trigger (from a "Replay tutorial" button elsewhere).
   useEffect(() => {

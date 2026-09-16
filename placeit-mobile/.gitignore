@@ -1,0 +1,29 @@
+# ============================================
+# placeit-mobile .gitignore
+# ============================================
+
+# Dependencies
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Signing keys — never commit these
+*.jks
+*.keystore
+key.properties
+
+# Note: placeit-mobile/android/.gitignore already handles
+# Gradle build output, local.properties, and Android artifacts.
